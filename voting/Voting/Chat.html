@@ -1,0 +1,11 @@
+{% load otreechat %}
+{{ block title }}Chat{{ endblock }}
+{{ block content }}
+
+
+{% chat nickname=player.chat_nickname room=player.chat_room %}
+
+
+
+
+{{ endblock }}
