@@ -9,43 +9,25 @@ class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 10
-    AMOUNT_SHARED_IF_A = cu(100)
-    AMOUNT_SHARED_IF_B = cu(20)
+    AMOUNT_SHARED_IF_A = cu(100)  # Amount shared if option A wins
+    AMOUNT_SHARED_IF_B = cu(20)   # Amount shared if option B wins
     CHOICES = ['A', 'B']
     STATES = ['A', 'B']
-    CATEGORIES = ['h', 'l']
-    REWARDS = ['r', 'b']
 
 
 class Subsession(BaseSubsession):
     def creating_session(self):
-        for group in self.get_groups():
-            group.state = random.choice(C.STATES)
-
+        self.group_randomly()
 
 class Group(BaseGroup):
+
     state = models.StringField()
 
-    def set_categories_and_rewards(self):
-        for player in self.get_players():
-            player.category = random.choice(C.CATEGORIES)
-            # A状态下的分配
-            if self.state == 'A':
-                if player.category == 'h':
-                    player.reward = random.choices(C.REWARDS, weights=(5, 3), k=1)[0]
-                else:
-                    player.reward = random.choices(C.REWARDS, weights=(4, 3), k=1)[0]
-            # B状态下的分配
-            else:
-                if player.category == 'h':
-                    player.reward = random.choices(C.REWARDS, weights=(3, 5), k=1)[0]
-                else:
-                    player.reward = random.choices(C.REWARDS, weights=(3, 4), k=1)[0]
-
     def set_payoffs(self):
-        # 根据状态投票的结果分配payoff
         votes = [p.vote for p in self.get_players()]
-        if self.state == 'A' and votes.count('A') >= 2 or self.state == 'B' and votes.count('B') >= 2:
+
+        majority_vote = self.state
+        if votes.count(majority_vote) > len(votes) / 2:
             payoff = C.AMOUNT_SHARED_IF_A
         else:
             payoff = C.AMOUNT_SHARED_IF_B
@@ -55,21 +37,31 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please choose A or B")
-    category = models.StringField()
-    reward = models.StringField()
+    state = models.StringField()
 
-class Info(Page):
+    def chat_nickname(self):
+        return 'Voter {}'.format(self.id_in_group)
 
-    @staticmethod
-    def vars_for_template(player: Player):
-        return {
-            'state': player.group.state,
-            'category': player.category,
-            'reward': player.reward
-        }
+    def chat_room(self):
+        if self.id_in_group in [1, 3]:
+            return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
+        return None
 
+
+def creating_session(subsession: Subsession):
+
+    for group in subsession.get_groups():
+        group.state = random.choice(C.STATES)
+        for player in group.get_players():
+            player.state = group.state
 
 class Chat(Page):
+
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            state=player.state
+        )
     @staticmethod
     def is_displayed(player):
         return player.id_in_group in [1, 3]
@@ -84,7 +76,16 @@ class ResultsWaitPage(WaitPage):
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
+
+
+class ShuffleWaitPage(WaitPage):
+    wait_for_all_groups = True
+
+    @staticmethod
+    def after_all_players_arrive(subsession):
+        subsession.group_randomly()
+
 class Results(Page):
     pass
 
-page_sequence = [Info, Chat, Voting, ResultsWaitPage, Results]
+page_sequence = [Chat, Voting, ResultsWaitPage, ShuffleWaitPage, Results]

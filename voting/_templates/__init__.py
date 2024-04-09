@@ -1,4 +1,5 @@
 from otree.api import *
+import random
 
 doc = """
 Voting Game
@@ -10,23 +11,34 @@ class C(BaseConstants):
     NUM_ROUNDS = 10
     AMOUNT_SHARED_IF_A = cu(100)  # Amount shared if option A wins
     AMOUNT_SHARED_IF_B = cu(20)   # Amount shared if option B wins
-    CHOICES = ['A', 'B']  # Voting options
+    CHOICES = ['A', 'B']
+    STATES = ['A', 'B']
+
 
 class Subsession(BaseSubsession):
-    pass
+
+    def creating_session(subsession):
+        subsession.group_randomly()
 
 class Group(BaseGroup):
+
+    state = models.StringField()
+
     def set_payoffs(self):
         votes = [p.vote for p in self.get_players()]
-        if votes.count('A') >= 2:
+
+        majority_vote = self.state
+        if votes.count(majority_vote) > len(votes) / 2:
             payoff = C.AMOUNT_SHARED_IF_A
         else:
             payoff = C.AMOUNT_SHARED_IF_B
         for p in self.get_players():
             p.payoff = payoff
 
+
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please choose A or B")
+    state = models.StringField()
 
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
@@ -36,8 +48,24 @@ class Player(BasePlayer):
             return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
         return None
 
-# PAGES
+
+def creating_session(subsession: Subsession):
+    if subsession.round_number == 1:
+        for g in subsession.get_groups():
+            k=0
+            for i in range(10):
+                g.in_round(i+1).state = random.choice(C.STATES)
+                k=k+1
+                for p in g.get_players():
+                   p.in_round(i+1).state = g.in_round(i+1).state
+
 class Chat(Page):
+
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            state=player.state
+        )
     @staticmethod
     def is_displayed(player):
         return player.id_in_group in [1, 3]
@@ -52,7 +80,16 @@ class ResultsWaitPage(WaitPage):
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
+
+
+class ShuffleWaitPage(WaitPage):
+    wait_for_all_groups = True
+
+    @staticmethod
+    def after_all_players_arrive(subsession):
+        subsession.group_randomly()
+
 class Results(Page):
     pass
 
-page_sequence = [Chat, Voting, ResultsWaitPage, Results]
+page_sequence = [Chat, Voting, ResultsWaitPage, ShuffleWaitPage, Results]
