@@ -1,0 +1,20 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Info
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h3>Information</h3>
+        <p><strong>State:</strong> {{ state }}</p>
+        <p><strong>Category:</strong> {{ category }}</p>
+        <p><strong>Result:</strong> {{ result }}</p>
+    </div>
+
+    <!-- Optionally, if you want to include a link to proceed -->
+    <div class="mt-3">
+        {% next_button %}
+    </div>
+{% endblock %}
