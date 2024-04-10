@@ -27,45 +27,29 @@
     <table class="mx-auto & styled-table">
         <thead>
         <tr>
-            <td> block</td>
+
             <td> selected  round</td>
-            <td> selected role </td>
-            <td> payment </td>
+            <td> earning in selected round </td>
+            <td> show-up</td>
+            <td> Total </td>
         </tr>
         </thead>
-        <tr>
-            <td class="hide_bottom"> 1 </td>
-            <td class="hide_bottom"> {{ player.round_to_pay1 }} </td>
-            <td class="hide_bottom"> {{ player.role_to_pay1 }} </td>
-            <td class="hide_bottom"> {{ player.points_to_pay1 }} </td>
-        </tr>
-        <tr>
-            <td> 2 </td>
-            <td> {{ player.round_to_pay2 }} </td>
-            <td> {{ player.role_to_pay2 }} </td>
-            <td> {{ player.points_to_pay2 }} </td>
+
+        <tr class="active-row">
+            <td class="hide_bottom"> round {{player.round_to_pay}}  </td>
+            <td class="hide_bottom"> £ {{player.money_to_pay}}  </td>
+            <td class="hide_bottom"> £ 5 </td>
+            <td class="hide_bottom"> £ {{player.total_to_pay}} </td>
         </tr>
 
-        <tr>
-            <td> show-up </td>
-            <td>  </td>
-            <td>  </td>
-            <td> £5 </td>
-        </tr>
-        <tr class="active-row">
-            <td> total</td>
-            <td>  </td>
-            <td>  </td>
-            <td> {{participant.payoff_plus_participation_fee()}} </td>
-        </tr>
+
     </table>
 <br>
 
 
 
 <ul>
-    <li>  Note: <b>1 token = 1 penny </b>. </li>
-  <li>  Your final payment in this experiment is therefore {{participant.payoff_plus_participation_fee()}}. </li>
+  <li>  Your final payment in this experiment is therefore £ {{player.total_to_pay}}. </li>
   <li>  We are preparing for your payment. Please wait...</li>
 </ul>
 

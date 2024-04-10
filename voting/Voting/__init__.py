@@ -43,6 +43,7 @@ class Player(BasePlayer):
     qualities = models.StringField()
     signals = models.CharField()
     majority_vote_count = models.IntegerField()
+    selected_round = models.IntegerField()
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -129,9 +130,26 @@ class ResultsWaitPage(WaitPage):
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
+class ResultsWaitPage1(WaitPage):
+    wait_for_all_groups = True
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS
+class ResultsWaitPage2(WaitPage):
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS
+
+    def after_all_players_arrive(self):
+        selected_round = random.randint(1, C.NUM_ROUNDS)
+        for player in self.group.get_players():
+            player_in_selected_round = player.in_round(selected_round)
+            player.selected_round = selected_round
+            player.payoff = player_in_selected_round.payoff
+
+            player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
+
 
 
 class Results(Page):
     pass
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Chat, Voting, ResultsWaitPage, Results]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]

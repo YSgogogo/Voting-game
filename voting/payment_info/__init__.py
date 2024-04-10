@@ -9,7 +9,7 @@ reflect the payment in the end
 
 class C(BaseConstants):
     NAME_IN_URL = 'payment_info'
-    PLAYERS_PER_GROUP = 1
+    PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 1
 
 
@@ -23,8 +23,9 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    round_to_pay = models.StringField()
-    points_to_pay1 = models.StringField()
+    round_to_pay = models.IntegerField()
+    money_to_pay = models.IntegerField()
+    total_to_pay = models.IntegerField()
 
     Gender =  models.IntegerField(
         widget=widgets.RadioSelect,
@@ -44,10 +45,9 @@ class Survey(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         participant = player.participant
-        player.round_to_pay1 = str(participant.vars['DG'][2])
-        player.role_to_pay1 = str(participant.vars['DG'][1])
-        player.points_to_pay1 = str(participant.vars['DG'][0])
-
+        player.money_to_pay = int(participant.vars['Voting'][0])
+        player.round_to_pay = int(participant.vars['Voting'][1])
+        player.total_to_pay = int(participant.vars['Voting'][0])+5
 
 
 class Payment(Page):

@@ -9,8 +9,8 @@ class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 10
-    AMOUNT_SHARED_IF_A = cu(100)  # Amount shared if option A wins
-    AMOUNT_SHARED_IF_B = cu(20)   # Amount shared if option B wins
+    AMOUNT_SHARED_IF_A = 15  # Amount shared if option A wins
+    AMOUNT_SHARED_IF_B = 2   # Amount shared if option B wins
     CHOICES = ['A', 'B']
     STATES = ['A', 'B']
     QUALITIES = ['h', 'l']
@@ -26,19 +26,24 @@ class Group(BaseGroup):
     def set_payoffs(self):
         votes = [p.vote for p in self.get_players()]
         majority_vote = self.state
-        if votes.count(majority_vote) > len(votes) / 2:
+        majority_vote_count = votes.count(majority_vote)
+
+        if majority_vote_count > len(votes) / 2:
             payoff = C.AMOUNT_SHARED_IF_A
         else:
             payoff = C.AMOUNT_SHARED_IF_B
+
         for p in self.get_players():
             p.payoff = payoff
+            p.majority_vote_count = majority_vote_count
 
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please choose A or B")
     state = models.StringField()
     qualities = models.StringField()
     signals = models.CharField()
-
+    majority_vote_count = models.IntegerField()
+    selected_round = models.IntegerField()
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -72,6 +77,35 @@ class StartRoundWaitPage(WaitPage):
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
+
+class Welcome(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+class General_Instructions(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+class Main_Instructions(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+
+
+
+class Info(Page):
+    @staticmethod
+    def vars_for_template(player):
+        return dict(
+            quality=player.qualities,
+            signal=player.signals
+        )
+
+
+
 class Chat(Page):
 
     @staticmethod
@@ -96,9 +130,26 @@ class ResultsWaitPage(WaitPage):
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
+class ResultsWaitPage1(WaitPage):
+    wait_for_all_groups = True
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS
+class ResultsWaitPage2(WaitPage):
+    def is_displayed(player:Player):
+        return player.round_number==C.NUM_ROUNDS
+
+    def after_all_players_arrive(self):
+        selected_round = random.randint(1, C.NUM_ROUNDS)
+        for player in self.group.get_players():
+            player_in_selected_round = player.in_round(selected_round)
+            player.selected_round = selected_round
+            player.payoff = player_in_selected_round.payoff
+
+            player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
+
 
 
 class Results(Page):
     pass
 
-page_sequence = [StartRoundWaitPage, Chat, Voting, ResultsWaitPage, Results]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]
