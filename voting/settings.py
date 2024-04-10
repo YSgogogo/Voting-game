@@ -27,16 +27,17 @@ SESSION_FIELDS = []
 LANGUAGE_CODE = 'en'
 
 # e.g. EUR, GBP, CNY, JPY
-REAL_WORLD_CURRENCY_CODE = 'USD'
+REAL_WORLD_CURRENCY_CODE = 'GBP'
 USE_POINTS = True
+POINTS_CUSTOM_NAME = 'Pounds'
 
 ROOMS = [
     dict(
-        name='econ101',
-        display_name='Econ 101 class',
-        participant_label_file='_rooms/econ101.txt',
+        name='EssexLab',
+        display_name='EssexLab',
+        participant_label_file='EssexLab.txt',
+        #use_secure_urls=True
     ),
-    dict(name='live_demo', display_name='Room for live demo (no participant labels)'),
 ]
 
 ADMIN_USERNAME = 'admin'
