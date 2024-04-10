@@ -16,16 +16,15 @@ class C(BaseConstants):
 
 
 class Subsession(BaseSubsession):
+
     def creating_session(self):
         self.group_randomly()
 
 class Group(BaseGroup):
-
     state = models.StringField()
 
     def set_payoffs(self):
         votes = [p.vote for p in self.get_players()]
-
         majority_vote = self.state
         if votes.count(majority_vote) > len(votes) / 2:
             payoff = C.AMOUNT_SHARED_IF_A
@@ -38,7 +37,6 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please choose A or B")
     state = models.StringField()
-
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -48,12 +46,17 @@ class Player(BasePlayer):
         return None
 
 
-def creating_session(subsession: Subsession):
 
-    for group in subsession.get_groups():
-        group.state = random.choice(C.STATES)
-        for player in group.get_players():
-            player.state = group.state
+def creating_session(subsession: Subsession):
+    if subsession.round_number == 1:
+        for g in subsession.get_groups():
+            game_numbers = ['A', 'A', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B']
+            random.shuffle(game_numbers)
+            for i in range(C.NUM_ROUNDS):
+                g.in_round(i+1).state = game_numbers[i]
+                for p in g.get_players():
+                    p.in_round(i+1).state = g.in_round(i+1).state
+
 
 class Chat(Page):
 
@@ -68,6 +71,7 @@ class Chat(Page):
     timeout_seconds = 120
 
 class Voting(Page):
+
     form_model = 'player'
     form_fields = ['vote']
 
