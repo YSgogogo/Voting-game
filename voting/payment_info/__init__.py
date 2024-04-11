@@ -48,7 +48,9 @@ class Survey(Page):
         player.money_to_pay = int(participant.vars['Voting'][0])
         player.round_to_pay = int(participant.vars['Voting'][1])
         player.total_to_pay = int(participant.vars['Voting'][0])+5
+        participant.payoff = 0
 
+        participant.payoff += player.money_to_pay
 
 class Payment(Page):
     pass

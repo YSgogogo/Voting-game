@@ -9,8 +9,8 @@ class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 10
-    AMOUNT_SHARED_IF_A = 15  # Amount shared if option A wins
-    AMOUNT_SHARED_IF_B = 2   # Amount shared if option B wins
+    AMOUNT_SHARED_IF_WIN = 15
+    AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = ['A', 'B']
     STATES = ['A', 'B']
     QUALITIES = ['h', 'l']
@@ -31,9 +31,9 @@ class Group(BaseGroup):
         majority_vote_count = votes.count(majority_vote)
 
         if majority_vote_count > len(votes) / 2:
-            payoff = C.AMOUNT_SHARED_IF_A
+            payoff = C.AMOUNT_SHARED_IF_WIN
         else:
-            payoff = C.AMOUNT_SHARED_IF_B
+            payoff = C.AMOUNT_SHARED_IF_LOSE
 
         for p in self.get_players():
             p.payoff = payoff
