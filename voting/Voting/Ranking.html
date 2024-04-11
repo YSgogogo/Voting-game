@@ -1,0 +1,165 @@
+{% extends "global/Base.html" %}
+
+{% block content %}
+<html>
+<head>
+    <title>Ranking Task</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .items-container {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding:8px;
+        }
+        .draggable {
+            margin: 5px;
+            padding: 4px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            cursor: move;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .table-container {
+            width: 60%;
+            display: flex;
+            justify-content: flex-start;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th:first-child,
+        td:first-child {
+            width: 30%;
+        }
+        th:last-child,
+        td:last-child {
+            width: 70%;
+        }
+        td, th {
+            border: 1px solid #999;
+            padding: 12px;
+            text-align: left;
+        }
+        .dropzone {
+            margin: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 2px dashed #ccc;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div id="items" class="items-container">
+            <div draggable="true" class="draggable" id="item1">Item 1</div>
+            <div draggable="true" class="draggable" id="item2">Item 2</div>
+            <div draggable="true" class="draggable" id="item3">Item 3</div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Ranking</th>
+                    <th>Drop Here</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td class="dropzone" id="rank1"></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="dropzone" id="rank2"></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="dropzone" id="rank3"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <form id="rankingForm" method="post">
+        <input type="hidden" name="ranking" id="rankingInput">
+        <div style="text-align: right;">
+            <button type="submit" id="submitButton" disabled>Submit Ranking</button>
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzones = document.querySelectorAll('.dropzone');
+            const submitButton = document.getElementById('submitButton');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                    checkSubmitAvailability();
+                });
+            });
+
+            dropzones.forEach(dropzone => {
+                dropzone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    const dragging = document.querySelector('.dragging');
+                    dropzone.appendChild(dragging);
+                    updateRankingInput();
+                });
+            });
+
+            function updateRankingInput() {
+                const ranking = [];
+                document.querySelectorAll('.dropzone').forEach(dropzone => {
+                    const items = Array.from(dropzone.querySelectorAll('.draggable'));
+                    const itemIDs = items.map(item => item.id);
+                    ranking.push(itemIDs.length > 0 ? itemIDs : null);
+                });
+                document.getElementById('rankingInput').value = JSON.stringify(ranking);
+                checkSubmitAvailability();
+            }
+
+            function checkSubmitAvailability() {
+                const itemsLeft = Array.from(document.querySelectorAll('.draggable')).every(item => {
+                    return item.parentNode.id !== 'items';
+                });
+
+                // Check if item in second row exists, if yes, ensure item in first row exists
+                const secondRowItems = Array.from(document.querySelectorAll('#rank2 .draggable'));
+                const firstRowItems = Array.from(document.querySelectorAll('#rank1 .draggable'));
+                const secondRowHasItems = secondRowItems.length > 0;
+                const firstRowHasItems = firstRowItems.length > 0;
+
+                // Check if item in third row exists, if yes, ensure items in first and second row exist
+                const thirdRowItems = Array.from(document.querySelectorAll('#rank3 .draggable'));
+                const thirdRowHasItems = thirdRowItems.length > 0;
+                const secondRowHasItemsAndFirstRowHasItems = secondRowHasItems && firstRowHasItems;
+
+                submitButton.disabled = !(itemsLeft && (firstRowHasItems || !secondRowHasItems) && (secondRowHasItemsAndFirstRowHasItems || !thirdRowHasItems));
+            }
+
+            updateRankingInput();
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

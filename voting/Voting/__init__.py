@@ -14,7 +14,9 @@ class C(BaseConstants):
     CHOICES = ['A', 'B']
     STATES = ['A', 'B']
     QUALITIES = ['h', 'l']
-
+    MAJORITY = ['link with R', 'link with B', 'do not want to chat']
+    MINORITY_R = ['link with B', 'do not want to chat']
+    MINORITY_B = ['link with R', 'do not want to chat']
 class Subsession(BaseSubsession):
 
     def creating_session(self):
@@ -44,6 +46,7 @@ class Player(BasePlayer):
     signals = models.CharField()
     majority_vote_count = models.IntegerField()
     selected_round = models.IntegerField()
+    ranking = models.StringField()
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -104,7 +107,10 @@ class Info(Page):
             signal=player.signals
         )
 
+class Ranking(Page):
 
+    form_model = 'player'
+    form_fields = ['ranking']
 
 class Chat(Page):
 
@@ -152,4 +158,4 @@ class ResultsWaitPage2(WaitPage):
 class Results(Page):
     pass
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Ranking, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]
