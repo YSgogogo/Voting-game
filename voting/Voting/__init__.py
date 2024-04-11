@@ -20,7 +20,8 @@ class C(BaseConstants):
     MAJORITY_R = ['link with R', 'link with B', 'do not want to chat']
     MINORITY_R = ['link with B', 'do not want to chat']
     MINORITY_B = ['link with R', 'do not want to chat']
-
+    ALL_R = ['link with R', 'do not want to chat']
+    ALL_B = ['link with B', 'do not want to chat']
 
 
 class Subsession(BaseSubsession):
@@ -77,16 +78,20 @@ class Player(BasePlayer):
         return None
 
     def get_ranking_options(self):
-        if self.r_count >= 2:
-            if self.signals == 'r':
-                return C.MAJORITY_R
-            else:  # signals == 'b'
-                return C.MINORITY_B
-        else:  # r_count <= 1
+        if self.r_count == 0:
+            return C.ALL_B
+        if self.r_count == 1:
             if self.signals == 'b':
                 return C.MAJORITY_B
             else:  # signals == 'r'
                 return C.MINORITY_R
+        if self.r_count == 2:
+            if self.signals == 'r':
+                return C.MAJORITY_R
+            else:  # signals == 'b'
+                return C.MINORITY_B
+        else:  # r_count = 3
+            return C.ALL_R
 
 
 
