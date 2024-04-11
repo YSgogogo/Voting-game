@@ -30,7 +30,8 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     state = models.StringField()
-
+    r_count = models.IntegerField(initial=0)
+    b_count = models.IntegerField(initial=0)
     def set_payoffs(self):
         votes = [p.vote for p in self.get_players()]
         majority_vote = self.state
@@ -45,7 +46,17 @@ class Group(BaseGroup):
             p.payoff = payoff
             p.majority_vote_count = majority_vote_count
 
-
+    def calculate_signals(self):
+        r_count = 0
+        b_count = 0
+        for p in self.get_players():
+            if p.signals == 'r':
+                r_count += 1
+            elif p.signals == 'b':
+                b_count += 1
+        # 更新 Group 对象的属性
+        self.r_count = r_count
+        self.b_count = b_count
 
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please vote for R or vote for B")
@@ -55,6 +66,8 @@ class Player(BasePlayer):
     majority_vote_count = models.IntegerField()
     selected_round = models.IntegerField()
     ranking = models.StringField()
+    r_count = models.IntegerField()
+    b_count = models.IntegerField()
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -90,8 +103,10 @@ class StartRoundWaitPage(WaitPage):
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
-
-
+            group.calculate_signals()
+            for player in group.get_players():
+                player.r_count = group.r_count
+                player.b_count = group.b_count
 class Welcome(Page):
     @staticmethod
     def is_displayed(player: Player):
