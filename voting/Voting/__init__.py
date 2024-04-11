@@ -5,22 +5,28 @@ doc = """
 Voting Game
 """
 
+
+
 class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 10
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
-    CHOICES = ['A', 'B']
-    STATES = ['A', 'B']
+    CHOICES = ['R', 'B']
+    STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
     MAJORITY = ['link with R', 'link with B', 'do not want to chat']
     MINORITY_R = ['link with B', 'do not want to chat']
     MINORITY_B = ['link with R', 'do not want to chat']
-class Subsession(BaseSubsession):
 
+
+
+class Subsession(BaseSubsession):
     def creating_session(self):
         self.group_randomly()
+
+
 
 class Group(BaseGroup):
     state = models.StringField()
@@ -39,8 +45,10 @@ class Group(BaseGroup):
             p.payoff = payoff
             p.majority_vote_count = majority_vote_count
 
+
+
 class Player(BasePlayer):
-    vote = models.StringField(choices=C.CHOICES, label="Please choose A or B")
+    vote = models.StringField(choices=C.CHOICES, label="Please vote for R or vote for B")
     state = models.StringField()
     qualities = models.StringField()
     signals = models.CharField()
@@ -54,6 +62,8 @@ class Player(BasePlayer):
         if self.id_in_group in [1, 3]:
             return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
         return None
+
+
 
 class StartRoundWaitPage(WaitPage):
     wait_for_all_groups = True
@@ -69,7 +79,7 @@ class StartRoundWaitPage(WaitPage):
                 qualities = random.choice(C.QUALITIES)
                 player.qualities = qualities
 
-                if player.state == 'A':
+                if player.state == 'R':
                     if player.qualities == 'h':
                         player.signals = 'r' if random.random() < 5 / 8 else 'b'
                     else:  # 'l'
@@ -81,21 +91,25 @@ class StartRoundWaitPage(WaitPage):
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
 
+
 class Welcome(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
+
+
 
 class General_Instructions(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
 
+
+
 class Main_Instructions(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
-
 
 
 
@@ -107,10 +121,14 @@ class Info(Page):
             signal=player.signals
         )
 
+
+
 class Ranking(Page):
 
     form_model = 'player'
     form_fields = ['ranking']
+
+
 
 class Chat(Page):
 
@@ -126,20 +144,29 @@ class Chat(Page):
         return player.id_in_group in [1, 3]
     timeout_seconds = 120
 
+
+
 class Voting(Page):
 
     form_model = 'player'
     form_fields = ['vote']
+
+
 
 class ResultsWaitPage(WaitPage):
 
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
+
+
 class ResultsWaitPage1(WaitPage):
     wait_for_all_groups = True
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
+
+
+
 class ResultsWaitPage2(WaitPage):
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
@@ -157,5 +184,7 @@ class ResultsWaitPage2(WaitPage):
 
 class Results(Page):
     pass
+
+
 
 page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Ranking, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]
