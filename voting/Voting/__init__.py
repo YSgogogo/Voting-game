@@ -16,7 +16,8 @@ class C(BaseConstants):
     CHOICES = ['R', 'B']
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY = ['link with R', 'link with B', 'do not want to chat']
+    MAJORITY_B = ['link with B', 'link with R', 'do not want to chat']
+    MAJORITY_R = ['link with R', 'link with B', 'do not want to chat']
     MINORITY_R = ['link with B', 'do not want to chat']
     MINORITY_B = ['link with R', 'do not want to chat']
 
@@ -54,7 +55,6 @@ class Group(BaseGroup):
                 r_count += 1
             elif p.signals == 'b':
                 b_count += 1
-        # 更新 Group 对象的属性
         self.r_count = r_count
         self.b_count = b_count
 
@@ -75,6 +75,18 @@ class Player(BasePlayer):
         if self.id_in_group in [1, 3]:
             return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
         return None
+
+    def get_ranking_options(self):
+        if self.r_count >= 2:
+            if self.signals == 'r':
+                return C.MAJORITY_R
+            else:  # signals == 'b'
+                return C.MINORITY_B
+        else:  # r_count <= 1
+            if self.signals == 'b':
+                return C.MAJORITY_B
+            else:  # signals == 'r'
+                return C.MINORITY_R
 
 
 
@@ -107,6 +119,9 @@ class StartRoundWaitPage(WaitPage):
             for player in group.get_players():
                 player.r_count = group.r_count
                 player.b_count = group.b_count
+
+
+
 class Welcome(Page):
     @staticmethod
     def is_displayed(player: Player):
