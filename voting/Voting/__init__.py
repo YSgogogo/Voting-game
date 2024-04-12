@@ -1,10 +1,10 @@
 from otree.api import *
 import random
+import json
 
 doc = """
 Voting Game
 """
-
 
 
 class C(BaseConstants):
@@ -22,6 +22,7 @@ class C(BaseConstants):
     MINORITY_B = ['link with R', 'do not want to chat']
     ALL_R = ['link with R', 'do not want to chat']
     ALL_B = ['link with B', 'do not want to chat']
+
 
 
 class Subsession(BaseSubsession):
@@ -59,6 +60,40 @@ class Group(BaseGroup):
         self.r_count = r_count
         self.b_count = b_count
 
+    def determine_chat_participants(self):
+        rankings = [json.loads(p.ranking) if p.ranking else [] for p in self.get_players()]
+        r_players = [p for p in self.get_players() if p.signals == 'r']
+        b_players = [p for p in self.get_players() if p.signals == 'b']
+
+        if self.r_count == 3:
+            r_item1_first = [p.id_in_group for p in r_players if rankings[p.id_in_group - 1] and any('item1' == item for item in rankings[p.id_in_group - 1][0])]
+            if len(r_item1_first) == 0:
+                chat_participants = []
+            elif len(r_item1_first) == 1:
+                chat_participants = []
+            elif len(r_item1_first) == 2:
+                chat_participants = r_item1_first
+            else:
+                chat_participants = random.sample(r_item1_first, 2)
+
+        elif self.b_count == 3:
+            b_item1_first = [p.id_in_group for p in b_players if rankings[p.id_in_group - 1] and any('item1' == item for item in rankings[p.id_in_group - 1][0])]
+            if len(b_item1_first) == 0:
+                chat_participants = []
+            elif len(b_item1_first) == 1:
+                chat_participants = []
+            elif len(b_item1_first) == 2:
+                chat_participants = b_item1_first
+            else:
+                chat_participants = random.sample(b_item1_first, 2)
+
+        else:
+            chat_participants = [1, 2]
+
+        return chat_participants
+
+
+
 class Player(BasePlayer):
     vote = models.StringField(choices=C.CHOICES, label="Please vote for R or vote for B")
     state = models.StringField()
@@ -73,19 +108,20 @@ class Player(BasePlayer):
         return 'Voter {}'.format(self.id_in_group)
 
     def chat_room(self):
-        if self.id_in_group in [1, 3]:
+        chat_participants = self.group.determine_chat_participants()
+        if self.id_in_group in chat_participants:
             return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
         return None
 
     def get_ranking_options(self):
         if self.r_count == 0:
             return C.ALL_B
-        if self.r_count == 1:
+        elif self.r_count == 1:
             if self.signals == 'b':
                 return C.MAJORITY_B
             else:  # signals == 'r'
                 return C.MINORITY_R
-        if self.r_count == 2:
+        elif self.r_count == 2:
             if self.signals == 'r':
                 return C.MAJORITY_R
             else:  # signals == 'b'
@@ -165,6 +201,11 @@ class Ranking(Page):
 
 
 
+class ResultsWaitPage1(WaitPage):
+    wait_for_all_groups = True
+
+
+
 class Chat(Page):
 
     @staticmethod
@@ -174,10 +215,17 @@ class Chat(Page):
             quality=player.qualities,
             signal=player.signals
         )
+
     @staticmethod
     def is_displayed(player):
-        return player.id_in_group in [1, 3]
+        chat_participants = player.group.determine_chat_participants()
+        return player.id_in_group in chat_participants
     timeout_seconds = 120
+
+
+
+class ResultsWaitPage2(WaitPage):
+    wait_for_all_groups = True
 
 
 
@@ -188,21 +236,21 @@ class Voting(Page):
 
 
 
-class ResultsWaitPage(WaitPage):
+class ResultsWaitPage3(WaitPage):
 
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
 
 
-class ResultsWaitPage1(WaitPage):
+class ResultsWaitPage4(WaitPage):
     wait_for_all_groups = True
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
 
 
 
-class ResultsWaitPage2(WaitPage):
+class ResultsWaitPage5(WaitPage):
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
 
@@ -222,4 +270,4 @@ class Results(Page):
 
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Ranking, Chat, Voting, ResultsWaitPage, Results, ResultsWaitPage1, ResultsWaitPage2]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Ranking, ResultsWaitPage1, Chat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
