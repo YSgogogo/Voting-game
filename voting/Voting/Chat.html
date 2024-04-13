@@ -5,7 +5,7 @@
 {% for participant in participants_info %}
     <p>
         {% if participant.is_self %}
-            You: Quality - {{ participant.quality }}, Signal - {{ participant.signal }}
+            Your ID is Voter {{ participant.id_in_group }}: Quality - {{ participant.quality }}, Signal - {{ participant.signal }}
         {% else %}
             You are linked with Voter {{ participant.id_in_group }}: Quality - {{ participant.quality }}, Signal - {{ participant.signal }}
         {% endif %}
