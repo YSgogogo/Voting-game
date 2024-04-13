@@ -214,11 +214,24 @@ class Chat(Page):
 
     @staticmethod
     def vars_for_template(player):
-        return dict(
-            state=player.state,
-            quality=player.qualities,
-            signal=player.signals
-        )
+        chat_participants_ids = json.loads(player.group.chat_participants_record)
+        participants_info = []
+
+        for participant_id in chat_participants_ids:
+            participant = next(p for p in player.group.get_players() if p.id_in_group == participant_id)
+            participants_info.append({
+                'id_in_group': participant.id_in_group,
+                'quality': participant.qualities,
+                'signal': participant.signals,
+                'is_self': participant.id_in_group == player.id_in_group
+            })
+
+        participants_info = sorted(participants_info, key=lambda x: not x['is_self'])
+
+        return {
+            'state': player.state,
+            'participants_info': participants_info
+        }
 
     @staticmethod
     def is_displayed(player):
