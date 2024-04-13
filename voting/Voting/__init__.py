@@ -35,6 +35,7 @@ class Group(BaseGroup):
     state = models.StringField()
     r_count = models.IntegerField(initial=0)
     b_count = models.IntegerField(initial=0)
+    chat_participants_record = models.StringField()
     def set_payoffs(self):
         votes = [p.vote for p in self.get_players()]
         majority_vote = self.state
@@ -76,7 +77,7 @@ class Group(BaseGroup):
             else:
                 chat_participants = random.sample(r_item1_first, 2)
 
-        elif self.b_count == 3:
+        elif self.r_count == 0:
             b_item1_first = [p.id_in_group for p in b_players if rankings[p.id_in_group - 1] and any('item1' == item for item in rankings[p.id_in_group - 1][0])]
             if len(b_item1_first) == 0:
                 chat_participants = []
@@ -89,6 +90,8 @@ class Group(BaseGroup):
 
         else:
             chat_participants = [1, 2]
+
+        self.chat_participants_record = json.dumps(chat_participants)
 
         return chat_participants
 
@@ -108,7 +111,7 @@ class Player(BasePlayer):
         return 'Voter {}'.format(self.id_in_group)
 
     def chat_room(self):
-        chat_participants = self.group.determine_chat_participants()
+        chat_participants = json.loads(self.group.chat_participants_record)
         if self.id_in_group in chat_participants:
             return '{}-{}'.format(C.NAME_IN_URL, self.group.pk)
         return None
@@ -202,7 +205,8 @@ class Ranking(Page):
 
 
 class ResultsWaitPage1(WaitPage):
-    wait_for_all_groups = True
+    def after_all_players_arrive(self):
+        self.group.determine_chat_participants()
 
 
 
@@ -218,7 +222,7 @@ class Chat(Page):
 
     @staticmethod
     def is_displayed(player):
-        chat_participants = player.group.determine_chat_participants()
+        chat_participants = json.loads(player.group.chat_participants_record)
         return player.id_in_group in chat_participants
     timeout_seconds = 120
 
