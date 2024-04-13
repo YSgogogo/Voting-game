@@ -62,7 +62,7 @@ class Group(BaseGroup):
         self.b_count = b_count
 
     def determine_chat_participants(self):
-        rankings = [json.loads(p.ranking) if p.ranking else [] for p in self.get_players()]
+        rankings = [json.loads(p.updated_ranking) if p.updated_ranking else [] for p in self.get_players()]
         r_players = [p for p in self.get_players() if p.signals == 'r']
         b_players = [p for p in self.get_players() if p.signals == 'b']
 
@@ -105,6 +105,7 @@ class Player(BasePlayer):
     majority_vote_count = models.IntegerField()
     selected_round = models.IntegerField()
     ranking = models.StringField()
+    updated_ranking = models.StringField()
     r_count = models.IntegerField()
     b_count = models.IntegerField()
     def chat_nickname(self):
@@ -198,9 +199,38 @@ class Info(Page):
 
 
 class Ranking(Page):
-
     form_model = 'player'
     form_fields = ['ranking']
+
+    def before_next_page(player, timeout_happened):
+        # 将字符串排名转换为列表
+        current_ranking = json.loads(player.ranking) if player.ranking else []
+
+        def adjust_ranking(ranking):
+            updated_ranking = [None, None, None]
+
+            if ranking[0] and len(ranking[0]) > 1:
+                random.shuffle(ranking[0])
+                updated_ranking[0] = [ranking[0][0]]
+                updated_ranking[1] = [ranking[0][1]]
+                if len(ranking[0]) > 2:
+                    updated_ranking[2] = [ranking[0][2]]
+                elif ranking[1]:
+                    updated_ranking[2] = ranking[1]
+            elif ranking[1] and len(ranking[1]) > 1:
+                random.shuffle(ranking[1])
+                updated_ranking[0] = ranking[0]
+                updated_ranking[1] = [ranking[1][0]]
+                updated_ranking[2] = [ranking[1][1]]
+            else:
+                updated_ranking = ranking
+
+            return updated_ranking
+
+        updated_ranking = adjust_ranking(current_ranking)
+
+        player.updated_ranking = json.dumps(updated_ranking)
+
 
 
 
