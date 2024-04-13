@@ -67,7 +67,13 @@ class Group(BaseGroup):
         b_players = [p for p in self.get_players() if p.signals == 'b']
 
         if self.r_count == 3:
-            r_item1_first = [p.id_in_group for p in r_players if rankings[p.id_in_group - 1] and any('item1' == item for item in rankings[p.id_in_group - 1][0])]
+            r_item1_first = [
+                p.id_in_group
+                for p in r_players
+                if rankings[p.id_in_group - 1]
+                and any('item1' == item for item in rankings[p.id_in_group - 1][0])
+            ]
+
             if len(r_item1_first) == 0:
                 chat_participants = []
             elif len(r_item1_first) == 1:
@@ -77,8 +83,197 @@ class Group(BaseGroup):
             else:
                 chat_participants = random.sample(r_item1_first, 2)
 
+        elif self.r_count == 2:
+            b_player_ranking = rankings[[p.id_in_group - 1 for p in b_players][0]]
+
+            if b_player_ranking[0] == ["item2"]:
+                r_player_rankings = [rankings[p.id_in_group - 1] for p in r_players]
+                if (
+                        r_player_rankings[0] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                        and r_player_rankings[1] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                ):
+                    chat_participants = [p.id_in_group for p in r_players]
+                else:
+                    chat_participants = []
+
+            elif b_player_ranking[0] == ["item1"]:
+                r_player_rankings = [rankings[p.id_in_group - 1] for p in r_players]
+                if (
+                        r_player_rankings[0] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                        and r_player_rankings[1] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                ):
+                    chat_participants = [p.id_in_group for p in r_players]
+
+                elif (
+                        [["item3"], ["item2"], ["item1"]] in r_player_rankings
+                        or [["item3"], ["item1"], ["item2"]] in r_player_rankings
+                ):
+                    if r_player_rankings[0] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [r_players[0].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[1] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [r_players[1].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[0] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [r_players[0].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[1] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [r_players[1].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[0] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [r_players[0].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[1] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [r_players[1].id_in_group, b_players[0].id_in_group]
+                    else:
+                        chat_participants = []
+
+                elif (
+                        [["item1"], ["item2"], ["item3"]] in r_player_rankings
+                        or [["item1"], ["item3"], ["item2"]] in r_player_rankings
+                ):
+                    if r_player_rankings[0] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [r_players[0].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[1] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [r_players[1].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[0] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [r_players[0].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[1] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [r_players[1].id_in_group, b_players[0].id_in_group]
+                    elif r_player_rankings[0] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [p.id_in_group for p in r_players]
+                    elif r_player_rankings[1] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [p.id_in_group for p in r_players]
+                    elif r_player_rankings[0] == [["item1"], ["item3"], ["item2"]]:
+                        chat_participants = [p.id_in_group for p in r_players]
+                    elif r_player_rankings[1] == [["item1"], ["item3"], ["item2"]]:
+                        chat_participants = [p.id_in_group for p in r_players]
+                    else:
+                        chat_participants = []
+
+                elif (
+                        r_player_rankings[0] in [
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item2"], ["item3"], ["item1"]]
+                ]
+                        and r_player_rankings[1] in [
+                            [["item2"], ["item1"], ["item3"]],
+                            [["item2"], ["item3"], ["item1"]]
+                        ]
+                ):
+                    chosen_r_player = random.choice(r_players)
+                    chat_participants = [chosen_r_player.id_in_group, b_players[0].id_in_group]
+                else:
+                    chat_participants = []
+
+        elif self.r_count == 1:
+            r_player_ranking = rankings[[p.id_in_group - 1 for p in r_players][0]]
+
+            if r_player_ranking[0] == ["item2"]:
+                b_player_rankings = [rankings[p.id_in_group - 1] for p in b_players]
+                if (
+                        b_player_rankings[0] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                        and b_player_rankings[1] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                ):
+                    chat_participants = [p.id_in_group for p in b_players]
+                else:
+                    chat_participants = []
+
+            elif r_player_ranking[0] == ["item1"]:
+                b_player_rankings = [rankings[p.id_in_group - 1] for p in b_players]
+                if (
+                        b_player_rankings[0] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                        and b_player_rankings[1] in [
+                    [["item1"], ["item2"], ["item3"]],
+                    [["item1"], ["item3"], ["item2"]]
+                ]
+                ):
+                    chat_participants = [p.id_in_group for p in b_players]
+
+                elif (
+                        [["item3"], ["item2"], ["item1"]] in b_player_rankings
+                        or [["item3"], ["item1"], ["item2"]] in b_player_rankings
+                ):
+                    if b_player_rankings[0] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [b_players[0].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[1] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [b_players[1].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[0] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [b_players[0].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[1] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [b_players[1].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[0] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [b_players[0].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[1] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [b_players[1].id_in_group, r_players[0].id_in_group]
+                    else:
+                        chat_participants = []
+
+                elif (
+                        [["item1"], ["item2"], ["item3"]] in b_player_rankings
+                        or [["item1"], ["item3"], ["item2"]] in b_player_rankings
+                ):
+                    if b_player_rankings[0] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [b_players[0].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[1] == [["item2"], ["item1"], ["item3"]]:
+                        chat_participants = [b_players[1].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[0] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [b_players[0].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[1] == [["item2"], ["item3"], ["item1"]]:
+                        chat_participants = [b_players[1].id_in_group, r_players[0].id_in_group]
+                    elif b_player_rankings[0] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [p.id_in_group for p in b_players]
+                    elif b_player_rankings[1] == [["item1"], ["item2"], ["item3"]]:
+                        chat_participants = [p.id_in_group for p in b_players]
+                    elif b_player_rankings[0] == [["item1"], ["item3"], ["item2"]]:
+                        chat_participants = [p.id_in_group for p in b_players]
+                    elif b_player_rankings[1] == [["item1"], ["item3"], ["item2"]]:
+                        chat_participants = [p.id_in_group for p in b_players]
+                    else:
+                        chat_participants = []
+
+                elif (
+                        b_player_rankings[0] in [
+                    [["item2"], ["item1"], ["item3"]],
+                    [["item2"], ["item3"], ["item1"]]
+                ]
+                        and b_player_rankings[1] in [
+                            [["item2"], ["item1"], ["item3"]],
+                            [["item2"], ["item3"], ["item1"]]
+                        ]
+                ):
+                    chosen_b_player = random.choice(b_players)
+                    chat_participants = [chosen_b_player.id_in_group, r_players[0].id_in_group]
+                else:
+                    chat_participants = []
+
         elif self.r_count == 0:
-            b_item1_first = [p.id_in_group for p in b_players if rankings[p.id_in_group - 1] and any('item1' == item for item in rankings[p.id_in_group - 1][0])]
+            b_item1_first = [
+                p.id_in_group
+                for p in b_players
+                if rankings[p.id_in_group - 1]
+                and any('item1' == item for item in rankings[p.id_in_group - 1][0])
+            ]
             if len(b_item1_first) == 0:
                 chat_participants = []
             elif len(b_item1_first) == 1:
@@ -89,7 +284,7 @@ class Group(BaseGroup):
                 chat_participants = random.sample(b_item1_first, 2)
 
         else:
-            chat_participants = [1, 2]
+            chat_participants = []
 
         self.chat_participants_record = json.dumps(chat_participants)
 
@@ -203,7 +398,7 @@ class Ranking(Page):
     form_fields = ['ranking']
 
     def before_next_page(player, timeout_happened):
-        # 将字符串排名转换为列表
+
         current_ranking = json.loads(player.ranking) if player.ranking else []
 
         def adjust_ranking(ranking):
