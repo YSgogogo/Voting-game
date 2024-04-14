@@ -1,9 +1,48 @@
 {% extends "global/Base.html" %}
+   {{ block title }}
+ <div style="text-align: center;">
+    <h1>Who you want to communicate with</h1>
+ </div>
+    {{ endblock }}
 
-{% block content %}
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+         <div style="text-align: justify;" class="card bg-light mb-3  ">
+            <div class="card-body">
+                <br>
+
+<h5>Your picked a <span style="{{ player_signal_style }}"></span> from {{ quality }}. Thus your label is <span style="{{ player_text_color_style }}">{{ player_signals_display }}</span>.</h5>
+<br>
+<br>
+<h5>Your group members' labels are:</h5>
+<br>
+<div style="text-align: center; display: flex; justify-content: center; gap: 80px;">
+    {% for signal_info in other_signals_info %}
+        <h5><span style="{{ signal_info.text_color_style }}">{{ signal_info.signals_display }}</span></h5>
+    {% endfor %}
+</div>
+<br>
+<br>
+
+          <h5>Please rank from who you most want to communicate with to who you least want to communicate with by dragging the choices on the left to the corresponding right box.</h5>
+
+<br>
+<br>
+<br>
+        <br>
 <html>
 <head>
-    <title>Ranking Task</title>
+
     <style>
         body {
             display: flex;
@@ -162,4 +201,9 @@
     </script>
 </body>
 </html>
+
+
+
+            </div>
+        </div>
 {% endblock %}

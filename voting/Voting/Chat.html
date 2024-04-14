@@ -5,12 +5,17 @@
 {% for participant in participants_info %}
     <p>
         {% if participant.is_self %}
-            Your ID is Voter {{ participant.id_in_group }}: Quality - {{ participant.quality }}, Signal - {{ participant.signal }}
+<h5>Your ID is Voter {{ participant.id_in_group }}: recall that you picked a <span style="{{ participant.player_signal_style }}"></span> ball from {{ participant.quality_representation }}, and you label is <span style="{{ participant.player_text_color_style }}">{{ participant.player_signals_display }}</span></h5>
+        <br>
         {% else %}
-            You are linked with Voter {{ participant.id_in_group }}: Quality - {{ participant.quality }}, Signal - {{ participant.signal }}
+<h5>You are linked with another group member whose label is: <span style="{{ participant.player_text_color_style }}">{{ participant.player_signals_display }}</span>, he/she picked a <span style="{{ participant.player_signal_style }}"></span> ball from {{ participant.quality_representation }}.</h5>
         {% endif %}
     </p>
 {% endfor %}
+
+<br>
+
+<h5> Now you have 2 minutes to chat with this voter.</h5>
 
 
 {% chat nickname=player.chat_nickname room=player.chat_room %}
