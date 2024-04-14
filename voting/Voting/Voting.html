@@ -1,9 +1,39 @@
-{{ block title }}Voting{{ endblock }}
-{{ block content }}
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+ <div style="text-align: center;">
+    <h1>Voting</h1>
+ </div>
+    {{ endblock }}
 
-    <p>Please Vote</p>
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+         <div style="text-align: justify;" class="card bg-light mb-3  ">
+            <div class="card-body">
+                <br>
+
+
+
 
     {{ formfields }}
 
-    {{ next_button }}
+        <div style="text-align: right;">
+            <button type="submit" id="submitButton">Confirm</button>
+        </div>
+
+
+            </div>
+        </div>
+        <br>
+
+
 {{ endblock }}

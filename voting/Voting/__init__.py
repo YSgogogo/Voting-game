@@ -7,6 +7,7 @@ Voting Game
 """
 
 
+
 class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
@@ -293,7 +294,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    vote = models.StringField(choices=C.CHOICES, label="Please vote for R or vote for B")
+    vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES, label="Please vote for R or vote for B")
     state = models.StringField()
     qualities = models.StringField()
     signals = models.CharField()
@@ -428,8 +429,6 @@ class Info(Page):
 
 
 
-
-
 class Ranking(Page):
     form_model = 'player'
     form_fields = ['ranking']
@@ -476,11 +475,9 @@ class Ranking(Page):
             other_signals_info=other_signals_info,
         )
 
-
     def before_next_page(player, timeout_happened):
 
         current_ranking = json.loads(player.ranking) if player.ranking else []
-
         def adjust_ranking(ranking):
             updated_ranking = [None, None, None]
 
@@ -503,9 +500,7 @@ class Ranking(Page):
             return updated_ranking
 
         updated_ranking = adjust_ranking(current_ranking)
-
         player.updated_ranking = json.dumps(updated_ranking)
-
 
 
 
