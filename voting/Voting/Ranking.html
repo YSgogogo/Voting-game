@@ -15,6 +15,21 @@
             .blue {
                 color: blue;
             }
+            .ball {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              display: inline-block;
+              vertical-align: middle;
+              margin-right: 10px;
+            }
+            .red-ball {
+              background-color: red;
+            }
+            .blue-ball {
+              background-color: blue;
+            }
+
         </style>
 
          <div style="text-align: justify;" class="card bg-light mb-3  ">
@@ -197,7 +212,21 @@
 
             updateRankingInput();
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const items = document.querySelectorAll(".draggable");
+
+            items.forEach(function(item) {
+                if(item.innerHTML.includes("R")) {
+                    item.innerHTML = item.innerHTML.replace("R", "<span class='ball red-ball'></span>");
+        }
+                if(item.innerHTML.includes("B")) {
+                    item.innerHTML = item.innerHTML.replace("B", "<span class='ball blue-ball'></span>");
+                }
+            });
+        });
     </script>
+
 </body>
 </html>
 

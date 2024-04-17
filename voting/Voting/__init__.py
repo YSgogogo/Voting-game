@@ -20,12 +20,12 @@ class C(BaseConstants):
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B = ['link with B', 'link with R', 'do not want to chat']
-    MAJORITY_R = ['link with R', 'link with B', 'do not want to chat']
-    MINORITY_R = ['link with B', 'do not want to chat']
-    MINORITY_B = ['link with R', 'do not want to chat']
-    ALL_R = ['link with R', 'do not want to chat']
-    ALL_B = ['link with B', 'do not want to chat']
+    MAJORITY_B = ['link with the voter who got B', 'link with the voter who got R', 'do not want to chat']
+    MAJORITY_R = ['link with the voter who got R', 'link with the voter who got B', 'do not want to chat']
+    MINORITY_R = ['link with the voter who got B', 'do not want to chat']
+    MINORITY_B = ['link with the voter who got R', 'do not want to chat']
+    ALL_R = ['link with the voter who got R', 'do not want to chat']
+    ALL_B = ['link with the voter who got B', 'do not want to chat']
 
 
 
@@ -587,6 +587,13 @@ class Chat(Page):
     timeout_seconds = 120
 
 
+class NonChat(Page):
+    @staticmethod
+    def is_displayed(player):
+        chat_participants = json.loads(player.group.chat_participants_record)
+        return player.id_in_group not in chat_participants
+
+    timeout_seconds = 120
 
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
@@ -634,4 +641,4 @@ class Results(Page):
 
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, Info, Ranking, ResultsWaitPage1, Chat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, Info, Ranking, ResultsWaitPage1, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
