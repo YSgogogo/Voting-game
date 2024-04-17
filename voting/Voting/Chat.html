@@ -2,24 +2,30 @@
 {{ block title }}Chat{{ endblock }}
 {{ block content }}
 
-{% for participant in participants_info %}
-    <p>
-        {% if participant.is_self %}
-<h5>Your ID is Voter {{ participant.id_in_group }}: recall that you picked a <span style="{{ participant.player_signal_style }}"></span> ball from {{ participant.quality_representation }}, and you label is <span style="{{ participant.player_text_color_style }}">{{ participant.player_signals_display }}</span></h5>
+<div style="display: flex; justify-content: space-between;">
+    <div style="flex: 1;">
         <br>
-        {% else %}
-<h5>You are linked with another group member whose label is: <span style="{{ participant.player_text_color_style }}">{{ participant.player_signals_display }}</span>, he/she picked a <span style="{{ participant.player_signal_style }}"></span> ball from {{ participant.quality_representation }}.</h5>
-        {% endif %}
-    </p>
-{% endfor %}
+        <br>
+        <br>
+        <br>
+        {% for participant in participants_info %}
+        <p>
+            {% if participant.is_self %}
+            <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from {{ participant.quality_representation }}</h5>
+            {% else %}
+        <br>
+            <h5> Other (Voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style}}"></span> from {{ participant.quality_representation }}</h5>
+            {% endif %}
+        </p>
+        {% endfor %}
+    </div>
 
-<br>
-
-<h5> Now you have 2 minutes to chat with this voter.</h5>
-
-
-{% chat nickname=player.chat_nickname room=player.chat_room %}
-
+    <div style="flex: 2; padding-left: 20px;">
+        <h6>Please see the information of the voter you are linked with on the left page.</h6>
+        <h6>You have 2 minutes to chat. </h6>
+        {% chat nickname=player.chat_nickname room=player.chat_room %}
+    </div>
+</div>
 
 
 

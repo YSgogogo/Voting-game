@@ -447,36 +447,27 @@ class Info(Page):
 
         if player.signals == 'r':
             player_signal_color = "red"
-            player_signals_display = "RED"
         else:  # 'b'
             player_signal_color = "blue"
-            player_signals_display = "BLUE"
 
         player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
-        player_text_color_style = f"color: {player_signal_color}; font-weight: bold;"
 
         other_signals_info = []
         for p in player.group.get_players():
             if p.id_in_group != player.id_in_group:
                 if p.signals == 'r':
                     signal_color = "red"
-                    signals_display = "RED"
                 else:  # 'b'
                     signal_color = "blue"
-                    signals_display = "BLUE"
 
                 other_signals_info.append({
                     'player_id': p.id_in_group,
-                    'signals_display': signals_display,
                     'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;",
-                    'text_color_style': f"color: {signal_color}; font-weight: bold;",
                 })
 
         return dict(
             quality=quality_display,
-            player_signals_display=player_signals_display,
             player_signal_style=player_signal_style,
-            player_text_color_style=player_text_color_style,
             other_signals_info=other_signals_info,
         )
 
@@ -495,36 +486,27 @@ class Ranking(Page):
 
         if player.signals == 'r':
             player_signal_color = "red"
-            player_signals_display = "RED"
         else:  # 'b'
             player_signal_color = "blue"
-            player_signals_display = "BLUE"
 
         player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
-        player_text_color_style = f"color: {player_signal_color}; font-weight: bold;"
 
         other_signals_info = []
         for p in player.group.get_players():
             if p.id_in_group != player.id_in_group:
                 if p.signals == 'r':
                     signal_color = "red"
-                    signals_display = "RED"
                 else:  # 'b'
                     signal_color = "blue"
-                    signals_display = "BLUE"
 
                 other_signals_info.append({
                     'player_id': p.id_in_group,
-                    'signals_display': signals_display,
                     'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;",
-                    'text_color_style': f"color: {signal_color}; font-weight: bold;",
                 })
 
         return dict(
             quality=quality_display,
-            player_signals_display=player_signals_display,
             player_signal_style=player_signal_style,
-            player_text_color_style=player_text_color_style,
             other_signals_info=other_signals_info,
         )
 
@@ -575,13 +557,10 @@ class Chat(Page):
 
             if participant.signals == 'r':
                 player_signal_color = "red"
-                player_signals_display = "RED"
             else:   # b
                 player_signal_color = "blue"
-                player_signals_display = "BLUE"
 
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
-            player_text_color_style = f"color: {player_signal_color}; font-weight: bold;"
 
             if participant.qualities == 'l':
                 quality_representation = "Urn (2)"
@@ -592,8 +571,6 @@ class Chat(Page):
                 'id_in_group': participant.id_in_group,
                 'quality_representation': quality_representation,
                 'player_signal_style': player_signal_style,
-                'player_signals_display': player_signals_display,
-                'player_text_color_style': player_text_color_style,
                 'is_self': participant.id_in_group == player.id_in_group
             })
 

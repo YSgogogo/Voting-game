@@ -20,15 +20,14 @@
          <div style="text-align: justify;" class="card bg-light mb-3  ">
             <div class="card-body">
                 <br>
-
-<h5>Your picked a <span style="{{ player_signal_style }}"></span> from {{ quality }}. Thus your label is <span style="{{ player_text_color_style }}">{{ player_signals_display }}</span>.</h5>
+<h5>Your got <span style="{{ player_signal_style }}"></span> from {{ quality }}. </h5>
 <br>
 <br>
-<h5>Your group members' labels are:</h5>
+<h5>Your group members got:</h5>
 <br>
 <div style="text-align: center; display: flex; justify-content: center; gap: 80px;">
     {% for signal_info in other_signals_info %}
-        <h5><span style="{{ signal_info.text_color_style }}">{{ signal_info.signals_display }}</span></h5>
+        <h5><span style="{{ signal_info.signal_style }}"></span></h5>
     {% endfor %}
 </div>
 <br>
