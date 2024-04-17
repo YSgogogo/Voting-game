@@ -11,10 +11,13 @@ Voting Game
 class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 2
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
-    CHOICES = ['R', 'B']
+    CHOICES = [
+        ('R', 'RED Urn'),
+        ('B', 'BLUE Urn')
+    ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
     MAJORITY_B = ['link with B', 'link with R', 'do not want to chat']
@@ -294,7 +297,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES, label="Please vote for R or vote for B")
+    vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES)
     state = models.StringField()
     qualities = models.StringField()
     signals = models.CharField()
@@ -304,6 +307,36 @@ class Player(BasePlayer):
     updated_ranking = models.StringField()
     r_count = models.IntegerField()
     b_count = models.IntegerField()
+    num_failed_attempts = models.IntegerField(initial=0)
+    failed_too_many = models.BooleanField(initial=False)
+    quiz1 = models.IntegerField(
+        label="In the experiment, how many people in your group must vote correctly for you to earn £15?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'only myself.'],
+            [1, 'myself and one other group member.'],
+            [2, 'everyone in the group.'],
+            [3, 'any two people in the group.'],
+        ]
+    )
+    quiz2 = models.IntegerField(
+        label="Your and your group members' labels can only reflect which ball (red or blue ball) you and they picked, but can not reflect where you picked this ball: urn (1) or urn (2)?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'yes, the statement is correct.'],
+            [1, 'no, the statement is wrong. '],
+        ]
+    )
+    quiz3 = models.IntegerField(
+        label="How should you perform the ranking task?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'I should drag the person I most want to communicate with to the first position; the order of the others does not matter.'],
+            [1, 'I should rank exactly from the one I most want to communicate with to the one I least want to communicate with.'],
+            [2, 'I can rank them randomly; the order does not matter.'],
+    ]
+    )
+
     def chat_nickname(self):
         return 'Voter {}'.format(self.id_in_group)
 
@@ -378,6 +411,26 @@ class General_Instructions(Page):
 
 
 class Main_Instructions(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+
+
+class Comprehension_Test(Page):
+    form_model = 'player'
+    form_fields = ['quiz1', 'quiz2', 'quiz3']
+
+    @staticmethod
+    def error_message(player: Player, values):
+        solutions = {"quiz1": 3, "quiz2": 0, "quiz3": 1}
+        errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
+        if errors:
+            player.num_failed_attempts += 1
+            if player.num_failed_attempts >= 100:
+                player.failed_too_many = True
+            else:
+                return errors
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
@@ -519,7 +572,7 @@ class Chat(Page):
 
         for participant_id in chat_participants_ids:
             participant = next(p for p in player.group.get_players() if p.id_in_group == participant_id)
-            # 确定信号表示
+
             if participant.signals == 'r':
                 player_signal_color = "red"
                 player_signals_display = "RED"
@@ -604,4 +657,4 @@ class Results(Page):
 
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Info, Ranking, ResultsWaitPage1, Chat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, Info, Ranking, ResultsWaitPage1, Chat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
