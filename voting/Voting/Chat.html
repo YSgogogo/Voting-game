@@ -11,16 +11,16 @@
         {% for participant in participants_info %}
         <p>
             {% if participant.is_self %}
-            <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from {{ participant.quality_representation }}</h5>
+        <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
             {% else %}
         <br>
-            <h5> Other (Voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style}}"></span> from {{ participant.quality_representation }}</h5>
+            <h5> Other (Voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style}}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
             {% endif %}
         </p>
         {% endfor %}
     </div>
 
-    <div style="flex: 2; padding-left: 20px;">
+    <div style="flex: 1.9; padding-left: 20px;">
         <h6>Please see the information of the voter you are linked with on the left page.</h6>
         <h6>You have 2 minutes to chat. </h6>
         {% chat nickname=player.chat_nickname room=player.chat_room %}

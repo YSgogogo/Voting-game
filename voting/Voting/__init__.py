@@ -320,7 +320,7 @@ class Player(BasePlayer):
         ]
     )
     quiz2 = models.IntegerField(
-        label="Your and your group members' labels can only reflect which ball (red or blue ball) you and they picked, but can not reflect where you picked this ball: urn (1) or urn (2)?",
+        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Right urn or Left urn.",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'yes, the statement is correct.'],
@@ -441,9 +441,9 @@ class Info(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Urn (2)"
+            quality_display = "Right urn"
         else:
-            quality_display = "Urn (1)"
+            quality_display = "Left urn"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -480,9 +480,9 @@ class Ranking(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Urn (2)"
+            quality_display = "Right urn"
         else:
-            quality_display = "Urn (1)"
+            quality_display = "Left urn"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -563,9 +563,9 @@ class Chat(Page):
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
 
             if participant.qualities == 'l':
-                quality_representation = "Urn (2)"
+                quality_representation = "Right urn"
             else:
-                quality_representation = "Urn (1)"
+                quality_representation = "Left Urn"
 
             participants_info.append({
                 'id_in_group': participant.id_in_group,
