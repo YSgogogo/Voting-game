@@ -39,6 +39,13 @@ class Player(BasePlayer):
     Age = models.StringField()
     How_choose = models.StringField()
 
+
+
+class Instruction(Page):
+    pass
+
+
+
 class Survey(Page):
     form_model = 'player'
     form_fields = ['Gender', 'Age', 'Major', 'How_choose']
@@ -52,8 +59,10 @@ class Survey(Page):
 
         participant.payoff += player.money_to_pay
 
+
+
 class Payment(Page):
     pass
 
 
-page_sequence = [Survey, Payment]
+page_sequence = [Instruction, Survey, Payment]

@@ -437,6 +437,11 @@ class Comprehension_Test(Page):
 
 
 
+class ResultsWaitPage(WaitPage):
+    wait_for_all_groups = True
+
+
+
 class Info(Page):
     @staticmethod
     def vars_for_template(player):
@@ -450,7 +455,7 @@ class Info(Page):
         else:  # 'b'
             player_signal_color = "blue"
 
-        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
+        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
         other_signals_info = []
         for p in player.group.get_players():
@@ -462,7 +467,7 @@ class Info(Page):
 
                 other_signals_info.append({
                     'player_id': p.id_in_group,
-                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;",
+                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;",
                 })
 
         return dict(
@@ -470,7 +475,7 @@ class Info(Page):
             player_signal_style=player_signal_style,
             other_signals_info=other_signals_info,
         )
-
+    timeout_seconds = 60
 
 
 class Ranking(Page):
@@ -489,7 +494,7 @@ class Ranking(Page):
         else:  # 'b'
             player_signal_color = "blue"
 
-        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
+        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
         other_signals_info = []
         for p in player.group.get_players():
@@ -501,7 +506,7 @@ class Ranking(Page):
 
                 other_signals_info.append({
                     'player_id': p.id_in_group,
-                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;",
+                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;",
                 })
 
         return dict(
@@ -545,22 +550,27 @@ class ResultsWaitPage1(WaitPage):
 
 
 
+class ResultsWaitPage1a(WaitPage):
+    wait_for_all_groups = True
+
+
+
 class Chat(Page):
 
     @staticmethod
     def vars_for_template(player):
         chat_participants_ids = json.loads(player.group.chat_participants_record)
+        all_players = player.group.get_players()
         participants_info = []
 
-        for participant_id in chat_participants_ids:
-            participant = next(p for p in player.group.get_players() if p.id_in_group == participant_id)
 
+        for participant in all_players:
             if participant.signals == 'r':
                 player_signal_color = "red"
-            else:   # b
+            else:  # b
                 player_signal_color = "blue"
 
-            player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; margin: 0 5px;"
+            player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
             if participant.qualities == 'l':
                 quality_representation = "Right urn"
@@ -571,7 +581,8 @@ class Chat(Page):
                 'id_in_group': participant.id_in_group,
                 'quality_representation': quality_representation,
                 'player_signal_style': player_signal_style,
-                'is_self': participant.id_in_group == player.id_in_group
+                'is_self': participant.id_in_group == player.id_in_group,
+                'is_chat_participant': participant.id_in_group in chat_participants_ids
             })
 
         participants_info = sorted(participants_info, key=lambda x: not x['is_self'])
@@ -588,6 +599,40 @@ class Chat(Page):
 
 
 class NonChat(Page):
+
+    @staticmethod
+    def vars_for_template(player):
+        if player.qualities == 'l':
+            quality_display = "Right urn"
+        else:
+            quality_display = "Left urn"
+
+        if player.signals == 'r':
+            player_signal_color = "red"
+        else:  # 'b'
+            player_signal_color = "blue"
+
+        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
+
+        other_signals_info = []
+        for p in player.group.get_players():
+            if p.id_in_group != player.id_in_group:
+                if p.signals == 'r':
+                    signal_color = "red"
+                else:  # 'b'
+                    signal_color = "blue"
+
+                other_signals_info.append({
+                    'player_id': p.id_in_group,
+                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;",
+                })
+
+        return dict(
+            quality=quality_display,
+            player_signal_style=player_signal_style,
+            other_signals_info=other_signals_info,
+        )
+
     @staticmethod
     def is_displayed(player):
         chat_participants = json.loads(player.group.chat_participants_record)
@@ -616,8 +661,6 @@ class ResultsWaitPage3(WaitPage):
 
 class ResultsWaitPage4(WaitPage):
     wait_for_all_groups = True
-    def is_displayed(player:Player):
-        return player.round_number==C.NUM_ROUNDS
 
 
 
@@ -637,8 +680,8 @@ class ResultsWaitPage5(WaitPage):
 
 
 class Results(Page):
-    pass
+    timeout_seconds = 60
 
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, Info, Ranking, ResultsWaitPage1, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, Results, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, Info, Ranking, ResultsWaitPage1, ResultsWaitPage1a, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, ResultsWaitPage4, Results, ResultsWaitPage5]

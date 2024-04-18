@@ -1,23 +1,42 @@
 {% load otreechat %}
-{{ block title }}Chat{{ endblock }}
+   {{ block title }}
+ <div style="text-align: center;">
+    <h1>Chat</h1>
+ </div>
+    {{ endblock }}
 {{ block content }}
 
 <div style="display: flex; justify-content: space-between;">
     <div style="flex: 1;">
         <br>
         <br>
-        <br>
-        <br>
-        {% for participant in participants_info %}
+<h4>In Chat:</h4>
+{% for participant in participants_info %}
+    {% if participant.is_chat_participant %}
         <p>
             {% if participant.is_self %}
-        <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
+                <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
             {% else %}
-        <br>
-            <h5> Other (Voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style}}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
+                <h5> Other (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
             {% endif %}
         </p>
-        {% endfor %}
+    {% endif %}
+{% endfor %}
+
+<br>
+<h4>Not in Chat:</h4>
+{% for participant in participants_info %}
+    {% if not participant.is_chat_participant %}
+        <p>
+            {% if participant.is_self %}
+                <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
+            {% else %}
+                <h5> Other (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> </h5>
+            {% endif %}
+        </p>
+    {% endif %}
+{% endfor %}
+
     </div>
 
     <div style="flex: 1.9; padding-left: 20px;">

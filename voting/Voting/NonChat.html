@@ -1,15 +1,50 @@
 {% load otreechat %}
-{{ block title }}Please wait{{ endblock }}
+
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+ <div style="text-align: center;">
+    <h1>Please wait</h1>
+ </div>
+    {{ endblock }}
+
 {{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+         <div style="text-align: justify;" class="card bg-light mb-3  ">
+            <div class="card-body">
+                <br>
+
+                <h5>Your got <span style="{{ player_signal_style }}"></span> from <strong><em>{{ quality }}</em></strong>. </h5>
+<br>
+<h5>Your group members got:</h5>
+<br>
+<div style="text-align: center; display: flex; justify-content: center; gap: 80px;">
+    {% for signal_info in other_signals_info %}
+        <h5><span style="{{ signal_info.signal_style }}"></span></h5>
+    {% endfor %}
+</div>
 
 <div>
+<br>
+<br>
 
-
-        <h6>You are not successfully linked with anyone in your group.</h6>
-        <h6>Please wait for 2 minutes... </h6>
+        <h5>You are not successfully linked with anyone in your group.</h5>
+        <h5>Please wait for 2 minutes... </h5>
 
 </div>
 
+            </div>
+        </div>
+        <br>
 
 
 {{ endblock }}
