@@ -15,8 +15,8 @@ class C(BaseConstants):
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [
-        ('R', 'RED Urn'),
-        ('B', 'BLUE Urn')
+        ('R', 'RED Box'),
+        ('B', 'BLUE Box')
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
@@ -446,9 +446,9 @@ class Info(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right urn"
+            quality_display = "Right Box"
         else:
-            quality_display = "Left urn"
+            quality_display = "Left Box"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -485,9 +485,9 @@ class Ranking(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right urn"
+            quality_display = "Right Box"
         else:
-            quality_display = "Left urn"
+            quality_display = "Left Box"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -573,9 +573,9 @@ class Chat(Page):
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
             if participant.qualities == 'l':
-                quality_representation = "Right urn"
+                quality_representation = "Right Box"
             else:
-                quality_representation = "Left Urn"
+                quality_representation = "Left Box"
 
             participants_info.append({
                 'id_in_group': participant.id_in_group,
@@ -603,9 +603,9 @@ class NonChat(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right urn"
+            quality_display = "Right Box"
         else:
-            quality_display = "Left urn"
+            quality_display = "Left Box"
 
         if player.signals == 'r':
             player_signal_color = "red"

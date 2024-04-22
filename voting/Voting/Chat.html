@@ -4,43 +4,98 @@
     <h1>Chat</h1>
  </div>
     {{ endblock }}
+
+
 {{ block content }}
+
+
+<style>
+    .ribbon {
+        position: relative;
+        top: -16px;
+        right: -706px;
+    }
+    .blue {
+        color: blue;
+    }
+    table {
+        width: 100%;
+        margin: auto;
+        border-collapse: collapse;
+        font-size: 0.8em;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        equal-width: true;
+    }
+</style>
 
 <div style="display: flex; justify-content: space-between;">
     <div style="flex: 1;">
         <br>
         <br>
-<h4>In Chat:</h4>
-{% for participant in participants_info %}
-    {% if participant.is_chat_participant %}
-        <p>
-            {% if participant.is_self %}
-                <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
-            {% else %}
-                <h5> Other (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
-            {% endif %}
-        </p>
-    {% endif %}
-{% endfor %}
+        <br>
+        <br>
 
-<br>
-<h4>Not in Chat:</h4>
-{% for participant in participants_info %}
-    {% if not participant.is_chat_participant %}
-        <p>
+
+<table border="1">
+    <tr>
+        <th></th>
+        <th>Which Ball</th>
+        <th>Which Box</th>
+    </tr>
+    {% for participant in participants_info %}
+    {% if participant.is_chat_participant %}
+    <tr>
+        <td>
             {% if participant.is_self %}
-                <h5> &nbsp &nbsp You (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> from <strong><em>{{ participant.quality_representation }}</em></strong></h5>
+                You (ID: voter {{ participant.id_in_group }})
             {% else %}
-                <h5> Other (voter {{ participant.id_in_group }}): <span style="{{ participant.player_signal_style }}"></span> </h5>
+                Linked (ID: voter {{ participant.id_in_group }})
             {% endif %}
-        </p>
+        </td>
+        <td>
+            <span style="{{ participant.player_signal_style }}"></span>
+        </td>
+        <td>
+            <strong><em>{{ participant.quality_representation }}</em></strong>
+        </td>
+    </tr>
     {% endif %}
-{% endfor %}
+    {% endfor %}
+
+    {% for participant in participants_info %}
+    {% if not participant.is_chat_participant %}
+    <tr>
+        <td>
+            {% if participant.is_self %}
+                You (voter {{ participant.id_in_group }})
+            {% else %}
+                Other (ID: voter {{ participant.id_in_group }})
+            {% endif %}
+        </td>
+        <td>
+            <span style="{{ participant.player_signal_style }}"></span>
+        </td>
+        <td>
+            {% if not participant.is_self %}
+                Unknown
+            {% else %}
+                N/A
+            {% endif %}
+        </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+
 
     </div>
 
     <div style="flex: 1.9; padding-left: 20px;">
-        <h6>Please see the information of the voter you are linked with on the left page.</h6>
+        <h6>Please see the information of the voter in your group on the left page.</h6>
         <h6>You have 2 minutes to chat. </h6>
         {% chat nickname=player.chat_nickname room=player.chat_room %}
     </div>

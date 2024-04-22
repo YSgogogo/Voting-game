@@ -1,50 +1,46 @@
 {{ extends 'global/Page.html' }}
-   {{ block title }}
- <div style="text-align: center;">
-    <h1>Voting</h1>
- </div>
-    {{ endblock }}
+{{ block title }}
+<div style="text-align: center;">
+   <h1>Voting</h1>
+</div>
+{{ endblock }}
 
 {{ block content }}
-        <style>
-            .ribbon {
-               position: relative;
-               top: -16px;
-               right: -706px;
-            }
-            .blue {
-                color: blue;
-            }
-        </style>
+<style>
+    .content {
+        margin-left: 120px;
+        font-size: 20px;
+    }
+    .submit-button {
+        text-align: center;
+        margin-right: -600px;
+    }
+    .ribbon {
+        position: relative;
+        top: -16px;
+        right: -706px;
+    }
+    .blue {
+        color: blue;
+    }
+</style>
 
-         <div style="text-align: justify;" class="card bg-light mb-3  ">
-            <div class="card-body">
-                <br>
+<div class="content">
+    <br>
+    Please vote for <strong style="color: red;">RED</strong> or <strong style="color: blue;">BLUE</strong>
+    <br><br>
+    <input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
+    <label for="id_vote_0" style="color: red; font-weight: bold;"> &nbsp; RED</label>
+    <br><br>
+    <input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
+    <label for="id_vote_1" style="color: blue; font-weight: bold;"> &nbsp; BLUE</label>
+</div>
 
+<br>
 
+<div class="submit-button">
+    <button type="submit" id="submitButton">I &nbsp; Confirm</button>
+</div>
 
-Please vote for <strong style="color: red;">RED</strong> or <strong style="color: blue;">BLUE</strong>
-
-                <br>
-                <br>
-
-<input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
-<label for="id_vote_0" style="color: red; font-weight: bold;"> &nbsp RED</label>
-                <br>
-                <br>
-<input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
-<label for="id_vote_1" style="color: blue; font-weight: bold;"> &nbsp BLUE</label>
-
-
-
-        <div style="text-align: right;">
-            <button type="submit" id="submitButton">Confirm</button>
-        </div>
-
-
-            </div>
-        </div>
-        <br>
-
-
+<br>
 {{ endblock }}

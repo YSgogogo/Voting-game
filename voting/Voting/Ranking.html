@@ -32,25 +32,48 @@
 
         </style>
 
-         <div style="text-align: justify;" class="card bg-light mb-3  ">
-            <div class="card-body">
-                <br>
-                <h5>Your got <span style="{{ player_signal_style }}"></span> from <strong><em>{{ quality }}</em></strong> </h5>
+        <style>
+            .first-table {
+                border-collapse: collapse;
+                width: 60%;
+                margin: auto;
+            }
+            .first-table th, .first-table td {
+                border: 1px solid #999;
+                padding: 10px;
+                text-align: center;
+                width: 33.33%;
+            }
+        </style>
+
+
 <br>
-<br>
-<h5>Your group members got:</h5>
-<br>
-<div style="text-align: center; display: flex; justify-content: center; gap: 80px;">
-    {% for signal_info in other_signals_info %}
-        <h5><span style="{{ signal_info.signal_style }}"></span></h5>
-    {% endfor %}
-</div>
+
+        <table class="first-table">
+            <tr>
+                <td></td>
+                <td>Which Ball</td>
+                <td>Which Box</td>
+            </tr>
+            <tr>
+                <td>You (ID: voter {{ player.id_in_group }})</td>
+                <td><span style="{{ player_signal_style }}"></span></td>
+                <td><strong><em>{{ quality }}</em></strong></td>
+            </tr>
+            {% for signal_info in other_signals_info %}
+            <tr>
+                <td> Other (ID: voter {{ signal_info.player_id }})</td>
+                <td><span style="{{ signal_info.signal_style }}"></span></td>
+                <td>Unknown</td>
+            </tr>
+            {% endfor %}
+        </table>
+
 <br>
 <br>
 
           <h5>Please rank from who you most want to communicate with to who you least want to communicate with by dragging the choices on the left to the corresponding right box.</h5>
 
-<br>
 <br>
 <br>
         <br>
@@ -231,7 +254,4 @@
 </html>
 
 
-
-            </div>
-        </div>
 {% endblock %}
