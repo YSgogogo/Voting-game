@@ -11,7 +11,7 @@ Voting Game
 class C(BaseConstants):
     NAME_IN_URL = 'Voting'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 10
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [
@@ -380,12 +380,12 @@ class StartRoundWaitPage(WaitPage):
 
                 if player.state == 'R':
                     if player.qualities == 'h':
-                        player.signals = 'r' if random.random() < 5 / 8 else 'b'
+                        player.signals = 'r' if random.random() < 7 / 10 else 'b'
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 4 / 7 else 'b'
                 else:  # 'B'
                     if player.qualities == 'h':
-                        player.signals = 'r' if random.random() < 3 / 8 else 'b'
+                        player.signals = 'r' if random.random() < 3 / 10 else 'b'
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
