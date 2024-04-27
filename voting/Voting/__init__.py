@@ -320,7 +320,7 @@ class Player(BasePlayer):
         ]
     )
     quiz2 = models.IntegerField(
-        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Right urn or Left urn.",
+        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Right Box or Left Box.",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'yes, the statement is correct.'],
@@ -334,6 +334,31 @@ class Player(BasePlayer):
             [0, 'I should drag the person I most want to communicate with to the first position; the order of the others does not matter.'],
             [1, 'I should rank exactly from the one I most want to communicate with to the one I least want to communicate with.'],
             [2, 'I can rank them randomly; the order does not matter.'],
+    ]
+    )
+    quiz4 = models.IntegerField(
+        label="If you got a red ball from right Box, which state will be more likely to be the true state?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'RED'],
+            [1, 'BLUE'],
+    ]
+    )
+    quiz5 = models.IntegerField(
+        label="If you got a red ball from Right Box and a blue ball from Left box, which state will be more likely to be the true state?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'RED'],
+            [1, 'BLUE'],
+    ]
+    )
+    quiz6 = models.IntegerField(
+        label="If you got a red ball from Right Box and a blue ball from Right box, which state will be more likely to be the true state?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'RED'],
+            [1, 'BLUE'],
+            [2, 'Equally likely'],
     ]
     )
 
@@ -419,11 +444,11 @@ class Main_Instructions(Page):
 
 class Comprehension_Test(Page):
     form_model = 'player'
-    form_fields = ['quiz1', 'quiz2', 'quiz3']
+    form_fields = ['quiz1', 'quiz2', 'quiz3', 'quiz4', 'quiz5', 'quiz6']
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions = {"quiz1": 3, "quiz2": 0, "quiz3": 1}
+        solutions = {"quiz1": 3, "quiz2": 0, "quiz3": 1, "quiz4": 0, "quiz5": 1, "quiz6": 2}
         errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
         if errors:
             player.num_failed_attempts += 1
