@@ -1,0 +1,257 @@
+{% extends "global/Base.html" %}
+   {{ block title }}
+ <div style="text-align: center;">
+    <h1>Who you want to communicate with</h1>
+ </div>
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+            .ball {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              display: inline-block;
+              vertical-align: middle;
+              margin-right: 10px;
+            }
+            .red-ball {
+              background-color: red;
+            }
+            .blue-ball {
+              background-color: blue;
+            }
+
+        </style>
+
+        <style>
+            .first-table {
+                border-collapse: collapse;
+                width: 60%;
+                margin: auto;
+            }
+            .first-table th, .first-table td {
+                border: 1px solid #999;
+                padding: 10px;
+                text-align: center;
+                width: 33.33%;
+            }
+        </style>
+
+<h5>Your Information:</h5>
+<br>
+
+        <table class="first-table">
+            <tr>
+                <td></td>
+                <td>Which Ball</td>
+                <td>Which Box</td>
+            </tr>
+            <tr>
+                <td>You (ID: voter {{ player.id_in_group }})</td>
+                <td><span style="{{ player_signal_style }}"></span></td>
+                <td><strong><em>{{ quality }}</em></strong></td>
+            </tr>
+            {% for signal_info in other_signals_info %}
+            <tr>
+                <td> Other (ID: voter {{ signal_info.player_id }})</td>
+                <td><span style="{{ signal_info.signal_style }}"></span></td>
+                <td>Unknown</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+<br>
+<br>
+
+          <h5>Please rank from who you most want to communicate with to who you least want to communicate with by dragging the choices on the left to the corresponding right box.</h5>
+
+<br>
+<br>
+        <br>
+<html>
+<head>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .items-container {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding:8px;
+        }
+        .draggable {
+            margin: 5px;
+            padding: 4px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            cursor: move;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .table-container {
+            width: 60%;
+            display: flex;
+            justify-content: flex-start;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th:first-child,
+        td:first-child {
+            width: 30%;
+        }
+        th:last-child,
+        td:last-child {
+            width: 70%;
+        }
+        td, th {
+            border: 1px solid #999;
+            padding: 12px;
+            text-align: left;
+        }
+        .dropzone {
+            margin: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 2px dashed #ccc;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div id="items" class="items-container">
+            {% for item in player.get_ranking_options %}
+               <div draggable="true" class="draggable" id="item{{ forloop.counter }}">{{ item }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Ranking</th>
+                    <th>Drop Here</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td class="dropzone" id="rank1"></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="dropzone" id="rank2"></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="dropzone" id="rank3"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br>
+    <br>
+    <form id="rankingForm" method="post">
+        <input type="hidden" name="ranking" id="rankingInput">
+        <div style="text-align: right;">
+            <button type="submit" id="submitButton" disabled>Submit Ranking</button>
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzones = document.querySelectorAll('.dropzone');
+            const submitButton = document.getElementById('submitButton');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('dragging');
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('dragging');
+                    checkSubmitAvailability();
+                });
+            });
+
+            dropzones.forEach(dropzone => {
+                dropzone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    const dragging = document.querySelector('.dragging');
+                    dropzone.appendChild(dragging);
+                    updateRankingInput();
+                });
+            });
+
+            function updateRankingInput() {
+                const ranking = [];
+                document.querySelectorAll('.dropzone').forEach(dropzone => {
+                    const items = Array.from(dropzone.querySelectorAll('.draggable'));
+                    const itemIDs = items.map(item => item.id);
+                    ranking.push(itemIDs.length > 0 ? itemIDs : null);
+                });
+                document.getElementById('rankingInput').value = JSON.stringify(ranking);
+                checkSubmitAvailability();
+            }
+
+            function checkSubmitAvailability() {
+                const itemsLeft = Array.from(document.querySelectorAll('.draggable')).every(item => {
+                    return item.parentNode.id !== 'items';
+                });
+
+                // Check if item in second row exists, if yes, ensure item in first row exists
+                const secondRowItems = Array.from(document.querySelectorAll('#rank2 .draggable'));
+                const firstRowItems = Array.from(document.querySelectorAll('#rank1 .draggable'));
+                const secondRowHasItems = secondRowItems.length > 0;
+                const firstRowHasItems = firstRowItems.length > 0;
+
+                // Check if item in third row exists, if yes, ensure items in first and second row exist
+                const thirdRowItems = Array.from(document.querySelectorAll('#rank3 .draggable'));
+                const thirdRowHasItems = thirdRowItems.length > 0;
+                const secondRowHasItemsAndFirstRowHasItems = secondRowHasItems && firstRowHasItems;
+
+                submitButton.disabled = !(itemsLeft && (firstRowHasItems || !secondRowHasItems) && (secondRowHasItemsAndFirstRowHasItems || !thirdRowHasItems));
+            }
+
+            updateRankingInput();
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const items = document.querySelectorAll(".draggable");
+
+            items.forEach(function(item) {
+                if(item.innerHTML.includes("R")) {
+                    item.innerHTML = item.innerHTML.replace("R", "<span class='ball red-ball'></span>");
+        }
+                if(item.innerHTML.includes("B")) {
+                    item.innerHTML = item.innerHTML.replace("B", "<span class='ball blue-ball'></span>");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+{% endblock %}

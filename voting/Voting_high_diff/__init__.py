@@ -3,15 +3,15 @@ import random
 import json
 
 doc = """
-Voting Game
+Voting_high_diff Game
 """
 
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'Voting'
+    NAME_IN_URL = 'Voting_high_diff'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 10
+    NUM_ROUNDS = 3
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [
@@ -405,12 +405,12 @@ class StartRoundWaitPage(WaitPage):
 
                 if player.state == 'R':
                     if player.qualities == 'h':
-                        player.signals = 'r' if random.random() < 7 / 10 else 'b'
+                        player.signals = 'r' if random.random() < 12 / 15 else 'b'
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 4 / 7 else 'b'
                 else:  # 'B'
                     if player.qualities == 'h':
-                        player.signals = 'r' if random.random() < 3 / 10 else 'b'
+                        player.signals = 'r' if random.random() < 3 / 15 else 'b'
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
@@ -707,6 +707,17 @@ class ResultsWaitPage5(WaitPage):
 class Results(Page):
     timeout_seconds = 60
 
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number < C.NUM_ROUNDS
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, Info, Ranking, ResultsWaitPage1, ResultsWaitPage1a, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, ResultsWaitPage4, Results, ResultsWaitPage5]
+class Results_2(Page):
+    timeout_seconds = 60
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
+
+
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, Info, Ranking, ResultsWaitPage1, ResultsWaitPage1a, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, ResultsWaitPage4, Results, Results_2, ResultsWaitPage5]

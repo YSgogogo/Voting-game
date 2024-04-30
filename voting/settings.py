@@ -3,14 +3,19 @@ CHANNEL_ROUTING = 'routing.channel_routing'
 
 SESSION_CONFIGS = [
     dict(
-        name='Voting',
-        display_name="Voting",
-        app_sequence=['Voting', 'payment_info'],
+        name='Voting_medium_diff',
+        display_name="Voting_medium_diff",
+        app_sequence=['Voting_medium_diff', 'payment_info_medium_diff'],
+        num_demo_participants=3,
+    ),
+
+    dict(
+        name='Voting_high_diff',
+        display_name="Voting_high_diff",
+        app_sequence=['Voting_high_diff', 'payment_info_high_diff'],
         num_demo_participants=3,
     )
 ]
-
-
 
 SESSION_CONFIG_DEFAULTS = dict(
     real_world_currency_per_point=1.00, participation_fee=5.00, doc=""

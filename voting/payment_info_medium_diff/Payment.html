@@ -1,7 +1,7 @@
-
+{{ extends 'global/Page.html' }}
    {{ block title }}
  <div style="text-align: center;">
-    Result in this round: round {{player.round_number}}
+    Your payment in this experiment
  </div>
     {{ endblock }}
 
@@ -19,23 +19,29 @@
                 <br>
 
 <ul>
-  <li> In this round, check how many people voter for {{player.state}} (the selected State) and how much you win:
+  <li>  Thank you for participating in today’s experiment. </li>
+  <li>  Check what you have earned from this experiment: </li>
 </ul>
 
 <br>
     <table class="mx-auto & styled-table">
         <thead>
         <tr>
-            <td> Selected State </td>
-            <td> # vote for {{ player.state }}</td>
-            <td> How much you win </td>
+
+            <td> selected  round</td>
+            <td> earning in selected round </td>
+            <td> show-up</td>
+            <td> Total </td>
         </tr>
         </thead>
-        <tr>
-            <td class="hide_bottom">{{ player.state }} </td>
-            <td class="hide_bottom"> {{ player.majority_vote_count }} </td>
-            <td class="hide_bottom"> {{ player.payoff }} </td>
+
+        <tr class="active-row">
+            <td class="hide_bottom"> round {{player.round_to_pay}}  </td>
+            <td class="hide_bottom"> £{{player.money_to_pay}}.00  </td>
+            <td class="hide_bottom"> £5.00 </td>
+            <td class="hide_bottom"> £{{player.total_to_pay}}.00 </td>
         </tr>
+
 
     </table>
 <br>
@@ -43,9 +49,8 @@
 
 
 <ul>
-  <li>  Note: we will randomly choose one round for your payment. Therefore, if your group selected correctly and win £15, this may not be you final payoffs; if your group does not selected correctly and only win £2, you still have chance to win £15.   </li>
-  <li>  So pay your full attention to the next round. </li>
-  <li>  Important: your group member in the next round might be different from this round! </li>
+  <li>  Your final payment in this experiment is therefore £ {{player.total_to_pay}}. </li>
+  <li>  We are preparing for your payment. Please wait...</li>
 </ul>
 
             </div>

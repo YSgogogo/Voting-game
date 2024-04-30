@@ -1,0 +1,135 @@
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+ <div style="text-align: center;">
+     <h1>Main Instructions: Voting</h1>
+ </div>
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+        </style>
+
+
+                <br>
+
+<h2> Structure of the experiment </h2>
+<ul>
+  <li> You will face 10 rounds in this experiment. </li>
+  <li> <b>Each round is independent of other rounds</b>. </li>
+  <li> <b>Each round is equally likely to be selected for your payment</b>. </li>
+  <li> <b>You might be matched with different group members in each round</b>. </li>
+  <li> Thus, it is important for you to take each round seriously. </li>
+</ul>
+
+<h2> Structure of the round </h2>
+<h4>Stage 1:  Information </h4>
+
+                There is a state called the ''unknown state'' that is filled with multiple balls with different colors in two boxes. The state is either the <strong style="color: red;">''RED''</strong>, including two small boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>, or the <strong style="color: blue;">''BLUE''</strong>, including two small boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>. As you can see in the following Figure, the <strong style="color: red;">''RED''</strong> has more red balls, and the <strong style="color: blue;">''BLUE''</strong> has more blue balls in each box.
+<ul>
+<br>
+<br>
+<div style="text-align: center;">
+   <img src="{% static 'global/urn_high_diff.png' %}" alt="Urns" width="70%" style="margin-right: 80px;">
+</div>
+<br>
+<br>
+    <li>At the beginning of each round, the computer will flip a coin (50-50) to determine the ''unknown state'' - either the <strong style="color: red;">''RED''</strong> or <strong style="color: blue;">''BLUE''</strong>. <b>But you won’t know which one is chosen!</b></li>
+    <li>Every <b>3 participants</b> in this lab are randomly selected into one group. </li>
+    <li>After the group is formed, the computer will flip a coin (50-50) again to determine the small box - either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>. Each of you will <b>randomly</b> got one ball from the chosen small box. </li>
+    <li><b>IMPORTANT!</b> The ball (not <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>!) you got will be shown to other two participants in your group. You will also be informed about balls (not <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>!) that other participants got. For example, if you got a blue ball from <strong><em>Left Box</em></strong>, and your group members got a red ball and a blue ball, you will be shown the following screenshot:</li>
+<br>
+<br>
+<div style="text-align: center;">
+   <img src="{% static 'global/info.png' %}" alt="Urns" width="70%">
+</div>
+<br>
+<br>
+</ul>
+
+<h4>Stage 2: Who you want to communicate with</h4>
+
+Following by Stage 1, you have a chance to gain more information by communicating with other participants. BUT you can only communicate with no more than one participant in your group. ALSO even you want to communicate with other participants, they must agree with communicating with you, i.e. communication is bilateral.
+
+<ul>
+<br>
+    <li><b>Your Task</b>: you need to rank from who you most want to communicate with to who you least want to communicate with. You will see the following screenshot: </li>
+<br>
+<br>
+<div style="text-align: center;">
+   <img src="{% static 'global/ranking.png' %}" alt="Urns" width="70%">
+</div>
+<br>
+<br>
+    <li>All participants need to rank the choices. IF you have no strict preference between two choices, you can always put them in the same box. </li>
+    <li>How you match with other participants: the computer will match you with others based on your ranking, i.e. the computer will match you first with the group member you put in the first box, then with the one in the second box, and so on until the last box.</li>
+    <li>So it is <b>IMPORTANT</b> for you to rank exactly based on who you want to communicate with.  </li>
+    <li>Once all group members make their choices, you will enter the next page. If you are not successfully connected to other participants, you just wait in the page for two minutes. If you are successfully connected to another participant, you can (I) see he/she got a ball from which small box: either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>; (II) freely to talk with him/her for 2 minutes. You will see the following screenshot:</li>
+<br>
+<br>
+<div style="text-align: center;">
+   <img src="{% static 'global/chat.png' %}" alt="Urns" width="70%">
+</div>
+<br>
+<br>
+</ul>
+
+<h4>Stage 3: Voting</h4>
+
+<ul>
+    <li>Now you need to cast a vote about which state is chosen: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>. </li>
+<br>
+<br>
+<div style="text-align: center;">
+   <img src="{% static 'global/vote.png' %}" alt="Urns" width="70%">
+</div>
+<br>
+<br>
+    <li>Your payoff is determined by the number of correct votes: If there are majority (2 or 3) participants in your group vote correctly, each of you in the group will earn <strong style="font-size: 24px;">£15！</strong> If there are 0 or 1 participant in your group vote correctly, each of you in the group will only earn <b>£2</b>!</li>
+</ul>
+
+
+
+        <br>
+
+{{ endblock }}
+
+
+{{ block app_styles }}
+    <style>
+        table {
+            border: 1px solid black;
+        }
+        td {
+           border: 1px solid black;
+           background-color: bg-light mb-3;
+           color: black;
+           font-weight: solid;
+           font-size: 19px;
+           padding: 10px 10px 10px 10px;
+           text-align: center;
+        }
+        tr.hide_all > td, td.hide_all{
+           border-style:hidden;
+        }
+        tr.hide_right > td, td.hide_right{
+           border-right-style:hidden;
+        }
+        tr.hide_left > td, td.hide_left{
+           border-left-style:hidden;
+        }
+        tr.hide_top > td, td.hide_top{
+           border-top-style:hidden;
+        }
+        tr.hide_bottom > td, td.hide_bottom{
+           border-bottom-style:hidden;
+        }
+        tr.width_bottom > td, td.width_bottom{
+           border-bottom-width:4px;
+        }
+    </style>
+{{ endblock }}

@@ -1,0 +1,70 @@
+{{ extends 'global/Page.html' }}
+
+{{ block title }}
+<div style="text-align: center;">
+    <h1>Please Wait</h1>
+</div>
+{{ endblock }}
+
+{{ block content }}
+<style>
+    .ribbon {
+        position: relative;
+        top: -16px;
+        right: -706px;
+    }
+    .blue {
+        color: blue;
+    }
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+    }
+    td, th {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+</style>
+<br>
+<br>
+
+        <table>
+            <tr>
+                <td></td>
+                <td>Which Ball</td>
+                <td>Which Box</td>
+            </tr>
+            <tr>
+                <td>You (ID: voter {{ player.id_in_group }})</td>
+                <td><span style="{{ player_signal_style }}"></span></td>
+                <td><strong><em>{{ quality }}</em></strong></td>
+            </tr>
+            {% for signal_info in other_signals_info %}
+            <tr>
+                <td> Other (ID: voter {{ signal_info.player_id }})</td>
+                <td><span style="{{ signal_info.signal_style }}"></span></td>
+                <td>Unknown</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+<br>
+<br>
+
+        <h5>You are not successfully linked with anyone in your group.</h5>
+        <h5>Please wait for 2 minutes... </h5>
+<br>
+<br>
+{{ endblock }}
+
+{{ block app_styles }}
+<style>
+    table, td, th {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+    }
+</style>
+{{ endblock }}

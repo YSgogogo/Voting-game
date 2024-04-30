@@ -8,7 +8,7 @@ reflect the payment in the end
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'payment_info'
+    NAME_IN_URL = 'payment_info_high_diff'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 1
 
@@ -52,9 +52,9 @@ class Survey(Page):
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         participant = player.participant
-        player.money_to_pay = int(participant.vars['Voting'][0])
-        player.round_to_pay = int(participant.vars['Voting'][1])
-        player.total_to_pay = int(participant.vars['Voting'][0])+5
+        player.money_to_pay = int(participant.vars['Voting_high_diff'][0])
+        player.round_to_pay = int(participant.vars['Voting_high_diff'][1])
+        player.total_to_pay = int(participant.vars['Voting_high_diff'][0])+5
         participant.payoff = 0
 
         participant.payoff += player.money_to_pay
