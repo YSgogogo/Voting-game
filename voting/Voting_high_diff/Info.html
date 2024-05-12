@@ -26,6 +26,19 @@
         padding: 8px;
         text-align: center;
     }
+    .submit-button {
+        text-align: center;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        float: right;
+        border-radius: 8px;
+        display: none;
+    }
+
     dialog {
     width: 80%;
     max-width: 500px;
@@ -46,10 +59,10 @@
     }
 </style>
 
-<button type="button" onclick="showInformation()">click to view the sources of balls!</button>
+<!--<button type="button" onclick="showInformation()">click to view the sources of balls!</button>
 
 <dialog id="infoDialog">
-    <img src="{% static 'global/urn_high_diff.png' %}" alt="Urns" width="80%" style="display: block; margin: auto;">
+    <img src="{% static 'global/urn.png' %}" alt="Urns" width="80%" style="display: block; margin: auto;">
     <ul>
         <br>
         <li>This is where all voters got their balls.</li>
@@ -68,31 +81,65 @@ function closeDialog() {
     document.getElementById("infoDialog").close(); // Close the dialog
 }
 </script>
+-->
+
+<input type="hidden" name="timeSpent1" id="timeSpent1"/>
+<script>
+var pageTimeElapsed = 0;
+var pageTimerID = -1;
+
+function pageTick() {
+  pageTimeElapsed++
+  document.getElementById("timeSpent1").value = pageTimeElapsed;
+}
+window.onload = function() {
+  if(pageTimerID == -1){
+    pageTimerID = setInterval(pageTick, 1000);
+  }
+};
+</script>
 
 <br>
+        <table>
+            <tr>
+                <td></td>
+                <td>Which Ball</td>
+                <td>Which Box</td>
+            </tr>
+            <tr>
+                <td>You (ID: voter {{ player.id_in_group }})</td>
+                <td><span style="{{ player_signal_style }}"></span></td>
+                <td><strong><em>{{ quality }}</em></strong></td>
+            </tr>
+            {% for signal_info in other_signals_info %}
+            <tr>
+                <td> Other (ID: voter {{ signal_info.player_id }})</td>
+                <td><span style="{{ signal_info.signal_style }}"></span></td>
+                <td>Unknown</td>
+            </tr>
+            {% endfor %}
+        </table>
 <br>
 <br>
-<table>
-    <tr>
-        <td></td>
-        <td>Which Ball</td>
-        <td>Which Box</td>
-    </tr>
-    <tr>
-        <td>You (ID: voter {{ player.id_in_group }})</td>
-        <td><span style="{{ player_signal_style }}"></span></td>
-        <td><strong><em>{{ quality }}</em></strong></td>
-    </tr>
-    {% for signal_info in other_signals_info %}
-    <tr>
-        <td> Other (ID: voter {{ signal_info.player_id }})</td>
-        <td><span style="{{ signal_info.signal_style }}"></span></td>
-        <td>Unknown</td>
-    </tr>
-    {% endfor %}
-</table>
+    <ul>
+        <li><i>This is where all voters got their balls.</i></li>
+        <li><i>More detailed information please read the instructions we assigned to you.</i></li>
+    </ul>
+<div style="text-align: center;">
+   <img src="{% static 'global/urn_high_diff.png' %}" alt="Urns" width="30%">
+</div>
+<br>
 
-<br>
+    <div class="container">
+        <button class="submit-button" id="delayedButton">Next</button>
+    </div>
+
+    <script>
+        setTimeout(function() {
+            document.getElementById('delayedButton').style.display = 'block';
+        }, 10000);
+    </script>
+
 {{ endblock }}
 
 {{ block app_styles }}

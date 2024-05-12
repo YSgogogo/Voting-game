@@ -11,7 +11,7 @@ Voting_medium_diff Game
 class C(BaseConstants):
     NAME_IN_URL = 'Voting_medium_diff'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 3
+    NUM_ROUNDS = 2
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [
@@ -297,6 +297,9 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    timeSpent1 = models.FloatField()
+    timeSpent2 = models.FloatField()
+    timeSpent3 = models.FloatField()
     vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES)
     state = models.StringField()
     qualities = models.StringField()
@@ -468,6 +471,8 @@ class ResultsWaitPage(WaitPage):
 
 
 class Info(Page):
+    form_model = 'player'
+    form_fields = ['timeSpent1']
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
@@ -500,12 +505,11 @@ class Info(Page):
             player_signal_style=player_signal_style,
             other_signals_info=other_signals_info,
         )
-    timeout_seconds = 60
 
 
 class Ranking(Page):
     form_model = 'player'
-    form_fields = ['ranking']
+    form_fields = ['ranking','timeSpent2']
 
     @staticmethod
     def vars_for_template(player):
@@ -620,7 +624,7 @@ class Chat(Page):
     def is_displayed(player):
         chat_participants = json.loads(player.group.chat_participants_record)
         return player.id_in_group in chat_participants
-    timeout_seconds = 120
+    timeout_seconds = 60
 
 
 class NonChat(Page):
@@ -663,7 +667,7 @@ class NonChat(Page):
         chat_participants = json.loads(player.group.chat_participants_record)
         return player.id_in_group not in chat_participants
 
-    timeout_seconds = 120
+    timeout_seconds = 60
 
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
@@ -673,7 +677,7 @@ class ResultsWaitPage2(WaitPage):
 class Voting(Page):
 
     form_model = 'player'
-    form_fields = ['vote']
+    form_fields = ['vote', 'timeSpent3']
 
 
 
@@ -705,16 +709,12 @@ class ResultsWaitPage5(WaitPage):
 
 
 class Results(Page):
-    timeout_seconds = 60
-
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number < C.NUM_ROUNDS
 
 
 class Results_2(Page):
-    timeout_seconds = 60
-
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == C.NUM_ROUNDS

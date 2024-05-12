@@ -12,6 +12,17 @@
                top: -16px;
                right: -706px;
             }
+            .submit-button {
+               text-align: center;
+               background-color: #007BFF;
+               color: white;
+               border: none;
+               padding: 10px 20px;
+               cursor: pointer;
+               outline: none;
+               float: right;
+               border-radius: 8px;
+            }
         </style>
 
 
@@ -32,9 +43,10 @@
 <br>
 
 
-<div style="flush:center; text-align: center;">
-    {{ next_button }}
-</div>
+    <div class="container">
+        <button class="submit-button">Next</button>
+    </div>
+
 {{ endblock }}
 
 

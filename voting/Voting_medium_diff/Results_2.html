@@ -6,13 +6,24 @@
     {{ endblock }}
 
 {{ block content }}
-        <style>
-            .ribbon {
-               position: relative;
-               top: -16px;
-               right: -706px;
-            }
-        </style>
+<style>
+     .ribbon {
+         position: relative;
+         top: -16px;
+         right: -706px;
+     }
+    .submit-button {
+        text-align: center;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        float: right;
+        border-radius: 8px;
+    }
+</style>
 
          <div style="text-align: justify;" class="card bg-light mb-3  ">
             <div class="card-body">
@@ -45,6 +56,9 @@
             </div>
         </div>
         <br>
+    <div class="container">
+        <button class="submit-button">Next</button>
+    </div>
 
 {{ endblock }}
 

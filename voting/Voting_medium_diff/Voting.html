@@ -13,7 +13,14 @@
     }
     .submit-button {
         text-align: center;
-        margin-right: -600px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        float: right;
+        border-radius: 8px;
     }
     .ribbon {
         position: relative;
@@ -24,6 +31,22 @@
         color: blue;
     }
 </style>
+
+<input type="hidden" name="timeSpent3" id="timeSpent3"/>
+<script>
+var pageTimeElapsed = 0;
+var pageTimerID = -1;
+
+function pageTick() {
+  pageTimeElapsed++
+  document.getElementById("timeSpent3").value = pageTimeElapsed;
+}
+window.onload = function() {
+  if(pageTimerID == -1){
+    pageTimerID = setInterval(pageTick, 1000);
+  }
+};
+</script>
 
 <div class="content">
     <br>
@@ -37,10 +60,9 @@
 </div>
 
 <br>
-
-<div class="submit-button">
-    <button type="submit" id="submitButton">I &nbsp; Confirm</button>
-</div>
-
+<br>
+    <div class="container">
+        <button class="submit-button">Next</button>
+    </div>
 <br>
 {{ endblock }}

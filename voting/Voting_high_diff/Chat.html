@@ -8,26 +8,6 @@
 
 {{ block content }}
 
-<style>
-    dialog {
-    width: 80%;
-    max-width: 500px;
-    padding: 10px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    position: fixed;
-    top: 50%;
-    left: 35%;
-    transform: translate(-50%, -50%);
-    background: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .close-button {
-        position: absolute;
-        right: 10px;
-        bottom: 10px;
-    }
-</style>
 
 <style>
     .ribbon {
@@ -51,33 +31,6 @@
         equal-width: true;
     }
 </style>
-
-<button type="button" onclick="showInformation()">click to view the sources of balls!</button>
-
-<dialog id="infoDialog">
-    <img src="{% static 'global/urn_high_diff.png' %}" alt="Urns" width="80%" style="display: block; margin: auto;">
-    <ul>
-        <br>
-        <li>This is where all voters got their balls.</li>
-        <li>More detailed information please read the instructions we assigned to you.</li>
-        <br>
-    <button type="button" class="close-button" onclick="closeDialog()">Close</button>
-    </ul>
-</dialog>
-
-<script>
-function showInformation() {
-    document.getElementById("infoDialog").showModal(); // Show the dialog
-}
-
-function closeDialog() {
-    document.getElementById("infoDialog").close(); // Close the dialog
-}
-</script>
-
-<br>
-<br>
-<br>
 
 <div style="display: flex; justify-content: space-between;">
     <div style="flex: 1;">
@@ -138,7 +91,6 @@ function closeDialog() {
     {% endfor %}
 </table>
 
-
     </div>
 
     <div style="flex: 1.9; padding-left: 20px;">
@@ -148,6 +100,13 @@ function closeDialog() {
     </div>
 </div>
 
-
+    <ul>
+        <br>
+        <br>
+        <li><i>This is where all voters got their balls.</i></li>
+    </ul>
+<div style="text-align: center;">
+   <img src="{% static 'global/urn.png' %}" alt="Urns" width=20%">
+</div>
 
 {{ endblock }}
