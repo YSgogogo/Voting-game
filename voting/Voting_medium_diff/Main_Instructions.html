@@ -29,7 +29,7 @@
 <h2> Structure of the round </h2>
 <h4>Stage 1:  Information </h4>
 
-                There is a state called the ''unknown state'' that is filled with multiple balls with different colors in two boxes. The state is either the <strong style="color: red;">''RED''</strong>, including two small boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>, or the <strong style="color: blue;">''BLUE''</strong>, including two small boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>. As you can see in the following Figure, the <strong style="color: red;">''RED''</strong> has more red balls, and the <strong style="color: blue;">''BLUE''</strong> has more blue balls in each box.
+                There is a state called the ''unknown state'' that is filled with multiple balls with different colors in two boxes. The state is either the <strong style="color: red;">''RED''</strong>, including two boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>, or the <strong style="color: blue;">''BLUE''</strong>, including two boxes: <strong><em>Left Box</em></strong> and <strong><em>Right Box</em></strong>. As you can see in the following Figure, the <strong style="color: red;">''RED''</strong> has more red balls, and the <strong style="color: blue;">''BLUE''</strong> has more blue balls in each box.
 <ul>
 <br>
 <br>
@@ -38,10 +38,11 @@
 </div>
 <br>
 <br>
-    <li>At the beginning of each round, the computer will flip a coin (50-50) to determine the ''unknown state'' - either the <strong style="color: red;">''RED''</strong> or <strong style="color: blue;">''BLUE''</strong>. <b>But you won’t know which one is chosen!</b></li>
-    <li>Every <b>3 participants</b> in this lab are randomly selected into one group. </li>
-    <li>After the group is formed, the computer will flip a coin (50-50) again to determine the small box - either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>. Each of you will <b>randomly</b> got one ball from the chosen small box. </li>
-    <li><b>IMPORTANT!</b> The ball (not <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>!) you got will be shown to other two participants in your group. You will also be informed about balls (not <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>!) that other participants got. For example, if you got a blue ball from <strong><em>Left Box</em></strong>, and your group members got a red ball and a blue ball, you will be shown the following screenshot:</li>
+    <li>Every <b>3 participants</b> in this lab are randomly selected into one group in the beginning of each round. </li>
+    <li>In your group, the computer will flip a coin (50-50) to determine the ''unknown state'' - either the <strong style="color: red;">''RED''</strong> or <strong style="color: blue;">''BLUE''</strong>. <b>But you are not told which one is chosen!</b></li>
+    <li>For you, the computer will flip a coin (50-50) again to determine one box - either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>. You will <b>randomly</b> get one ball from the chosen box. </li>
+    <li><b>IMPORTANT!</b> The ball (not <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>!) you and other group members got will be shown to everyone in your group. </li>
+    <li>For example, if you got a blue ball from <strong><em>Left Box</em></strong>, and your group members got a red ball and a blue ball, you will be shown the following screenshot:</li>
 <br>
 <br>
 <div style="text-align: center;">
@@ -51,13 +52,13 @@
 <br>
 </ul>
 
-<h4>Stage 2: Who you want to communicate with</h4>
+<h4>Stage 2: Who you want to connect with</h4>
 
-Following by Stage 1, you have a chance to gain more information by communicating with other participants. BUT you can only communicate with no more than one participant in your group. ALSO even you want to communicate with other participants, they must agree with communicating with you, i.e. communication is bilateral.
+In stage 2, you can gain more information by connecting with at most one voter in your group. How you can connect with other group members depends on your choice and other group members choices in the following task.
 
 <ul>
 <br>
-    <li><b>Your Task</b>: you need to rank from who you most want to communicate with to who you least want to communicate with. You will see the following screenshot: </li>
+    <li>You need to rank whom you want to connect with from the most to the least. You will see the following screenshot: </li>
 <br>
 <br>
 <div style="text-align: center;">
@@ -65,11 +66,20 @@ Following by Stage 1, you have a chance to gain more information by communicatin
 </div>
 <br>
 <br>
-    <li>All participants need to rank the choices. IF you have no strict preference between two choices, you can always put them in the same box. </li>
-    <li>How you match with other participants: the computer will match you with others based on your ranking, i.e. the computer will match you first with the group member you put in the first box, then with the one in the second box, and so on until the last box.</li>
-    <li>So it is <b>IMPORTANT</b> for you to rank exactly based on who you want to communicate with.  </li>
-    <li>Once all group members make their choices, you will enter the next page. If you are not successfully connected to other participants, you just wait in the page for two minutes. If you are successfully connected to another participant, you can (I) see he/she got a ball from which small box: either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>; (II) freely to talk with him/her for 2 minutes. You will see the following screenshot:</li>
+    <li>IF you have no strict preference between two choices, you can always put them in the same box. </li>
+    <li>The computer will match you with other group members based on your ranking, i.e. <strong><em>the computer will match you first with the group member you put in the first box, then with the one in the second box, and so on until the last box.</em></strong></li>
+    <li>So it is <b>IMPORTANT</b> for you to rank exactly based on who you want to connect with from the most to the least.  </li>
+    <li>If you are not successfully connected to any voters in your group, you just wait in the page for two minutes. You will see the following screenshot:</li>
+    <br>
 <br>
+<div style="text-align: center;">
+   <img src="{% static 'global/non-chat.png' %}" alt="Urns" width="70%">
+</div>
+<br>
+<br>
+</ul>
+    <li>If you are successfully connected to another participant, you can (I) see he/she got a ball from which box: either <strong><em>Left Box</em></strong> or <strong><em>Right Box</em></strong>; (II) freely to chat with him/her for 2 minutes. You will see the following screenshot:</li>
+    <br>
 <br>
 <div style="text-align: center;">
    <img src="{% static 'global/chat.png' %}" alt="Urns" width="70%">
@@ -81,7 +91,7 @@ Following by Stage 1, you have a chance to gain more information by communicatin
 <h4>Stage 3: Voting</h4>
 
 <ul>
-    <li>Now you need to cast a vote about which state is chosen: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>. </li>
+    <li>Now you need to vote about which state is chosen in stage 1: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>. </li>
 <br>
 <br>
 <div style="text-align: center;">

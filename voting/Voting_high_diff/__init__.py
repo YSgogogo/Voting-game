@@ -20,12 +20,12 @@ class C(BaseConstants):
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B = ['link with the voter who got B', 'link with the voter who got R', 'do not want to chat']
-    MAJORITY_R = ['link with the voter who got R', 'link with the voter who got B', 'do not want to chat']
-    MINORITY_R = ['link with the voter who got B', 'do not want to chat']
-    MINORITY_B = ['link with the voter who got R', 'do not want to chat']
-    ALL_R = ['link with the voter who got R', 'do not want to chat']
-    ALL_B = ['link with the voter who got B', 'do not want to chat']
+    MAJORITY_B = ['connect with voter who got B', 'connect with voter who got R', 'do not connect with anyone']
+    MAJORITY_R = ['connect with voter who got R', 'connect with voter who got B', 'do not connect with anyone']
+    MINORITY_R = ['connect with voter who got B', 'do not connect with anyone']
+    MINORITY_B = ['connect with voter who got R', 'do not connect with anyone']
+    ALL_R = ['connect with voter who got R', 'do not connect with anyone']
+    ALL_B = ['connect with voter who got B', 'do not connect with anyone']
 
 
 
