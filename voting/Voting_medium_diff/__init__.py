@@ -469,6 +469,48 @@ class ResultsWaitPage(WaitPage):
     wait_for_all_groups = True
 
 
+class BoxPage(Page):
+    form_model = 'player'
+    @staticmethod
+    def vars_for_template(player):
+        if player.qualities == 'l':
+            quality_display = "Box B"
+        else:
+            quality_display = "Box A"
+
+
+        return dict(
+            quality=quality_display,
+        )
+
+
+
+class BallsPage(Page):
+    form_model = 'player'
+    @staticmethod
+    def vars_for_template(player):
+        if player.qualities == 'l':
+            quality_display = "Right Box"
+            ball_count = 7
+        else:
+            quality_display = "Left Box"
+            ball_count = 10
+
+        if player.signals == 'r':
+            player_signal_color = "red"
+        else:  # 'b'
+            player_signal_color = "blue"
+
+        return dict(
+            quality=quality_display,
+            player_signal_color=player_signal_color,
+            ball_count=ball_count,
+        )
+
+
+class ResultsWaitPage1(WaitPage):
+    wait_for_all_groups = True
+
 
 class Info(Page):
     form_model = 'player'
@@ -573,13 +615,13 @@ class Ranking(Page):
 
 
 
-class ResultsWaitPage1(WaitPage):
+class ResultsWaitPage2(WaitPage):
     def after_all_players_arrive(self):
         self.group.determine_chat_participants()
 
 
 
-class ResultsWaitPage1a(WaitPage):
+class ResultsWaitPage2a(WaitPage):
     wait_for_all_groups = True
 
 
@@ -669,7 +711,7 @@ class NonChat(Page):
 
     timeout_seconds = 60
 
-class ResultsWaitPage2(WaitPage):
+class ResultsWaitPage3(WaitPage):
     wait_for_all_groups = True
 
 
@@ -681,19 +723,19 @@ class Voting(Page):
 
 
 
-class ResultsWaitPage3(WaitPage):
+class ResultsWaitPage4(WaitPage):
 
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
 
 
-class ResultsWaitPage4(WaitPage):
+class ResultsWaitPage5(WaitPage):
     wait_for_all_groups = True
 
 
 
-class ResultsWaitPage5(WaitPage):
+class ResultsWaitPage6(WaitPage):
     def is_displayed(player:Player):
         return player.round_number==C.NUM_ROUNDS
 
@@ -721,4 +763,4 @@ class Results_2(Page):
 
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, Info, Ranking, ResultsWaitPage1, ResultsWaitPage1a, Chat, NonChat, ResultsWaitPage2,  Voting, ResultsWaitPage3, ResultsWaitPage4, Results, Results_2, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, BoxPage, BallsPage, ResultsWaitPage1, Info, Ranking, ResultsWaitPage2, ResultsWaitPage2a, Chat, NonChat, ResultsWaitPage3,  Voting, ResultsWaitPage4, ResultsWaitPage5, Results, Results_2, ResultsWaitPage6]
