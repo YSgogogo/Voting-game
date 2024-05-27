@@ -35,7 +35,7 @@
          border-radius: 8px;
     }
     .ball-container {
-        width: 240px;
+        width: 300px;
         height: 340px;
         position: relative;
         border: 1px solid gray;
@@ -88,12 +88,17 @@
             {% endfor %}
         </div>
         <div class="column">
-            {% for i in range(4, 7) %}
+            {% for i in range(4, 8) %}
                 <div class="ball" id="ball{{ i }}" onclick="changeColor({{ i }})"></div>
             {% endfor %}
         </div>
         <div class="column">
-            {% for i in range(7, 10) %}
+            {% for i in range(8, 12) %}
+                <div class="ball" id="ball{{ i }}" onclick="changeColor({{ i }})"></div>
+            {% endfor %}
+        </div>
+        <div class="column">
+            {% for i in range(12, 15) %}
                 <div class="ball" id="ball{{ i }}" onclick="changeColor({{ i }})"></div>
             {% endfor %}
         </div>

@@ -2,10 +2,10 @@ from otree.api import *
 import random
 import json
 
+
 doc = """
 Voting_medium_diff Game
 """
-
 
 
 class C(BaseConstants):
@@ -28,11 +28,9 @@ class C(BaseConstants):
     ALL_B = ['connect with voter who got B', 'do not connect with anyone']
 
 
-
 class Subsession(BaseSubsession):
     def creating_session(self):
         self.group_randomly()
-
 
 
 class Group(BaseGroup):
@@ -295,7 +293,6 @@ class Group(BaseGroup):
         return chat_participants
 
 
-
 class Player(BasePlayer):
     timeSpent1 = models.FloatField()
     timeSpent2 = models.FloatField()
@@ -323,7 +320,7 @@ class Player(BasePlayer):
         ]
     )
     quiz2 = models.IntegerField(
-        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Right Box or Left Box.",
+        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Box A or Box B.",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'yes, the statement is correct.'],
@@ -340,7 +337,7 @@ class Player(BasePlayer):
     ]
     )
     quiz4 = models.IntegerField(
-        label="If you got a red ball from right Box, which state will be more likely to be the true state?",
+        label="If you got a red ball from Box B, which state will be more likely to be the true state?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'RED'],
@@ -348,7 +345,7 @@ class Player(BasePlayer):
     ]
     )
     quiz5 = models.IntegerField(
-        label="If you got a red ball from Right Box and a blue ball from Left box, which state will be more likely to be the true state?",
+        label="If you got a red ball from Box B and a blue ball from  Box A, which state will be more likely to be the true state?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'RED'],
@@ -356,7 +353,7 @@ class Player(BasePlayer):
     ]
     )
     quiz6 = models.IntegerField(
-        label="If you got a red ball from Right Box and a blue ball from Right box, which state will be more likely to be the true state?",
+        label="If you got a red ball from Box B and a blue ball from Box B, which state will be more likely to be the true state?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'RED'],
@@ -391,7 +388,6 @@ class Player(BasePlayer):
             return C.ALL_R
 
 
-
 class StartRoundWaitPage(WaitPage):
     wait_for_all_groups = True
     @staticmethod
@@ -423,12 +419,10 @@ class StartRoundWaitPage(WaitPage):
                 player.b_count = group.b_count
 
 
-
 class Welcome(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
-
 
 
 class General_Instructions(Page):
@@ -437,12 +431,10 @@ class General_Instructions(Page):
         return player.round_number == 1
 
 
-
 class Main_Instructions(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
-
 
 
 class Comprehension_Test(Page):
@@ -464,7 +456,6 @@ class Comprehension_Test(Page):
         return player.round_number == 1
 
 
-
 class ResultsWaitPage(WaitPage):
     wait_for_all_groups = True
 
@@ -478,11 +469,9 @@ class BoxPage(Page):
         else:
             quality_display = "Box A"
 
-
         return dict(
             quality=quality_display,
         )
-
 
 
 class BallsPage(Page):
@@ -490,10 +479,10 @@ class BallsPage(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right Box"
+            quality_display = "Box B"
             ball_count = 7
         else:
-            quality_display = "Left Box"
+            quality_display = "Box A"
             ball_count = 10
 
         if player.signals == 'r':
@@ -518,9 +507,9 @@ class Info(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right Box"
+            quality_display = "Box B"
         else:
-            quality_display = "Left Box"
+            quality_display = "Box A"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -556,9 +545,9 @@ class Ranking(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right Box"
+            quality_display = "Box B"
         else:
-            quality_display = "Left Box"
+            quality_display = "Box A"
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -614,16 +603,13 @@ class Ranking(Page):
         player.updated_ranking = json.dumps(updated_ranking)
 
 
-
 class ResultsWaitPage2(WaitPage):
     def after_all_players_arrive(self):
         self.group.determine_chat_participants()
 
 
-
 class ResultsWaitPage2a(WaitPage):
     wait_for_all_groups = True
-
 
 
 class Chat(Page):
@@ -644,9 +630,9 @@ class Chat(Page):
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
             if participant.qualities == 'l':
-                quality_representation = "Right Box"
+                quality_representation = "Box B"
             else:
-                quality_representation = "Left Box"
+                quality_representation = "Box A"
 
             participants_info.append({
                 'id_in_group': participant.id_in_group,
@@ -674,9 +660,9 @@ class NonChat(Page):
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
-            quality_display = "Right Box"
+            quality_display = "Box B"
         else:
-            quality_display = "Left Box"
+            quality_display = "Box A "
 
         if player.signals == 'r':
             player_signal_color = "red"
@@ -711,9 +697,9 @@ class NonChat(Page):
 
     timeout_seconds = 60
 
+
 class ResultsWaitPage3(WaitPage):
     wait_for_all_groups = True
-
 
 
 class Voting(Page):
@@ -722,17 +708,14 @@ class Voting(Page):
     form_fields = ['vote', 'timeSpent3']
 
 
-
 class ResultsWaitPage4(WaitPage):
 
     def after_all_players_arrive(self):
         self.group.set_payoffs()
 
 
-
 class ResultsWaitPage5(WaitPage):
     wait_for_all_groups = True
-
 
 
 class ResultsWaitPage6(WaitPage):
@@ -749,7 +732,6 @@ class ResultsWaitPage6(WaitPage):
             player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
 
 
-
 class Results(Page):
     @staticmethod
     def is_displayed(player: Player):
@@ -760,7 +742,6 @@ class Results_2(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == C.NUM_ROUNDS
-
 
 
 page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage, BoxPage, BallsPage, ResultsWaitPage1, Info, Ranking, ResultsWaitPage2, ResultsWaitPage2a, Chat, NonChat, ResultsWaitPage3,  Voting, ResultsWaitPage4, ResultsWaitPage5, Results, Results_2, ResultsWaitPage6]
