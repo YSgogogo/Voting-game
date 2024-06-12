@@ -37,15 +37,17 @@
     <table class="mx-auto & styled-table">
         <thead>
         <tr>
-            <td> Selected State </td>
-            <td> # vote for {{ player.state }}</td>
-            <td> How much you win </td>
+            <td> True State </td>
+            <td> Selected voter</td>
+            <td> Selected voter's vote</td>
+            <td> How much each of you win </td>
         </tr>
         </thead>
         <tr>
             <td class="hide_bottom">{{ player.state }} </td>
-            <td class="hide_bottom"> {{ player.majority_vote_count }} </td>
-            <td class="hide_bottom"> {{ player.payoff }} </td>
+            <td class="hide_bottom"> Voter {{ group.chosen_player_id }} </td>
+            <td class="hide_bottom">  {{ group.chosen_player_vote }} </td>
+            <td class="hide_bottom">{{ player.payoff }} </td>
         </tr>
 
     </table>
@@ -54,7 +56,7 @@
 
 
 <ul>
-  <li>  Note: we will randomly choose one round for your payment. Therefore, if your group selected correctly and win £15, this may not be you final payoffs; if your group does not selected correctly and only win £2, you still have chance to win £15.   </li>
+  <li>  Note: we will randomly choose one round for your payment. Therefore, if your group member voted correctly and won £15, this may not be you final payoffs; if your group did not vote correctly and only won £2, you still have the chance to win £15.   </li>
   <li>  So pay your full attention to the next round. </li>
   <li>  Important: your group member in the next round might be different from this round! </li>
   <li>  Important: your ID in your group in the next round might be different from this round! </li>

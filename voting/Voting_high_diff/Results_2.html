@@ -37,21 +37,21 @@
     <table class="mx-auto & styled-table">
         <thead>
         <tr>
-            <td> Selected State </td>
-            <td> # vote for {{ player.state }}</td>
-            <td> How much you win </td>
+            <td> True State </td>
+            <td> Selected voter</td>
+            <td> Selected voter's vote</td>
+            <td> How much each of you win </td>
         </tr>
         </thead>
         <tr>
             <td class="hide_bottom">{{ player.state }} </td>
-            <td class="hide_bottom"> {{ player.majority_vote_count }} </td>
-            <td class="hide_bottom"> {{ player.payoff }} </td>
+            <td class="hide_bottom"> Voter {{ group.chosen_player_id }} </td>
+            <td class="hide_bottom">  {{ group.chosen_player_vote }} </td>
+            <td class="hide_bottom">{{ player.payoff }} </td>
         </tr>
 
     </table>
 <br>
-
-
 
             </div>
         </div>

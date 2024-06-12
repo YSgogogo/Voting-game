@@ -38,19 +38,19 @@ class Group(BaseGroup):
     r_count = models.IntegerField(initial=0)
     b_count = models.IntegerField(initial=0)
     chat_participants_record = models.StringField()
+    chosen_player_id = models.IntegerField()
+    chosen_player_vote = models.StringField()
     def set_payoffs(self):
-        votes = [p.vote for p in self.get_players()]
-        majority_vote = self.state
-        majority_vote_count = votes.count(majority_vote)
-
-        if majority_vote_count > len(votes) / 2:
+        chosen_player = random.choice(self.get_players())
+        self.chosen_player_id = chosen_player.id_in_group
+        self.chosen_player_vote = chosen_player.vote
+        if chosen_player.vote == self.state:
             payoff = C.AMOUNT_SHARED_IF_WIN
         else:
             payoff = C.AMOUNT_SHARED_IF_LOSE
 
         for p in self.get_players():
             p.payoff = payoff
-            p.majority_vote_count = majority_vote_count
 
     def calculate_signals(self):
         r_count = 0
