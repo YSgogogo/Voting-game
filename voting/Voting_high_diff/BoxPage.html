@@ -38,6 +38,14 @@
         top: -16px;
         right: -706px;
     }
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: 400px;
+        top: -50px;
+    }
     .card {
         width: 250px;
         height: 320px;
@@ -47,7 +55,8 @@
         justify-content: center;
         cursor: pointer;
         perspective: 1000px;
-        margin: 0 90px; /* Adjust the margin to set the distance between cards */
+        position: absolute;
+        transition: transform 0.6s, left 0.6s, top 0.6s;
     }
 
     .card-inner {
@@ -79,40 +88,42 @@
         background-color: lightgray;
         transform: rotateY(180deg);
     }
+
+    @keyframes shuffle {
+        0%, 100% { transform: translateX(0) translateY(0); }
+        20% { transform: translateX(-30px) translateY(-10px); }
+        40% { transform: translateX(30px) translateY(10px); }
+        60% { transform: translateX(-30px) translateY(-10px); }
+        80% { transform: translateX(30px) translateY(10px); }
+    }
+
+    .shuffle-animation {
+        animation: shuffle 1.5s ease-in-out;
+    }
+
+    .card-disabled {
+        pointer-events: none;
+    }
 </style>
 
-
-<div style="display: flex; justify-content: space-between;">
-    <div style="flex: 1;">
-    <div class="card" id="card1" onclick="flipCard('card1', '{{ quality }}')">
+<div class="card-container">
+    <div class="card card-disabled" id="card1" onclick="flipCard('card1', '{{ quality }}')">
         <div class="card-inner">
             <div class="card-front"></div>
             <div class="card-back"></div>
         </div>
     </div>
-
-        <br>
-        <br>
-        <br>
-        <br>
+    <div class="card card-disabled" id="card2" onclick="flipCard('card2', '{{ quality }}')">
+        <div class="card-inner">
+            <div class="card-front"></div>
+            <div class="card-back"></div>
+        </div>
+    </div>
 </div>
 
-<div style="flex: 1;">
-
-    <div class="card" id="card2" onclick="flipCard('card2', '{{ quality }}')">
-        <div class="card-inner">
-            <div class="card-front"></div>
-            <div class="card-back"></div>
-        </div>
-    </div>
-        <br>
-        <br>
-    <div class="container">
+<div class="container">
     <button class="submitButton" id="submitButton" disabled>Next</button>
-    </div>
 </div>
-    <br>
-    <br>
 
 <script>
     var isFlipped = false;
@@ -130,7 +141,38 @@
         document.getElementById('card2').style.pointerEvents = 'none';
         document.getElementById('submitButton').disabled = false;
     }
-</script>
 
+    window.onload = function() {
+        var card1 = document.getElementById('card1');
+        var card2 = document.getElementById('card2');
+
+        card1.classList.add('card-disabled');
+        card2.classList.add('card-disabled');
+
+        card1.style.left = 'calc(50% - 125px)';
+        card1.style.top = '30%';
+        card2.style.left = 'calc(50% - 125px)';
+        card2.style.top = '30%';
+
+        card1.classList.add('shuffle-animation');
+        card2.classList.add('shuffle-animation');
+
+        setTimeout(function() {
+            card1.classList.remove('shuffle-animation');
+            card2.classList.remove('shuffle-animation');
+
+            card1.style.left = 'calc(30% - 125px)';
+            card1.style.top = '20%';
+            card2.style.left = 'calc(70% - 125px)';
+            card2.style.top = '20%';
+
+            setTimeout(function() {
+                card1.classList.remove('card-disabled');
+                card2.classList.remove('card-disabled');
+            }, 600);
+        }, 1500);
+    }
+
+</script>
 
 {{ endblock }}
