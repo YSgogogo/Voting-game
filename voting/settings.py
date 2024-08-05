@@ -14,6 +14,12 @@ SESSION_CONFIGS = [
         display_name="Voting_high_diff",
         app_sequence=['Voting_high_diff', 'payment_info_high_diff'],
         num_demo_participants=3,
+    ),
+    dict(
+        name='Voting_one_sided',
+        display_name="Voting_one_sided",
+        app_sequence=['Voting_one_sided'],
+        num_demo_participants=5,
     )
 ]
 

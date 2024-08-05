@@ -1,0 +1,169 @@
+{{ block title }}
+<div style="text-align: center;">
+    <h1>Chat</h1>
+</div>
+{{ endblock }}
+
+{{ block content }}
+
+<style>
+    .content {
+        margin-left: 120px;
+        font-size: 20px;
+    }
+    .submit-button {
+        text-align: center;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        outline: none;
+        float: right;
+        border-radius: 8px;
+    }
+    .submit-button.disabled {
+        background-color: grey;
+        cursor: not-allowed;
+    }
+    .ribbon {
+        position: relative;
+        top: -16px;
+        right: -706px;
+    }
+    .blue {
+        color: blue;
+    }
+    table {
+        width: 100%;
+        margin: auto;
+        border-collapse: collapse;
+        font-size: 0.8em;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        equal-width: true;
+    }
+</style>
+
+<input type="hidden" name="timeSpent2" id="timeSpent2"/>
+<script>
+var pageTimeElapsed = 0;
+var pageTimerID = -1;
+var timerFinished = false;
+var selectionMade = false;
+
+function pageTick() {
+  pageTimeElapsed++;
+  document.getElementById("timeSpent2").value = pageTimeElapsed;
+  if (pageTimeElapsed >= 10) {
+    timerFinished = true;
+    updateSubmitButton();
+  }
+}
+
+window.onload = function() {
+  if (pageTimerID == -1) {
+    pageTimerID = setInterval(pageTick, 1000);
+  }
+};
+
+// Function to enable/disable the submit button based on radio button selection and time
+function updateSubmitButton() {
+    var radios = document.querySelectorAll('input[name="vote"]');
+    var button = document.querySelector('.submit-button');
+    selectionMade = false;
+
+    radios.forEach(function(radio) {
+        if (radio.checked) {
+            selectionMade = true;
+        }
+    });
+
+    if (selectionMade && timerFinished) {
+        button.classList.remove('disabled');
+        button.disabled = false;
+    } else {
+        button.classList.add('disabled');
+        button.disabled = true;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var radios = document.querySelectorAll('input[name="vote"]');
+    var button = document.querySelector('.submit-button');
+
+    // Initialize button state
+    button.classList.add('disabled');
+    button.disabled = true;
+
+    // Attach event listeners to radio buttons
+    radios.forEach(function(radio) {
+        radio.addEventListener('change', updateSubmitButton);
+    });
+});
+</script>
+
+<div style="display: flex; justify-content: space-between;">
+    <div style="flex: 1.1;">
+        <br>
+        <br>
+        <br>
+        <br>
+        <table border="1">
+            <tr>
+                <th></th>
+                <th>Which Ball</th>
+                <th>Which Box</th>
+            </tr>
+            {% for participant in participants_info %}
+            <tr>
+                <td>
+                    {% if participant.is_self %}
+                        You (ID: voter {{ participant.id_in_group }})
+                    {% else %}
+                        Other (ID: voter {{ participant.id_in_group }})
+                    {% endif %}
+                </td>
+                <td>
+                    <span style="{{ participant.player_signal_style }}"></span>
+                </td>
+                <td>
+                    {{ participant.box_info }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<div class="content">
+    <br>
+    Please vote for <strong style="color: red;">RED</strong> or <strong style="color: blue;">BLUE</strong>
+    <br><br>
+    <input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
+    <label for="id_vote_0" style="color: red; font-weight: bold;"> &nbsp; RED</label>
+    <br><br>
+    <input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
+    <label for="id_vote_1" style="color: blue; font-weight: bold;"> &nbsp; BLUE</label>
+</div>
+
+<br>
+<br>
+<div class="container">
+    <button class="submit-button disabled" disabled>Next</button>
+</div>
+<br>
+
+<ul>
+    <br>
+    <br>
+    <li><i>This is where all voters got their balls.</i></li>
+</ul>
+<div style="text-align: center;">
+   <img src="{% static 'global/urn.png' %}" alt="Urns" width="20%">
+</div>
+
+{{ endblock }}
