@@ -18,7 +18,7 @@ SESSION_CONFIGS = [
     dict(
         name='Voting_one_sided',
         display_name="Voting_one_sided",
-        app_sequence=['Voting_one_sided'],
+        app_sequence=['Voting_one_sided', 'payment_info_one_sided'],
         num_demo_participants=5,
     )
 ]

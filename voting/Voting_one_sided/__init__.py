@@ -289,16 +289,4 @@ class ResultsWaitPage5(WaitPage):
             player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
 
 
-class Results(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number < C.NUM_ROUNDS
-
-
-class Results_2(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
-
-
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results, Results_2]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]
