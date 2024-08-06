@@ -9,9 +9,9 @@ Voting_one_sided
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'Voting_one_sided'
+    NAME_IN_URL = 'Voting_one_sided_practice'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 5
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [
@@ -48,11 +48,11 @@ class Group(BaseGroup):
         self.chosen_player_id = chosen_player.id_in_group
         self.chosen_player_vote = chosen_player.vote
         if chosen_player.vote == self.state:
-            payoff = C.AMOUNT_SHARED_IF_WIN
+            payoff_record = C.AMOUNT_SHARED_IF_WIN
         else:
-            payoff = C.AMOUNT_SHARED_IF_LOSE
+            payoff_record = C.AMOUNT_SHARED_IF_LOSE
         for p in self.get_players():
-            p.payoff = payoff
+            p.payoff_record = payoff_record
 
     def calculate_signals(self):
         r_count = 0
@@ -70,6 +70,7 @@ class Player(BasePlayer):
     timeSpent1 = models.FloatField()
     timeSpent2 = models.FloatField()
     decision = models.StringField()
+    payoff_record = models.IntegerField(initial=0)
     info_from_whom = models.StringField()
     vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES)
     state = models.StringField()
@@ -137,6 +138,18 @@ class StartRoundWaitPage(WaitPage):
 
 
 class Welcome(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+
+class General_Instructions(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+
+class Main_Instructions(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
@@ -272,9 +285,46 @@ class ResultsWaitPage5(WaitPage):
         for player in self.group.get_players():
             player_in_selected_round = player.in_round(selected_round)
             player.selected_round = selected_round
-            player.payoff = player_in_selected_round.payoff
+            player.payoff = player_in_selected_round.payoff_record
 
-            player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
+class Results(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.NUM_ROUNDS
 
+    def vars_for_template(player):
+        return {
+            'selected_round': player.in_round(5).selected_round,
 
-page_sequence = [StartRoundWaitPage, Welcome, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]
+            'state_round_1': player.in_round(1).state,
+            'vote_round_1': player.in_round(1).vote,
+            'payoff_record_round_1': player.in_round(1).payoff_record,
+            'selected_voter_round_1': player.group.in_round(1).chosen_player_id,
+            'selected_vote_round_1': player.group.in_round(1).chosen_player_vote,
+
+            'state_round_2': player.in_round(2).state,
+            'vote_round_2': player.in_round(2).vote,
+            'payoff_record_round_2': player.in_round(2).payoff_record,
+            'selected_voter_round_2': player.group.in_round(2).chosen_player_id,
+            'selected_vote_round_2': player.group.in_round(2).chosen_player_vote,
+
+            'state_round_3': player.in_round(3).state,
+            'vote_round_3': player.in_round(3).vote,
+            'payoff_record_round_3': player.in_round(3).payoff_record,
+            'selected_voter_round_3': player.group.in_round(3).chosen_player_id,
+            'selected_vote_round_3': player.group.in_round(3).chosen_player_vote,
+
+            'state_round_4': player.in_round(4).state,
+            'vote_round_4': player.in_round(4).vote,
+            'payoff_record_round_4': player.in_round(4).payoff_record,
+            'selected_voter_round_4': player.group.in_round(4).chosen_player_id,
+            'selected_vote_round_4': player.group.in_round(4).chosen_player_vote,
+
+            'state_round_5': player.in_round(5).state,
+            'vote_round_5': player.in_round(5).vote,
+            'payoff_record_round_5': player.in_round(5).payoff_record,
+            'selected_voter_round_5': player.group.in_round(5).chosen_player_id,
+            'selected_vote_round_5': player.group.in_round(5).chosen_player_vote,
+        }
+
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results]
