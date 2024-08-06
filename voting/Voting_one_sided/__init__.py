@@ -20,16 +20,16 @@ class C(BaseConstants):
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B_4 = ['connect with voter who got B', 'connect with voter who got R', 'do not connect with anyone']
-    MAJORITY_R_4 = ['connect with voter who got R', 'connect with voter who got B', 'do not connect with anyone']
-    MAJORITY_B_3 = ['connect with voter who got B', 'connect with voter who got R', 'do not connect with anyone']
-    MAJORITY_R_3 = ['connect with voter who got R', 'connect with voter who got B', 'do not connect with anyone']
-    MINORITY_B_1 = ['connect with voter who got R', 'do not connect with anyone']
-    MINORITY_R_1 = ['connect with voter who got B', 'do not connect with anyone']
-    MINORITY_B_2 = ['connect with voter who got B', 'connect with voter who got R', 'do not connect with anyone']
-    MINORITY_R_2 = ['connect with voter who got R', 'connect with voter who got B', 'do not connect with anyone']
-    ALL_R = ['connect with voter who got R', 'do not connect with anyone']
-    ALL_B = ['connect with voter who got B', 'do not connect with anyone']
+    MAJORITY_B_4 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
+    MAJORITY_R_4 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
+    MAJORITY_B_3 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
+    MAJORITY_R_3 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
+    MINORITY_B_1 = ['send to a voter who got R', 'do not send to anyone']
+    MINORITY_R_1 = ['send to a voter who got B', 'do not send to anyone']
+    MINORITY_B_2 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
+    MINORITY_R_2 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
+    ALL_R = ['send to a voter who got R', 'do not send to anyone']
+    ALL_B = ['send to a voter who got B', 'do not send to anyone']
 
 
 class Subsession(BaseSubsession):
@@ -51,7 +51,6 @@ class Group(BaseGroup):
             payoff = C.AMOUNT_SHARED_IF_WIN
         else:
             payoff = C.AMOUNT_SHARED_IF_LOSE
-
         for p in self.get_players():
             p.payoff = payoff
 
@@ -66,6 +65,7 @@ class Group(BaseGroup):
         self.r_count = r_count
         self.b_count = b_count
 
+
 class Player(BasePlayer):
     timeSpent1 = models.FloatField()
     timeSpent2 = models.FloatField()
@@ -78,60 +78,6 @@ class Player(BasePlayer):
     selected_round = models.IntegerField()
     r_count = models.IntegerField()
     b_count = models.IntegerField()
-    num_failed_attempts = models.IntegerField(initial=0)
-    failed_too_many = models.BooleanField(initial=False)
-    quiz1 = models.IntegerField(
-        label="In the experiment, how many people in your group must vote correctly for you to earn £15?",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'only myself.'],
-            [1, 'myself and one other group member.'],
-            [2, 'everyone in the group.'],
-            [3, 'any two people in the group.'],
-        ]
-    )
-    quiz2 = models.IntegerField(
-        label="Your can only see the ball (red ball or blue ball) that your group members got, but do not know where they got this ball: Box A or Box B.",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'yes, the statement is correct.'],
-            [1, 'no, the statement is wrong. '],
-        ]
-    )
-    quiz3 = models.IntegerField(
-        label="How should you perform the ranking task?",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'I should drag the person I most want to communicate with to the first position; the order of the others does not matter.'],
-            [1, 'I should rank exactly from the one I most want to communicate with to the one I least want to communicate with.'],
-            [2, 'I can rank them randomly; the order does not matter.'],
-    ]
-    )
-    quiz4 = models.IntegerField(
-        label="If you got a red ball from Box B, which state will be more likely to be the true state?",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'RED'],
-            [1, 'BLUE'],
-    ]
-    )
-    quiz5 = models.IntegerField(
-        label="If you got a red ball from Box B and a blue ball from  Box A, which state will be more likely to be the true state?",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'RED'],
-            [1, 'BLUE'],
-    ]
-    )
-    quiz6 = models.IntegerField(
-        label="If you got a red ball from Box B and a blue ball from Box B, which state will be more likely to be the true state?",
-        widget=widgets.RadioSelect,
-        choices=[
-            [0, 'RED'],
-            [1, 'BLUE'],
-            [2, 'Equally likely'],
-    ]
-    )
 
     def get_decision_options(self):
         if self.r_count == 0:
@@ -208,25 +154,6 @@ class Main_Instructions(Page):
         return player.round_number == 1
 
 
-class Comprehension_Test(Page):
-    form_model = 'player'
-    form_fields = ['quiz1', 'quiz2', 'quiz3', 'quiz4', 'quiz5', 'quiz6']
-
-    @staticmethod
-    def error_message(player: Player, values):
-        solutions = {"quiz1": 3, "quiz2": 0, "quiz3": 1, "quiz4": 0, "quiz5": 1, "quiz6": 2}
-        errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
-        if errors:
-            player.num_failed_attempts += 1
-            if player.num_failed_attempts >= 100:
-                player.failed_too_many = True
-            else:
-                return errors
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == 1
-
-
 class ResultsWaitPage1(WaitPage):
     wait_for_all_groups = True
 
@@ -271,6 +198,7 @@ class Info_and_decision(Page):
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
 
+
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
 
@@ -282,12 +210,12 @@ class ResultsWaitPage2(WaitPage):
 
 
         for participant in all_players:
-            if participant.decision == 'connect with voter who got B':
+            if participant.decision == 'send to a voter who got B':
                 eligible_players = [p for p in all_players if p.signals == 'b' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
-            elif participant.decision == 'connect with voter who got R':
+            elif participant.decision == 'send to a voter who got R':
                 eligible_players = [p for p in all_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
@@ -312,6 +240,7 @@ class network_and_voting(Page):
                 player_signal_color = "blue"
 
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
+            all_info = participant.info_from_whom
 
             if participant.qualities == 'l':
                 quality_representation = "Box B"
@@ -325,7 +254,8 @@ class network_and_voting(Page):
                 'quality_representation': quality_representation,
                 'player_signal_style': player_signal_style,
                 'is_self': participant.id_in_group == player.id_in_group,
-                'box_info': box_info
+                'box_info': box_info,
+                'all_info': all_info
             })
 
         participants_info = sorted(participants_info, key=lambda x: not x['is_self'])
@@ -333,8 +263,6 @@ class network_and_voting(Page):
         return {
             'participants_info': participants_info
         }
-
-
 
 
 class ResultsWaitPage3(WaitPage):
@@ -373,4 +301,4 @@ class Results_2(Page):
         return player.round_number == C.NUM_ROUNDS
 
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Comprehension_Test, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results, Results_2]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results, Results_2]

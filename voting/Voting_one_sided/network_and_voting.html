@@ -1,6 +1,6 @@
 {{ block title }}
 <div style="text-align: center;">
-    <h1>Chat</h1>
+    <h1>Make Your Decision</h1>
 </div>
 {{ endblock }}
 
@@ -8,35 +8,29 @@
 
 <style>
     .content {
-        margin-left: 120px;
         font-size: 20px;
+        margin-left: 30px;
     }
     .submit-button {
-        text-align: center;
         background-color: #007BFF;
         color: white;
         border: none;
         padding: 10px 20px;
         cursor: pointer;
         outline: none;
-        float: right;
         border-radius: 8px;
+        position: relative;
+        left: -20px;
     }
     .submit-button.disabled {
         background-color: grey;
         cursor: not-allowed;
-    }
-    .ribbon {
-        position: relative;
-        top: -16px;
-        right: -706px;
     }
     .blue {
         color: blue;
     }
     table {
         width: 100%;
-        margin: auto;
         border-collapse: collapse;
         font-size: 0.8em;
     }
@@ -44,7 +38,26 @@
         border: 1px solid black;
         padding: 8px;
         text-align: center;
-        equal-width: true;
+    }
+    .player-id {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .top-section {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: -130px;
+    }
+    .left-section {
+        flex: 1.1;
+        margin-right: 50px;
+    }
+    .right-section {
+        flex: 1;
+    }
+    .next-button-container {
+        text-align: right;
+        margin-right: 50px;
     }
 </style>
 
@@ -70,7 +83,6 @@ window.onload = function() {
   }
 };
 
-// Function to enable/disable the submit button based on radio button selection and time
 function updateSubmitButton() {
     var radios = document.querySelectorAll('input[name="vote"]');
     var button = document.querySelector('.submit-button');
@@ -95,19 +107,151 @@ document.addEventListener('DOMContentLoaded', function() {
     var radios = document.querySelectorAll('input[name="vote"]');
     var button = document.querySelector('.submit-button');
 
-    // Initialize button state
     button.classList.add('disabled');
     button.disabled = true;
 
-    // Attach event listeners to radio buttons
     radios.forEach(function(radio) {
         radio.addEventListener('change', updateSubmitButton);
     });
+
+    drawPentagonAndArrows();
 });
+
+function drawPentagonAndArrows() {
+    var svgContainer = document.getElementById('svg-container');
+    var width = 500, height = 500;
+    var centerX = width / 2, centerY = height / 2;
+    var radius = 130;
+    var arrowLengthReduction = 20;
+
+    var players = [
+        {id: 1, angle: 270},
+        {id: 2, angle: 200},
+        {id: 3, angle: 144},
+        {id: 4, angle: 340},
+        {id: 5, angle: 34}
+    ];
+
+    var playerId = {{ player.id_in_group }};
+    var allInfoFromWhom = {
+        {% for participant in participants_info %}
+        {{ participant.id_in_group }}: "{{ participant.all_info }}",
+        {% endfor %}
+    };
+
+    var svg = `<svg width="${width}" height="${height}">`;
+
+    players.forEach(player => {
+        var angleRad = player.angle * (Math.PI / 180);
+        var x = centerX + radius * Math.cos(angleRad);
+        var y = centerY + radius * Math.sin(angleRad);
+        var color = player.id === playerId ? 'green' : 'gray';
+
+        svg += `<circl cx="${x}" cy="${y}" r="10" fill="${color}" />`;
+
+        var textX = x;
+        var textY = y;
+
+        if (player.id === 2) {
+            textX = x - 30;
+            textY = y + 3;
+        } else if (player.id === 4) {
+            textX = x + 28;
+            textY = y + 2;
+        } else if (player.id === 3) {
+            textX = x;
+            textY = y + 18;
+        } else if (player.id === 5) {
+            textX = x;
+            textY = y + 18;
+        } else if (player.id === 1) {
+            textX = x;
+            textY = y - 1;
+        }
+
+        var textStyle = player.id === playerId ? 'font-weight: bold;' : 'font-weight: normal;';
+        var textContent = player.id === playerId ? 'You' : `voter ${player.id}`;
+        svg += `<text x="${textX}" y="${textY}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+    });
+
+    var arrowPairs = {};
+    Object.keys(allInfoFromWhom).forEach(toId => {
+        var infoSources = allInfoFromWhom[toId].split(',').map(Number);
+        infoSources.forEach(fromId => {
+            if (fromId === parseInt(toId)) return;
+
+            var key = `${fromId}-${toId}`;
+            var reverseKey = `${toId}-${fromId}`;
+            if (!arrowPairs[key] && !arrowPairs[reverseKey]) {
+                arrowPairs[key] = 1;
+            } else if (arrowPairs[key] !== undefined) {
+                arrowPairs[key]++;
+            } else {
+                arrowPairs[reverseKey]++;
+            }
+        });
+    });
+
+    Object.keys(arrowPairs).forEach(key => {
+        var [fromId, toId] = key.split('-').map(Number);
+        var fromPlayer = players.find(p => p.id === fromId);
+        var toPlayer = players.find(p => p.id === toId);
+        var arrowCount = arrowPairs[key];
+
+        var fromAngleRad = fromPlayer.angle * (Math.PI / 180);
+        var toAngleRad = toPlayer.angle * (Math.PI / 180);
+
+        var fromX = centerX + radius * Math.cos(fromAngleRad);
+        var fromY = centerY + radius * Math.sin(fromAngleRad);
+        var toX = centerX + radius * Math.cos(toAngleRad);
+        var toY = centerY + radius * Math.sin(toAngleRad);
+
+        var midX = (fromX + toX) / 2;
+        var midY = (fromY + toY) / 2;
+
+        var dx = fromX - toX;
+        var dy = fromY - toY;
+        var length = Math.sqrt(dx * dx + dy * dy);
+        var shortenFactor = (length - arrowLengthReduction) / length;
+
+        var offsetX = 0;
+        var offsetY = 0;
+        if (arrowCount === 2) {
+            offsetX = 5 * dy / length;
+            offsetY = -5 * dx / length;
+        }
+
+        fromX = midX + (dx * shortenFactor) / 2 + offsetX;
+        fromY = midY + (dy * shortenFactor) / 2 + offsetY;
+        toX = midX - (dx * shortenFactor) / 2 + offsetX;
+        toY = midY - (dy * shortenFactor) / 2 + offsetY;
+
+        svg += `<line x1="${fromX}" y1="${fromY}" x2="${toX}" y2="${toY}" stroke="black" marker-end="url(#arrowhead)" />`;
+
+        if (arrowCount === 2) {
+            fromX = midX + (dx * shortenFactor) / 2 - offsetX;
+            fromY = midY + (dy * shortenFactor) / 2 - offsetY;
+            toX = midX - (dx * shortenFactor) / 2 - offsetX;
+            toY = midY - (dy * shortenFactor) / 2 - offsetY;
+
+            svg += `<line x1="${toX}" y1="${toY}" x2="${fromX}" y2="${fromY}" stroke="black" marker-end="url(#arrowhead)" />`;
+        }
+    });
+
+    svg += `<defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" />
+                </marker>
+            </defs>`;
+
+    svg += `</svg>`;
+    svgContainer.innerHTML = svg;
+}
 </script>
 
-<div style="display: flex; justify-content: space-between;">
-    <div style="flex: 1.1;">
+<div class="top-section">
+    <div class="left-section">
+        <br>
         <br>
         <br>
         <br>
@@ -124,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     {% if participant.is_self %}
                         You (ID: voter {{ participant.id_in_group }})
                     {% else %}
-                        Other (ID: voter {{ participant.id_in_group }})
+                        voter {{ participant.id_in_group }}
                     {% endif %}
                 </td>
                 <td>
@@ -136,6 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </tr>
             {% endfor %}
         </table>
+    </div>
+    <div class="right-section" id="svg-container">
+        <!-- The SVG container for the pentagon and arrows will be here -->
     </div>
 </div>
 
@@ -150,17 +297,14 @@ document.addEventListener('DOMContentLoaded', function() {
     <label for="id_vote_1" style="color: blue; font-weight: bold;"> &nbsp; BLUE</label>
 </div>
 
-<br>
-<br>
-<div class="container">
+<div class="next-button-container">
     <button class="submit-button disabled" disabled>Next</button>
 </div>
 <br>
-
+<br>
 <ul>
-    <br>
-    <br>
     <li><i>This is where all voters got their balls.</i></li>
+    <li><i>More detailed information please read the instructions we assigned to you.</i></li>
 </ul>
 <div style="text-align: center;">
    <img src="{% static 'global/urn.png' %}" alt="Urns" width="20%">
