@@ -11,7 +11,7 @@ Voting_one_sided
 class C(BaseConstants):
     NAME_IN_URL = 'Voting_one_sided'
     PLAYERS_PER_GROUP = 5
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 15
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
     CHOICES = [

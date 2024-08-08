@@ -1,7 +1,7 @@
 {{ extends 'global/Page.html' }}
    {{ block title }}
  <div style="text-align: center;">
-     <h1>Main Instructions: Voting</h1>
+     <h1>Main Instructions</h1>
  </div>
     {{ endblock }}
 
@@ -18,9 +18,9 @@
 
 <h2> Structure of the experiment </h2>
 <ul>
-  <li> You will face 10 rounds in this experiment. </li>
+  <li> You will face 15 rounds in today's experiment. </li>
   <li> <b>Each round is independent of other rounds</b>. </li>
-  <li> <b>Each round is equally likely to be selected for your payment</b>. </li>
+  <li> <b>Each round is equally likely to be selected for your earnings</b>. </li>
   <li> <b>You might be matched with different participants as group members in each round</b>. </li>
   <li> Thus, it is important for you to take each round seriously. </li>
 </ul>
@@ -28,63 +28,48 @@
 <h2> Structure of the round </h2>
 <h4>Stage 1:  Information </h4>
 
-                There is a state called the ''unknown state'' that is filled with multiple balls with different colors in two boxes. The state is either the <strong style="color: red;">''RED''</strong>, including two boxes: <strong><em>Box A</em></strong> and <strong><em>Box B</em></strong>, or the <strong style="color: blue;">''BLUE''</strong>, including two boxes: <strong><em>Box A</em></strong> and <strong><em>Box B</em></strong>. As you can see in the following Figure, the <strong style="color: red;">''RED''</strong> has more red balls, and the <strong style="color: blue;">''BLUE''</strong> has more blue balls in each box.
+                There is a state called ''unknown state'' that is filled with multiple balls with different colors in two boxes. The state is either the <strong style="color: red;">''RED''</strong>, which includes two boxes: <strong><em>Box A</em></strong> and <strong><em>Box B</em></strong>, or the <strong style="color: blue;">''BLUE''</strong>, which includes two boxes: <strong><em>Box A</em></strong> and <strong><em>Box B</em></strong>. As you can see in the following Figure, the <strong style="color: red;">''RED''</strong> has more red balls, and the <strong style="color: blue;">''BLUE''</strong> has more blue balls in each box.
 <ul>
 <br>
 <br>
 <div style="text-align: center;">
-   <img src="{% static 'global/urn.png' %}" alt="Urns" width="70%" style="margin-right: 80px;">
+   <img src="{% static 'global/urn.png' %}" alt="Urns" width="90%" style="margin-right: 80px;">
 </div>
 <br>
 <br>
-    <li>Every <b>3 participants</b> in this lab are randomly selected into one group in the beginning of each round. </li>
-    <li>We will roll a die and determine the ''unknown state'' - either the <strong style="color: red;">''RED''</strong> or <strong style="color: red;">''BLUE''</strong>. <b>No one will be told which one is chosen!</b></li>
-    <li>You are asked to select a card to reveal a box <strong><em>from the chosen state:</em></strong> </li>
+    <li>At the beginning of each round, every 5 participants in this lab will be randomly selected into one group, and each participant will be given a unique ID for that round.  </li>
+    <li>In your group, the computer will flip a coin (50-50) to determine the “unknown state” - either <strong style="color: red;">''RED''</strong> or <strong style="color: blue;">''BLUE''</strong>. <b>No one will be told which one is actually selected!</b> </li>
+    <li>For each of you, the computer will flip a coin (50-50) again to determine a box from the selected state - either <strong><em>Box A</em></strong> or <strong><em>Box B</em></strong>. </li>
+    <li>For each of you, the computer will randomly and independently pick a ball from your selected box - either <span class='ball red-ball'></span> or <span class='ball blue-ball'></span> . </li>
+    <li>The ball that each group member got will be shown to other group members, <b>BUT</b> the selected box will not be shown to other group members (your box information is private).</li>
+    <li>e.g., if you got a red ball from <strong><em>Box A</em></strong>, and your group members: two got red balls and two got blue balls, you will be shown the following:</li>
+
 <div style="text-align: center;">
-   <img src="{% static 'global/box.png' %}" alt="Urns" width="70%" style="margin-right: 80px;">
+   <img src="{% static 'global/1.png' %}" alt="Urns" width="100%" style="margin-right: 80px;">
 </div>
-    <li><strong><em>From the chosen state and your selected box</em></strong>, you are asked to select a ball to reveal its color:</li>
-<div style="text-align: center;">
-   <img src="{% static 'global/ball.png' %}" alt="Urns" width="70%" style="margin-right: 80px;">
-</div>
-    <li>The color of the ball (not <strong><em>Box A</em></strong> or <strong><em>Box B</em></strong>!) you and your group members got will be shown to everyone in your group.</li>
-    <li>e.g., if you got a red ball from <strong><em>Box A</em></strong>, and your group members got a red ball and a blue ball, you will be shown the following: </li>
-<div style="text-align: center;">
-   <img src="{% static 'global/info.png' %}" alt="Urns" width="70%" style="margin-right: 80px;">
-</div>
+
 <br>
 <br>
 </ul>
 
-<h4>Stage 2: Who you want to connect with</h4>
+<h4>Stage 2: Send your information</h4>
 
-In this stage, you can gain more information by connecting with at most one voter in your group. How you can connect with other group members depends on your choice and other group members choices in the following task.
 <ul>
 <br>
-    <li>You are asked to rank whom you want to connect with from the most to the least. You will see the following interface:  </li>
+    <li> At this stage, you are asked to choose whom you want to send your private information (i.e., your box information) to:  </li>
+      a) &nbsp send to a voter who got <span class='ball red-ball'></span>
+<br>
+      b) &nbsp send to a voter who got <span class='ball blue-ball'></span>
+<br>
+      c) &nbsp do not send to anyone
 <br>
 <br>
+    <span style="font-size: smaller; font-style: italic;">N.B. 1. If there is more than one group member (except you) who got the same ball, the computer will randomly send your private information to one of them; 2. if no group member (except you) got the red ball, option a) will not be available; if no group member (except you) got the blue ball, option b) will not be available.</span>
+<br>
+    <li>e.g. you will be shown the following:</li>
+
 <div style="text-align: center;">
-   <img src="{% static 'global/network.png' %}" alt="Urns" width="70%">
-</div>
-<br>
-<br>
-    <li>The computer will match you with other group members based on your ranking, i.e. <strong><em>the computer will match you first with the group member you put in the first box, then with the one in the second box, and so on until the last box.</em></strong></li>
-    <li>So it is <b>IMPORTANT</b> for you to rank exactly based on who you want to connect with from the most to the least.  </li>
-    <li>If you are not successfully connected to any voters in your group, you just wait in the page for one minute. You will see the following screenshot:</li>
-    <br>
-<br>
-<div style="text-align: center;">
-   <img src="{% static 'global/non-chat.png' %}" alt="Urns" width="50%">
-</div>
-<br>
-<br>
-</ul>
-    <li>If you are successfully connected to another participant, you can (I) see he/she got a ball from which box: either <strong><em>Box A</em></strong> or <strong><em>Box B</em></strong>; (II) freely to chat with him/her for 1 minute. You will see the following screenshot:</li>
-    <br>
-<br>
-<div style="text-align: center;">
-   <img src="{% static 'global/chat.png' %}" alt="Urns" width="80%">
+   <img src="{% static 'global/2.png' %}" alt="Urns" width="100%">
 </div>
 <br>
 <br>
@@ -93,15 +78,20 @@ In this stage, you can gain more information by connecting with at most one vote
 <h4>Stage 3: Voting</h4>
 
 <ul>
-    <li>Now you need to vote about which state is chosen in stage 1: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>. </li>
+    <li>Once all group members have finished Stage 2, you will be shown the following:</li>
+    1) &nbsp the left table will have more box information if other group members choose to send their private box information to you.
+<br>
+    2) &nbsp the network diagram on the right includes the flow of information.
+<br>
+    3) &nbsp you need to vote for which state was chosen at stage 1: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>.
 <br>
 <br>
 <div style="text-align: center;">
-   <img src="{% static 'global/vote.png' %}" alt="Urns" width="70%">
+   <img src="{% static 'global/3.png' %}" alt="Urns" width="100%">
 </div>
 <br>
 <br>
-    <li>Your payoff is determined by the number of correct votes: If there are majority (2 or 3) participants in your group vote correctly, each of you in the group will earn <strong style="font-size: 24px;">£15！</strong> If there are 0 or 1 participant in your group vote correctly, each of you in the group will only earn <b>£2</b>!</li>
+    <li>Your earnings: the computer will randomly determine a group member, if he/she votes correctly, each of you in the group will earn <strong style="font-size: 24px;">£15！</strong> If he/she votes incorrectly, each of you in the group will only earn <strong style="font-size: 24px;">£2！</strong></li>
 </ul>
 
 
@@ -142,6 +132,24 @@ In this stage, you can gain more information by connecting with at most one vote
         }
         tr.width_bottom > td, td.width_bottom{
            border-bottom-width:4px;
+        }
+        .red-ball {
+            height: 1em;
+            width: 1em;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        .blue-ball {
+            height: 1em;
+            width: 1em;
+            background-color: blue;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 5px;
         }
     </style>
 {{ endblock }}

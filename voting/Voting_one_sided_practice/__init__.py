@@ -154,6 +154,10 @@ class Main_Instructions(Page):
     def is_displayed(player: Player):
         return player.round_number == 1
 
+class Practice(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
 class ResultsWaitPage1(WaitPage):
     wait_for_all_groups = True
@@ -327,4 +331,4 @@ class Results(Page):
             'selected_vote_round_5': player.group.in_round(5).chosen_player_vote,
         }
 
-page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results]
+page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Practice, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results]
