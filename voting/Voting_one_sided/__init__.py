@@ -71,6 +71,7 @@ class Player(BasePlayer):
     timeSpent2 = models.FloatField()
     decision = models.StringField()
     info_from_whom = models.StringField()
+    chosen_receiver = models.IntegerField(null=True)
     vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES)
     state = models.StringField()
     qualities = models.StringField()
@@ -203,11 +204,13 @@ class ResultsWaitPage2(WaitPage):
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
+                    participant.chosen_receiver = chosen_receiver.id_in_group
             elif participant.decision == 'send to a voter who got R':
                 eligible_players = [p for p in all_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
+                    participant.chosen_receiver = chosen_receiver.id_in_group
 
 
 class network_and_voting(Page):

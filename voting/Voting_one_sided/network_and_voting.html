@@ -122,7 +122,6 @@ function drawPentagonAndArrows() {
     var width = 500, height = 500;
     var centerX = width / 2, centerY = height / 2;
     var radius = 130;
-    var arrowLengthReduction = 20;
 
     var players = [
         {id: 1, angle: 270},
@@ -133,6 +132,12 @@ function drawPentagonAndArrows() {
     ];
 
     var playerId = {{ player.id_in_group }};
+    var playerSignalStyles = {
+        {% for participant in participants_info %}
+        {{ participant.id_in_group }}: "{{ participant.player_signal_style }}",
+        {% endfor %}
+    };
+
     var allInfoFromWhom = {
         {% for participant in participants_info %}
         {{ participant.id_in_group }}: "{{ participant.all_info }}",
@@ -140,39 +145,6 @@ function drawPentagonAndArrows() {
     };
 
     var svg = `<svg width="${width}" height="${height}">`;
-
-    players.forEach(player => {
-        var angleRad = player.angle * (Math.PI / 180);
-        var x = centerX + radius * Math.cos(angleRad);
-        var y = centerY + radius * Math.sin(angleRad);
-        var color = player.id === playerId ? 'green' : 'gray';
-
-        svg += `<circl cx="${x}" cy="${y}" r="10" fill="${color}" />`;
-
-        var textX = x;
-        var textY = y;
-
-        if (player.id === 2) {
-            textX = x - 30;
-            textY = y + 3;
-        } else if (player.id === 4) {
-            textX = x + 28;
-            textY = y + 2;
-        } else if (player.id === 3) {
-            textX = x;
-            textY = y + 18;
-        } else if (player.id === 5) {
-            textX = x;
-            textY = y + 18;
-        } else if (player.id === 1) {
-            textX = x;
-            textY = y - 1;
-        }
-
-        var textStyle = player.id === playerId ? 'font-weight: bold;' : 'font-weight: normal;';
-        var textContent = player.id === playerId ? 'You' : `voter ${player.id}`;
-        svg += `<text x="${textX}" y="${textY}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
-    });
 
     var arrowPairs = {};
     Object.keys(allInfoFromWhom).forEach(toId => {
@@ -212,7 +184,7 @@ function drawPentagonAndArrows() {
         var dx = fromX - toX;
         var dy = fromY - toY;
         var length = Math.sqrt(dx * dx + dy * dy);
-        var shortenFactor = (length - arrowLengthReduction) / length;
+        var shortenFactor = (length - 60) / length;  // adjust arrow length
 
         var offsetX = 0;
         var offsetY = 0;
@@ -239,14 +211,47 @@ function drawPentagonAndArrows() {
     });
 
     svg += `<defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
                     <polygon points="0 0, 10 3.5, 0 7" />
                 </marker>
             </defs>`;
 
+    players.forEach(player => {
+        var angleRad = player.angle * (Math.PI / 180);
+        var x = centerX + radius * Math.cos(angleRad);
+        var y = centerY + radius * Math.sin(angleRad);
+        var color = player.id === playerId ? 'green' : 'gray';
+
+        svg += `<circl cx="${x}" cy="${y}" r="10" fill="${color}" />`;
+
+        var textX = x;
+        var textY = y;
+        var textStyle = player.id === playerId ? 'font-weight: bold;' : 'font-weight: normal;';
+        var textContent = player.id === playerId ? 'You' : `voter ${player.id}`;
+
+        if (player.id === 1) {
+            svg += `<text x="${textX}" y="${textY + 15}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<foreignObject x="${textX - 15}" y="${textY - 30}" width="30" height="30">
+                        <div style="${playerSignalStyles[player.id]}"></div>
+                    </foreignObject>`;
+        } else if (player.id === 2 || player.id === 3) {
+            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<foreignObject x="${textX - 60}" y="${textY - 13}" width="30" height="30">
+                        <div style="${playerSignalStyles[player.id]}"></div>
+                    </foreignObject>`;
+        } else if (player.id === 4 || player.id === 5) {
+            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<foreignObject x="${textX + 30}" y="${textY - 14}" width="30" height="30">
+                        <div style="${playerSignalStyles[player.id]}"></div>
+                    </foreignObject>`;
+        }
+    });
+
+
     svg += `</svg>`;
     svgContainer.innerHTML = svg;
 }
+
 </script>
 
 <div class="top-section">
