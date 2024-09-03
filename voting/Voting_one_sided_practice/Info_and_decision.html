@@ -142,13 +142,13 @@ function checkSelection() {
                 <th>Which Box</th>
             </tr>
             <tr>
-                <td>You (ID: voter {{ player.id_in_group }})</td>
+                <td>You (ID: player {{ player.id_in_group }})</td>
                 <td><span style="{{ player_signal_style }}"></span></td>
                 <td>{{ quality }}</td>
             </tr>
             {% for signal_info in other_signals_info %}
             <tr>
-                <td> voter {{ signal_info.player_id }}</td>
+                <td> player {{ signal_info.player_id }}</td>
                 <td><span style="{{ signal_info.signal_style }}"></span></td>
                 <td>Unknown</td>
             </tr>
@@ -177,11 +177,11 @@ function checkSelection() {
 <br>
 
 <ul>
-    <li><i>This is where all voters got their balls. More detailed information please read the instructions we assigned to you.</i></li>
+    <li><i>This is where all players got their balls. More detailed information please read the instructions we assigned to you.</i></li>
 </ul>
 
 <div style="text-align: center;">
-    <img src="{% static 'global/urn.png' %}" alt="Urns" width="30%">
+    <img src="{% static 'global/urn.png' %}" alt="Urns" width="50%">
 </div>
 <br>
 

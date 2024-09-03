@@ -30,13 +30,13 @@
         color: blue;
     }
     table {
-        width: 100%;
+        width: 120%;
         border-collapse: collapse;
         font-size: 0.8em;
     }
     th, td {
         border: 1px solid black;
-        padding: 8px;
+        padding: 6px;
         text-align: center;
     }
     .player-id {
@@ -45,19 +45,22 @@
     }
     .top-section {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: -130px;
+        margin-top: 60px;
     }
-    .left-section {
-        flex: 1.1;
-        margin-right: 50px;
+     .left-section {
+        flex: 0.55;
+        margin-right: 10%;
+    }
+    .middle-section {
+        flex: 0.1;
+        margin-right: 5%;
     }
     .right-section {
-        flex: 1;
+        flex: 0.41;
     }
     .next-button-container {
         text-align: right;
-        margin-right: 50px;
+        margin-right: 10px;
     }
 </style>
 
@@ -119,9 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function drawPentagonAndArrows() {
     var svgContainer = document.getElementById('svg-container');
-    var width = 500, height = 500;
+    var width = 300, height = 300;
     var centerX = width / 2, centerY = height / 2;
-    var radius = 130;
+    var radius = 80;
 
     var players = [
         {id: 1, angle: 270},
@@ -211,7 +214,7 @@ function drawPentagonAndArrows() {
     });
 
     svg += `<defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="8" refY="3.5" orient="auto">
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="3" refY="3.5" orient="auto">
                     <polygon points="0 0, 10 3.5, 0 7" />
                 </marker>
             </defs>`;
@@ -227,20 +230,20 @@ function drawPentagonAndArrows() {
         var textX = x;
         var textY = y;
         var textStyle = player.id === playerId ? 'font-weight: bold;' : 'font-weight: normal;';
-        var textContent = player.id === playerId ? 'You' : `voter ${player.id}`;
+        var textContent = player.id === playerId ? 'You' : `player ${player.id}`;
 
         if (player.id === 1) {
-            svg += `<text x="${textX}" y="${textY + 15}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
             svg += `<foreignObject x="${textX - 15}" y="${textY - 30}" width="30" height="30">
                         <div style="${playerSignalStyles[player.id]}"></div>
                     </foreignObject>`;
         } else if (player.id === 2 || player.id === 3) {
-            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<text x="${textX-6}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
             svg += `<foreignObject x="${textX - 60}" y="${textY - 13}" width="30" height="30">
                         <div style="${playerSignalStyles[player.id]}"></div>
                     </foreignObject>`;
         } else if (player.id === 4 || player.id === 5) {
-            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
+            svg += `<text x="${textX+4}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
             svg += `<foreignObject x="${textX + 30}" y="${textY - 14}" width="30" height="30">
                         <div style="${playerSignalStyles[player.id]}"></div>
                     </foreignObject>`;
@@ -258,9 +261,6 @@ function drawPentagonAndArrows() {
     <div class="left-section">
         <br>
         <br>
-        <br>
-        <br>
-        <br>
         <table border="1">
             <tr>
                 <th></th>
@@ -271,9 +271,9 @@ function drawPentagonAndArrows() {
             <tr>
                 <td>
                     {% if participant.is_self %}
-                        You (ID: voter {{ participant.id_in_group }})
+                        You (ID: player {{ participant.id_in_group }})
                     {% else %}
-                        voter {{ participant.id_in_group }}
+                        player {{ participant.id_in_group }}
                     {% endif %}
                 </td>
                 <td>
@@ -286,33 +286,37 @@ function drawPentagonAndArrows() {
             {% endfor %}
         </table>
     </div>
-    <div class="right-section" id="svg-container">
+    <div class="middle-section" id="svg-container">
         <!-- The SVG container for the pentagon and arrows will be here -->
+    </div>
+    <div class="right-section">
+        <br>
+        <br>
+        <br>
+        Please vote for <strong style="color: red;">RED</strong> or <strong style="color: blue;">BLUE</strong>
+        <br><br>
+        <input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
+        <label for="id_vote_0" style="color: red; font-weight: bold; font-size: 24px;"> &nbsp; RED</label>
+        <br><br>
+        <input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
+        <label for="id_vote_1" style="color: blue; font-weight: bold; font-size: 24px;"> &nbsp; BLUE</label>
     </div>
 </div>
 
-<div class="content">
-    <br>
-    Please vote for <strong style="color: red;">RED</strong> or <strong style="color: blue;">BLUE</strong>
-    <br><br>
-    <input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
-    <label for="id_vote_0" style="color: red; font-weight: bold;"> &nbsp; RED</label>
-    <br><br>
-    <input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
-    <label for="id_vote_1" style="color: blue; font-weight: bold;"> &nbsp; BLUE</label>
-</div>
+<br>
 
 <div class="next-button-container">
     <button class="submit-button disabled" disabled>Next</button>
 </div>
+
+
 <br>
-<br>
+
 <ul>
-    <li><i>This is where all voters got their balls.</i></li>
-    <li><i>More detailed information please read the instructions we assigned to you.</i></li>
+    <li><i>This is where all players got their balls. More detailed information please read the instructions we assigned to you.</i></li>
 </ul>
 <div style="text-align: center;">
-   <img src="{% static 'global/urn.png' %}" alt="Urns" width="20%">
+   <img src="{% static 'global/urn.png' %}" alt="Urns" width="50%">
 </div>
 
 {{ endblock }}

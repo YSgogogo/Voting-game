@@ -38,7 +38,7 @@ class Player(BasePlayer):
     Major = models.StringField()
     Age = models.StringField()
     How_choose = models.StringField()
-
+    Email_address = models.StringField()
 
 
 class Instruction(Page):
@@ -59,10 +59,15 @@ class Survey(Page):
 
         participant.payoff += player.money_to_pay
 
+class Email(Page):
+    form_model = 'player'
+    form_fields = ['Email_address']
 
+class ResultsWaitPage(WaitPage):
+    wait_for_all_groups = True
 
 class Payment(Page):
     pass
 
 
-page_sequence = [Instruction, Survey, Payment]
+page_sequence = [Instruction, Survey, Email, ResultsWaitPage, Payment]

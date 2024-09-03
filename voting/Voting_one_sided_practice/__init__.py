@@ -20,16 +20,16 @@ class C(BaseConstants):
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B_4 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MAJORITY_R_4 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    MAJORITY_B_3 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MAJORITY_R_3 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    MINORITY_B_1 = ['send to a voter who got R', 'do not send to anyone']
-    MINORITY_R_1 = ['send to a voter who got B', 'do not send to anyone']
-    MINORITY_B_2 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MINORITY_R_2 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    ALL_R = ['send to a voter who got R', 'do not send to anyone']
-    ALL_B = ['send to a voter who got B', 'do not send to anyone']
+    MAJORITY_B_4 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MAJORITY_R_4 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    MAJORITY_B_3 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MAJORITY_R_3 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    MINORITY_B_1 = ['send to a player who got R', 'do not send to anyone']
+    MINORITY_R_1 = ['send to a player who got B', 'do not send to anyone']
+    MINORITY_B_2 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MINORITY_R_2 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    ALL_R = ['send to a player who got R', 'do not send to anyone']
+    ALL_B = ['send to a player who got B', 'do not send to anyone']
 
 
 class Subsession(BaseSubsession):
@@ -216,13 +216,13 @@ class ResultsWaitPage2(WaitPage):
 
 
         for participant in all_players:
-            if participant.decision == 'send to a voter who got B':
+            if participant.decision == 'send to a player who got B':
                 eligible_players = [p for p in all_players if p.signals == 'b' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
                     participant.chosen_receiver = chosen_receiver.id_in_group
-            elif participant.decision == 'send to a voter who got R':
+            elif participant.decision == 'send to a player who got R':
                 eligible_players = [p for p in all_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
@@ -303,35 +303,36 @@ class Results(Page):
         return {
             'selected_round': player.in_round(5).selected_round,
 
-            'state_round_1': player.in_round(1).state,
-            'vote_round_1': player.in_round(1).vote,
+            'vote_round_1': 'RED' if player.in_round(1).vote == 'R' else 'BLUE',
+            'state_round_1': 'RED' if player.in_round(1).state == 'R' else 'BLUE',
             'payoff_record_round_1': player.in_round(1).payoff_record,
             'selected_voter_round_1': player.group.in_round(1).chosen_player_id,
-            'selected_vote_round_1': player.group.in_round(1).chosen_player_vote,
+            'selected_vote_round_1': 'RED' if player.group.in_round(1).chosen_player_vote == 'R' else 'BLUE',
 
-            'state_round_2': player.in_round(2).state,
-            'vote_round_2': player.in_round(2).vote,
+            'vote_round_2': 'RED' if player.in_round(2).vote == 'R' else 'BLUE',
+            'state_round_2': 'RED' if player.in_round(2).state == 'R' else 'BLUE',
             'payoff_record_round_2': player.in_round(2).payoff_record,
             'selected_voter_round_2': player.group.in_round(2).chosen_player_id,
-            'selected_vote_round_2': player.group.in_round(2).chosen_player_vote,
+            'selected_vote_round_2': 'RED' if player.group.in_round(2).chosen_player_vote == 'R' else 'BLUE',
 
-            'state_round_3': player.in_round(3).state,
-            'vote_round_3': player.in_round(3).vote,
+            'vote_round_3': 'RED' if player.in_round(3).vote == 'R' else 'BLUE',
+            'state_round_3': 'RED' if player.in_round(3).state == 'R' else 'BLUE',
             'payoff_record_round_3': player.in_round(3).payoff_record,
             'selected_voter_round_3': player.group.in_round(3).chosen_player_id,
-            'selected_vote_round_3': player.group.in_round(3).chosen_player_vote,
+            'selected_vote_round_3': 'RED' if player.group.in_round(3).chosen_player_vote == 'R' else 'BLUE',
 
-            'state_round_4': player.in_round(4).state,
-            'vote_round_4': player.in_round(4).vote,
+            'vote_round_4': 'RED' if player.in_round(4).vote == 'R' else 'BLUE',
+            'state_round_4': 'RED' if player.in_round(4).state == 'R' else 'BLUE',
             'payoff_record_round_4': player.in_round(4).payoff_record,
             'selected_voter_round_4': player.group.in_round(4).chosen_player_id,
-            'selected_vote_round_4': player.group.in_round(4).chosen_player_vote,
+            'selected_vote_round_4': 'RED' if player.group.in_round(4).chosen_player_vote == 'R' else 'BLUE',
 
-            'state_round_5': player.in_round(5).state,
-            'vote_round_5': player.in_round(5).vote,
+            'vote_round_5': 'RED' if player.in_round(5).vote == 'R' else 'BLUE',
+            'state_round_5': 'RED' if player.in_round(5).state == 'R' else 'BLUE',
             'payoff_record_round_5': player.in_round(5).payoff_record,
             'selected_voter_round_5': player.group.in_round(5).chosen_player_id,
-            'selected_vote_round_5': player.group.in_round(5).chosen_player_vote,
+            'selected_vote_round_5': 'RED' if player.group.in_round(5).chosen_player_vote == 'R' else 'BLUE',
+
         }
 
 page_sequence = [StartRoundWaitPage, Welcome, General_Instructions, Main_Instructions, Practice, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5, Results]

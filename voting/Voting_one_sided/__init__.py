@@ -20,16 +20,16 @@ class C(BaseConstants):
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B_4 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MAJORITY_R_4 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    MAJORITY_B_3 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MAJORITY_R_3 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    MINORITY_B_1 = ['send to a voter who got R', 'do not send to anyone']
-    MINORITY_R_1 = ['send to a voter who got B', 'do not send to anyone']
-    MINORITY_B_2 = ['send to a voter who got B', 'send to a voter who got R', 'do not send to anyone']
-    MINORITY_R_2 = ['send to a voter who got R', 'send to a voter who got B', 'do not send to anyone']
-    ALL_R = ['send to a voter who got R', 'do not send to anyone']
-    ALL_B = ['send to a voter who got B', 'do not send to anyone']
+    MAJORITY_B_4 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MAJORITY_R_4 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    MAJORITY_B_3 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MAJORITY_R_3 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    MINORITY_B_1 = ['send to a player who got R', 'do not send to anyone']
+    MINORITY_R_1 = ['send to a player who got B', 'do not send to anyone']
+    MINORITY_B_2 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
+    MINORITY_R_2 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
+    ALL_R = ['send to a player who got R', 'do not send to anyone']
+    ALL_B = ['send to a player who got B', 'do not send to anyone']
 
 
 class Subsession(BaseSubsession):
@@ -199,13 +199,13 @@ class ResultsWaitPage2(WaitPage):
 
 
         for participant in all_players:
-            if participant.decision == 'send to a voter who got B':
+            if participant.decision == 'send to a player who got B':
                 eligible_players = [p for p in all_players if p.signals == 'b' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
                     participant.chosen_receiver = chosen_receiver.id_in_group
-            elif participant.decision == 'send to a voter who got R':
+            elif participant.decision == 'send to a player who got R':
                 eligible_players = [p for p in all_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
