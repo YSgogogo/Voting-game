@@ -4,12 +4,12 @@ import json
 
 
 doc = """
-Voting_one_sided
+Voting_practice_treatment_1
 """
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'Voting_one_sided_practice'
+    NAME_IN_URL = 'Voting_practice_treatment_1'
     PLAYERS_PER_GROUP = 5
     NUM_ROUNDS = 5
     AMOUNT_SHARED_IF_WIN = 15

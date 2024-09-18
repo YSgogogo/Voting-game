@@ -74,7 +74,7 @@ var selectionMade = false;
 function pageTick() {
   pageTimeElapsed++;
   document.getElementById("timeSpent2").value = pageTimeElapsed;
-  if (pageTimeElapsed >= 10) {
+  if (pageTimeElapsed >= 5) {
     timerFinished = true;
     updateSubmitButton();
   }
@@ -308,8 +308,8 @@ function drawPentagonAndArrows() {
     <button class="submit-button disabled" disabled>Next</button>
 </div>
 
-
 <hr style="border: 2px solid grey;">
+
 
 <ul>
     <li><i>This is where all players got their balls. More detailed information please read the instructions we assigned to you.</i></li>

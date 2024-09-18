@@ -4,32 +4,36 @@ import json
 
 
 doc = """
-Voting_one_sided
+Voting_real_treatment_2
 """
 
 
 class C(BaseConstants):
-    NAME_IN_URL = 'Voting_one_sided'
+    NAME_IN_URL = 'Voting_real_treatment_2'
     PLAYERS_PER_GROUP = 5
     NUM_ROUNDS = 15
     AMOUNT_SHARED_IF_WIN = 15
     AMOUNT_SHARED_IF_LOSE = 2
+    QUESTIONS = [
+        ('cat', 'CAT'),
+        ('dog', 'DOG')
+    ]
     CHOICES = [
         ('R', 'RED Box'),
         ('B', 'BLUE Box')
     ]
     STATES = ['R', 'B']
     QUALITIES = ['h', 'l']
-    MAJORITY_B_4 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
-    MAJORITY_R_4 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
-    MAJORITY_B_3 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
-    MAJORITY_R_3 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
-    MINORITY_B_1 = ['send to a player who got R', 'do not send to anyone']
-    MINORITY_R_1 = ['send to a player who got B', 'do not send to anyone']
-    MINORITY_B_2 = ['send to a player who got B', 'send to a player who got R', 'do not send to anyone']
-    MINORITY_R_2 = ['send to a player who got R', 'send to a player who got B', 'do not send to anyone']
-    ALL_R = ['send to a player who got R', 'do not send to anyone']
-    ALL_B = ['send to a player who got B', 'do not send to anyone']
+    MAJORITY_C_4 = ['send to a player who chose CAT', 'send to a player who chose DOG', 'do not send to anyone']
+    MAJORITY_D_4 = ['send to a player who chose DOG', 'send to a player who chose CAT', 'do not send to anyone']
+    MAJORITY_C_3 = ['send to a player who chose CAT', 'send to a player who chose DOG', 'do not send to anyone']
+    MAJORITY_D_3 = ['send to a player who chose DOG', 'send to a player who chose CAT', 'do not send to anyone']
+    MINORITY_C_1 = ['send to a player who chose DOG', 'do not send to anyone']
+    MINORITY_D_1 = ['send to a player who chose CAT', 'do not send to anyone']
+    MINORITY_C_2 = ['send to a player who chose CAT', 'send to a player who chose DOG', 'do not send to anyone']
+    MINORITY_D_2 = ['send to a player who chose DOG', 'send to a player who chose CAT', 'do not send to anyone']
+    ALL_C = ['send to a player who chose DOG', 'do not send to anyone']
+    ALL_D = ['send to a player who chose CAT', 'do not send to anyone']
 
 
 class Subsession(BaseSubsession):
@@ -39,8 +43,8 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     state = models.StringField()
-    r_count = models.IntegerField(initial=0)
-    b_count = models.IntegerField(initial=0)
+    D_count = models.IntegerField(initial=0)
+    C_count = models.IntegerField(initial=0)
     chosen_player_id = models.IntegerField()
     chosen_player_vote = models.StringField()
     def set_payoffs(self):
@@ -55,56 +59,58 @@ class Group(BaseGroup):
             p.payoff = payoff
 
     def calculate_signals(self):
-        r_count = 0
-        b_count = 0
+        D_count = 0
+        C_count = 0
         for p in self.get_players():
-            if p.signals == 'r':
-                r_count += 1
-            elif p.signals == 'b':
-                b_count += 1
-        self.r_count = r_count
-        self.b_count = b_count
+            if p.question == 'cat':
+                C_count += 1
+            elif p.question == 'dog':
+                D_count += 1
+        self.D_count = D_count
+        self.C_count = C_count
 
 
 class Player(BasePlayer):
+    timeSpent0 = models.FloatField()
     timeSpent1 = models.FloatField()
     timeSpent2 = models.FloatField()
     decision = models.StringField()
     info_from_whom = models.StringField()
     chosen_receiver = models.IntegerField(null=True)
     vote = models.StringField(widget=widgets.RadioSelect, choices=C.CHOICES)
+    question = models.StringField(widget=widgets.RadioSelect, choices=C.QUESTIONS)
     state = models.StringField()
     qualities = models.StringField()
     signals = models.CharField()
     selected_round = models.IntegerField()
-    r_count = models.IntegerField()
-    b_count = models.IntegerField()
+    D_count = models.IntegerField()
+    C_count = models.IntegerField()
 
     def get_decision_options(self):
-        if self.r_count == 0:
-            return C.ALL_B
-        elif self.r_count == 1:
-            if self.signals == 'b':
-                return C.MAJORITY_B_4
+        if self.D_count == 0:
+            return C.ALL_C
+        elif self.D_count == 1:
+            if self.question == 'cat':
+                return C.MAJORITY_C_4
             else:  # signals == 'r'
-                return C.MINORITY_R_1
-        elif self.r_count == 2:
-            if self.signals == 'b':
-                return C.MAJORITY_B_3
+                return C.MINORITY_D_1
+        elif self.D_count == 2:
+            if self.question == 'cat':
+                return C.MAJORITY_C_3
             else:  # signals == 'r'
-                return C.MINORITY_R_2
-        elif self.r_count == 3:
-            if self.signals == 'b':
-                return C.MINORITY_B_2
+                return C.MINORITY_D_2
+        elif self.D_count == 3:
+            if self.question == 'cat':
+                return C.MINORITY_C_2
             else:  # signals == 'r'
-                return C.MAJORITY_R_3
-        elif self.r_count == 4:
-            if self.signals == 'b':
-                return C.MINORITY_B_1
+                return C.MAJORITY_D_3
+        elif self.D_count == 4:
+            if self.question == 'cat':
+                return C.MINORITY_C_1
             else:  # signals == 'r'
-                return C.MAJORITY_R_4
-        else:  # r_count = 5
-            return C.ALL_R
+                return C.MAJORITY_D_4
+        else:  # D_count = 5
+            return C.ALL_D
 
 
 class StartRoundWaitPage(WaitPage):
@@ -131,11 +137,6 @@ class StartRoundWaitPage(WaitPage):
                     else:  # 'l'
                         player.signals = 'r' if random.random() < 3 / 7 else 'b'
 
-            group.calculate_signals()
-            for player in group.get_players():
-                player.r_count = group.r_count
-                player.b_count = group.b_count
-
 
 class Welcome(Page):
     @staticmethod
@@ -143,9 +144,25 @@ class Welcome(Page):
         return player.round_number == 1
 
 
-class ResultsWaitPage1(WaitPage):
+
+class ResultsWaitPage0(WaitPage):
     wait_for_all_groups = True
 
+
+class question_answering(Page):
+    form_model = 'player'
+    form_fields = ['timeSpent0','question']
+
+
+class ResultsWaitPage1(WaitPage):
+    wait_for_all_groups = True
+    @staticmethod
+    def after_all_players_arrive(subsession):
+        for group in subsession.get_groups():
+            group.calculate_signals()
+            for player in group.get_players():
+                player.D_count = group.D_count
+                player.C_count = group.C_count
 
 class Info_and_decision(Page):
     form_model = 'player'
@@ -162,23 +179,30 @@ class Info_and_decision(Page):
         else:  # 'b'
             player_signal_color = "blue"
 
+        if player.question == 'cat':
+            p_question = "CAT"
+        else:
+            p_question = "DOG"
+
         player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
+        p_self_question = p_question
 
         other_signals_info = []
         for p in player.group.get_players():
             if p.id_in_group != player.id_in_group:
-                if p.signals == 'r':
-                    signal_color = "red"
-                else:  # 'b'
-                    signal_color = "blue"
+                if p.question == 'cat':
+                    p_question = "CAT"
+                else:
+                    p_question = "DOG"
 
                 other_signals_info.append({
                     'player_id': p.id_in_group,
-                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;",
+                    'other_p_question': p_question,
                 })
 
         return dict(
             quality=quality_display,
+            player_question=p_self_question,
             player_signal_style=player_signal_style,
             other_signals_info=other_signals_info,
         )
@@ -199,14 +223,14 @@ class ResultsWaitPage2(WaitPage):
 
 
         for participant in all_players:
-            if participant.decision == 'send to a player who got B':
-                eligible_players = [p for p in all_players if p.signals == 'b' and p.id_in_group != participant.id_in_group]
+            if participant.decision == 'send to a player who chose CAT':
+                eligible_players = [p for p in all_players if p.question == 'cat' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
                     participant.chosen_receiver = chosen_receiver.id_in_group
-            elif participant.decision == 'send to a player who got R':
-                eligible_players = [p for p in all_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
+            elif participant.decision == 'send to a player who chose DOG':
+                eligible_players = [p for p in all_players if p.question == 'dog' and p.id_in_group != participant.id_in_group]
                 if eligible_players:
                     chosen_receiver = random.choice(eligible_players)
                     chosen_receiver.info_from_whom += f",{participant.id_in_group}"
@@ -230,7 +254,13 @@ class network_and_voting(Page):
             else:  # b
                 player_signal_color = "blue"
 
+            if participant.question == 'cat':
+                p_question = "CAT"
+            else:
+                p_question = "DOG"
+
             player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
+            player_question_answering = p_question
             all_info = participant.info_from_whom
 
             if participant.qualities == 'l':
@@ -239,14 +269,17 @@ class network_and_voting(Page):
                 quality_representation = "Box A"
 
             box_info = quality_representation if participant.id_in_group in info_sources else 'Unknown'
+            ball_info = player_signal_style if participant.id_in_group in info_sources else 'Unknown'
 
             participants_info.append({
                 'id_in_group': participant.id_in_group,
                 'quality_representation': quality_representation,
                 'player_signal_style': player_signal_style,
                 'is_self': participant.id_in_group == player.id_in_group,
+                'ball_info': ball_info,
                 'box_info': box_info,
-                'all_info': all_info
+                'all_info': all_info,
+                'player_question_answering': player_question_answering,
             })
 
         participants_info = sorted(participants_info, key=lambda x: not x['is_self'])
@@ -254,7 +287,6 @@ class network_and_voting(Page):
         return {
             'participants_info': participants_info
         }
-
 
 class ResultsWaitPage3(WaitPage):
 
@@ -280,4 +312,4 @@ class ResultsWaitPage5(WaitPage):
             player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
 
 
-page_sequence = [StartRoundWaitPage, Welcome, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, Welcome, ResultsWaitPage0, question_answering, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]

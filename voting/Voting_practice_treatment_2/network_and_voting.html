@@ -74,7 +74,7 @@ var selectionMade = false;
 function pageTick() {
   pageTimeElapsed++;
   document.getElementById("timeSpent2").value = pageTimeElapsed;
-  if (pageTimeElapsed >= 10) {
+  if (pageTimeElapsed >= 5) {
     timerFinished = true;
     updateSubmitButton();
   }
@@ -137,7 +137,7 @@ function drawPentagonAndArrows() {
     var playerId = {{ player.id_in_group }};
     var playerSignalStyles = {
         {% for participant in participants_info %}
-        {{ participant.id_in_group }}: "{{ participant.player_signal_style }}",
+        {{ participant.id_in_group }}: "{{ participant.player_question_answering }}",
         {% endfor %}
     };
 
@@ -233,19 +233,25 @@ function drawPentagonAndArrows() {
         var textContent = player.id === playerId ? 'You' : `player ${player.id}`;
 
         if (player.id === 1) {
-            svg += `<text x="${textX}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
-            svg += `<foreignObject x="${textX - 15}" y="${textY - 30}" width="30" height="30">
-                        <div style="${playerSignalStyles[player.id]}"></div>
+            svg += `<text x="${textX+5}" y="${textY -10}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}: </text>`;
+            svg += `<foreignObject x="${textX - 15}" y="${textY - 5}" width="60" height="30">
+                        <div>
+                            ${playerSignalStyles[player.id]}
+                        </div>
                     </foreignObject>`;
         } else if (player.id === 2 || player.id === 3) {
-            svg += `<text x="${textX-6}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
-            svg += `<foreignObject x="${textX - 60}" y="${textY - 13}" width="30" height="30">
-                        <div style="${playerSignalStyles[player.id]}"></div>
+            svg += `<text x="${textX-35}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}: </text>`;
+            svg += `<foreignObject x="${textX - 5}" y="${textY - 13}" width="60" height="30">
+                        <div>
+                            ${playerSignalStyles[player.id]}
+                        </div>
                     </foreignObject>`;
         } else if (player.id === 4 || player.id === 5) {
-            svg += `<text x="${textX+4}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}</text>`;
-            svg += `<foreignObject x="${textX + 30}" y="${textY - 14}" width="30" height="30">
-                        <div style="${playerSignalStyles[player.id]}"></div>
+            svg += `<text x="${textX+4}" y="${textY + 5}" class="player-id" text-anchor="middle" style="${textStyle}">${textContent}: </text>`;
+            svg += `<foreignObject x="${textX + 35}" y="${textY - 14}" width="60" height="30">
+                        <div>
+                            ${playerSignalStyles[player.id]}
+                        </div>
                     </foreignObject>`;
         }
     });
@@ -264,6 +270,7 @@ function drawPentagonAndArrows() {
         <table border="1">
             <tr>
                 <th></th>
+                <th>Answer</th>
                 <th>Which Ball</th>
                 <th>Which Box</th>
             </tr>
@@ -276,8 +283,17 @@ function drawPentagonAndArrows() {
                         player {{ participant.id_in_group }}
                     {% endif %}
                 </td>
+
                 <td>
-                    <span style="{{ participant.player_signal_style }}"></span>
+                        {{ participant.player_question_answering }}
+                </td>
+
+                <td>
+                    <span style="{{ participant.ball_info }}">
+                        {% if participant.ball_info == 'Unknown' %}
+                            Unknown
+                        {% endif %}
+                    </span>
                 </td>
                 <td>
                     {{ participant.box_info }}
