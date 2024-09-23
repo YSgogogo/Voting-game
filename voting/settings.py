@@ -3,15 +3,15 @@ CHANNEL_ROUTING = 'routing.channel_routing'
 
 SESSION_CONFIGS = [
     dict(
-        name='Voting_treatment_1',
-        display_name="Voting_treatment_1",
-        app_sequence=['Voting_practice_treatment_1', 'Voting_real_treatment_1', 'Voting_payment_treatment_1'],
+        name='Voting_treatment_relevant_info',
+        display_name="Voting_treatment_relevant_info",
+        app_sequence=['Voting_practice_treatment_relevant_info', 'Voting_real_treatment_relevant_info', 'Voting_payment_treatment_relevant_info'],
         num_demo_participants=5,
     ),
     dict(
-        name='Voting_treatment_2',
-        display_name="Voting_treatment_2",
-        app_sequence=['Voting_practice_treatment_2', 'Voting_real_treatment_2', 'Voting_payment_treatment_2'],
+        name='Voting_treatment_irr_info',
+        display_name="Voting_treatment_irr_info",
+        app_sequence=['Voting_practice_treatment_irr_info', 'Voting_real_treatment_irr_info', 'Voting_payment_treatment_irr_info'],
         num_demo_participants=5,
     )
 ]
