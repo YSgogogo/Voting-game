@@ -208,25 +208,27 @@ class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
 
     def after_all_players_arrive(self):
-        all_players = self.subsession.get_players()
+        groups = self.subsession.get_groups()
 
-        for player in all_players:
-            player.info_from_whom = str(player.id_in_group)
+        for group in groups:
+            group_players = group.get_players()
 
+            for player in group_players:
+                player.info_from_whom = str(player.id_in_group)
 
-        for participant in all_players:
-            if participant.decision == 'send to a player who got O':
-                eligible_players = [p for p in all_players if p.irrinfo == 'o' and p.id_in_group != participant.id_in_group]
-                if eligible_players:
-                    chosen_receiver = random.choice(eligible_players)
-                    chosen_receiver.info_from_whom += f",{participant.id_in_group}"
-                    participant.chosen_receiver = chosen_receiver.id_in_group
-            elif participant.decision == 'send to a player who got P':
-                eligible_players = [p for p in all_players if p.irrinfo == 'p' and p.id_in_group != participant.id_in_group]
-                if eligible_players:
-                    chosen_receiver = random.choice(eligible_players)
-                    chosen_receiver.info_from_whom += f",{participant.id_in_group}"
-                    participant.chosen_receiver = chosen_receiver.id_in_group
+            for participant in group_players:
+                if participant.decision == 'send to a player who got O':
+                    eligible_players = [p for p in group_players if p.irrinfo == 'o' and p.id_in_group != participant.id_in_group]
+                    if eligible_players:
+                        chosen_receiver = random.choice(eligible_players)
+                        chosen_receiver.info_from_whom += f",{participant.id_in_group}"
+                        participant.chosen_receiver = chosen_receiver.id_in_group
+                elif participant.decision == 'send to a player who got P':
+                    eligible_players = [p for p in group_players if p.irrinfo == 'p' and p.id_in_group != participant.id_in_group]
+                    if eligible_players:
+                        chosen_receiver = random.choice(eligible_players)
+                        chosen_receiver.info_from_whom += f",{participant.id_in_group}"
+                        participant.chosen_receiver = chosen_receiver.id_in_group
 
 
 class network_and_voting(Page):
