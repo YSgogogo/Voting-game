@@ -82,30 +82,32 @@ class Player(BasePlayer):
 
     def get_decision_options(self):
         if self.r_count == 0:
-            return C.ALL_B
+            options = list(C.ALL_B)
         elif self.r_count == 1:
             if self.signals == 'b':
-                return C.MAJORITY_B_4
+                options = list(C.MAJORITY_B_4)
             else:  # signals == 'r'
-                return C.MINORITY_R_1
+                options = list(C.MINORITY_R_1)
         elif self.r_count == 2:
             if self.signals == 'b':
-                return C.MAJORITY_B_3
+                options = list(C.MAJORITY_B_3)
             else:  # signals == 'r'
-                return C.MINORITY_R_2
+                options = list(C.MINORITY_R_2)
         elif self.r_count == 3:
             if self.signals == 'b':
-                return C.MINORITY_B_2
+                options = list(C.MINORITY_B_2)
             else:  # signals == 'r'
-                return C.MAJORITY_R_3
+                options = list(C.MAJORITY_R_3)
         elif self.r_count == 4:
             if self.signals == 'b':
-                return C.MINORITY_B_1
+                options = list(C.MINORITY_B_1)
             else:  # signals == 'r'
-                return C.MAJORITY_R_4
+                options = list(C.MAJORITY_R_4)
         else:  # r_count = 5
-            return C.ALL_R
+            options = list(C.ALL_R)
 
+        random.shuffle(options)
+        return options
 
 class StartRoundWaitPage(WaitPage):
     wait_for_all_groups = True
@@ -136,11 +138,6 @@ class StartRoundWaitPage(WaitPage):
                 player.r_count = group.r_count
                 player.b_count = group.b_count
 
-
-class Welcome(Page):
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == 1
 
 
 class ResultsWaitPage1(WaitPage):
@@ -282,4 +279,4 @@ class ResultsWaitPage5(WaitPage):
             player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
 
 
-page_sequence = [StartRoundWaitPage, Welcome, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]

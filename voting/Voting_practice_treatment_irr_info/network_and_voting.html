@@ -1,6 +1,8 @@
 {{ block title }}
 <div style="text-align: center;">
-    <h1>Make Your Decision</h1>
+    <h4>Practice round {{ player.round_number }} out of 5</h4>
+
+    <h4>Please choose a state that you believe is the unknown state in this round </h4>
 </div>
 {{ endblock }}
 
@@ -45,22 +47,26 @@
     }
     .top-section {
         display: flex;
-        margin-top: 60px;
+        margin-top: -20px;
     }
      .left-section {
-        flex: 0.70;
-        margin-right: 10%;
+        font-size: 19px;
+        flex: 1.7;
+        margin-left: -20px;
+        margin-right: 100px;
     }
     .middle-section {
-        flex: 0.1;
-        margin-right: 5%;
+        flex: 1.2;
+        margin-right: 30px;
+        margin-top: 20px;
     }
     .right-section {
-        flex: 0.41;
+        flex: 1;
+        margin-right: -100px;
     }
     .next-button-container {
         text-align: right;
-        margin-right: 10px;
+        margin-right: -10px;
     }
 </style>
 
@@ -264,7 +270,7 @@ function drawPentagonAndArrows() {
         <table border="1">
             <tr>
                 <th></th>
-                <th>Which color</th>
+                <th>Which Triangle</th>
                 <th>Which Ball</th>
                 <th>Which Box</th>
             </tr>
@@ -288,27 +294,34 @@ function drawPentagonAndArrows() {
                     </span>
                 </td>
                 <td>
-                    {{ participant.box_info }}
+                    {% if participant.box_info == 'Unknown' %}
+                        {{ participant.box_info }}
+                    {% else %}
+                        <strong><em>{{ participant.box_info }}</em></strong>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </table>
     </div>
+
     <div class="middle-section" id="svg-container">
         <!-- The SVG container for the pentagon and arrows will be here -->
     </div>
+
     <div class="right-section">
         <br>
         <br>
-        Please vote for <strong style="color: red;">RED</strong> state or <strong style="color: blue;">BLUE</strong> state
-        <br><br>
+        <br>
+        <br>
+        <br>
         <input type="radio" name="vote" id="id_vote_0" value="R" style="transform: scale(1.5);">
-        <label for="id_vote_0" style="font-size: 24px;">
+        <label for="id_vote_0" style="font-size: 22px;">
             &nbsp; <span style="color: red; font-weight: bold;">RED</span> state
         </label>
         <br><br>
         <input type="radio" name="vote" id="id_vote_1" value="B" style="transform: scale(1.5);">
-        <label for="id_vote_1" style="font-size: 24px;">
+        <label for="id_vote_1" style="font-size: 22px;">
             &nbsp; <span style="color: blue; font-weight: bold;">BLUE</span> state
         </label>
     </div>

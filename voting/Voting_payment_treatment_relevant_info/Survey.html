@@ -22,29 +22,22 @@
   <li>  Some further questions.  </li>
 </ul>
 
-<h2> Age </h2>
-<ul>
-    <li> How old are you? </li>
-    {{form.Age}}
-</ul>
-<br>
 <h2> Gender </h2>
 <ul>
     <li> Please select the gender that you identify with: </li>
     {{form.Gender}}
 </ul>
 <br>
-<h2> Education </h2>
+<h2> How you were making choices in today's experiment </h2>
 <ul>
-    <li> What is your major? </li>
-    {{form.Major}}
+    <li> Please briefly explain how you chose whom to send your information to: </li>
+    <textarea name="{{form.How_choose_info.name}}" rows="5" cols="40">{{form.How_choose_info.data or ''}}</textarea>
 </ul>
-<br>
-<h2> How did you select </h2>
 <ul>
-    <li> Please briefly explain how you make your choice: </li>
-    <textarea name="{{form.How_choose.name}}" rows="5" cols="40">{{form.How_choose.data or ''}}</textarea>
+    <li> Please briefly explain how you chose the the unknown state: </li>
+    <textarea name="{{form.How_choose_state.name}}" rows="5" cols="40">{{form.How_choose_state.data or ''}}</textarea>
 </ul>
+
 
 <br>
         <br>

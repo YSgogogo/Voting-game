@@ -35,9 +35,8 @@ class Player(BasePlayer):
             [2, 'Prefer not to say'],
         ]
     )
-    Major = models.StringField()
-    Age = models.StringField()
-    How_choose = models.StringField()
+    How_choose_info = models.StringField()
+    How_choose_state = models.StringField()
     Email_address = models.StringField()
 
 
@@ -48,7 +47,7 @@ class Instruction(Page):
 
 class Survey(Page):
     form_model = 'player'
-    form_fields = ['Gender', 'Age', 'Major', 'How_choose']
+    form_fields = ['Gender', 'How_choose_info', 'How_choose_state']
     @staticmethod
     def before_next_page(player: Player, timeout_happened):
         participant = player.participant

@@ -39,8 +39,6 @@
             <td> True state </td>
             <td> Your vote </td>
             <td> Round payment </td>
-            <td> Selected round </td>
-            <td> Final payment </td>
         </tr>
         </thead>
         <tr>
@@ -50,8 +48,6 @@
             <td class="hide_bottom">{{state_round_1}} </td>
             <td class="hide_bottom"> {{vote_round_1}} </td>
             <td class="hide_bottom"> £{{payoff_record_round_1}} </td>
-            <td class="hide_bottom" rowspan="5"> {{selected_round}} </td>
-            <td class="hide_bottom" rowspan="5"> {{player.payoff}} </td>
         </tr>
 
         <tr>
@@ -95,17 +91,13 @@
 
 
 <ul>
-  <li>  From the above table, the computer has randomly chosen one voter in each round, and your round pay was determined by the selected voter's vote and the true state. </li>
-  <li>  The computer has also randomly chosen one round, and your final pay will be the round pay from the selected round. </li>
+  <li>  From the above table, the computer has randomly chosen one voter in each round, and your payment in that round was determined by the selected voter's vote and the true state. </li>
   <li>  Therefore, the more voters vote correctly, the higher the probability that you can win <strong style="font-size: 24px;">£15 !</strong></li>
-  <li>  Please raise you hand for any questions. If not, click 'Next' button to start the actual session for today's experiment!</li>
+  <li>  Please raise you hand for any questions. If not, we will start the actual session for today's experiment!</li>
 </ul>
 
             </div>
         </div>
-    <div class="container">
-        <button class="submit-button">Next</button>
-    </div>
 {{ endblock }}
 
 

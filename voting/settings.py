@@ -13,6 +13,13 @@ SESSION_CONFIGS = [
         display_name="Voting_treatment_irr_info",
         app_sequence=['Voting_practice_treatment_irr_info', 'Voting_real_treatment_irr_info', 'Voting_payment_treatment_irr_info'],
         num_demo_participants=5,
+    ),
+    dict(
+        name='Voting_treatment_no_links',
+        display_name="Voting_treatment_no_links",
+        app_sequence=['Voting_practice_treatment_no_links', 'Voting_real_treatment_no_links',
+                      'Voting_payment_treatment_no_links'],
+        num_demo_participants=5,
     )
 ]
 
