@@ -198,9 +198,6 @@ class Info_and_decision(Page):
         )
 
 
-class ResultsWaitPage2(WaitPage):
-    wait_for_all_groups = True
-
 
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True

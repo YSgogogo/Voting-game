@@ -146,7 +146,7 @@ class ResultsWaitPage1(WaitPage):
 
 class Info_and_decision(Page):
     form_model = 'player'
-    form_fields = ['timeSpent1','decision']
+    form_fields = ['timeSpent1']
     @staticmethod
     def vars_for_template(player):
         if player.qualities == 'l':
@@ -181,78 +181,42 @@ class Info_and_decision(Page):
         )
 
 
-class ResultsWaitPage2(WaitPage):
-    wait_for_all_groups = True
-
-
-class ResultsWaitPage2(WaitPage):
-    wait_for_all_groups = True
-
-    def after_all_players_arrive(self):
-        groups = self.subsession.get_groups()
-
-        for group in groups:
-            group_players = group.get_players()
-
-            for player in group_players:
-                player.info_from_whom = str(player.id_in_group)
-
-            for participant in group_players:
-                if participant.decision == 'send to a player who got B':
-                    eligible_players = [p for p in group_players if p.signals == 'b' and p.id_in_group != participant.id_in_group]
-                    if eligible_players:
-                        chosen_receiver = random.choice(eligible_players)
-                        chosen_receiver.info_from_whom += f",{participant.id_in_group}"
-                        participant.chosen_receiver = chosen_receiver.id_in_group
-                elif participant.decision == 'send to a player who got R':
-                    eligible_players = [p for p in group_players if p.signals == 'r' and p.id_in_group != participant.id_in_group]
-                    if eligible_players:
-                        chosen_receiver = random.choice(eligible_players)
-                        chosen_receiver.info_from_whom += f",{participant.id_in_group}"
-                        participant.chosen_receiver = chosen_receiver.id_in_group
-
-
 class network_and_voting(Page):
     form_model = 'player'
     form_fields = ['timeSpent2','vote']
 
     @staticmethod
     def vars_for_template(player):
-        all_players = player.group.get_players()
-        participants_info = []
+        if player.qualities == 'l':
+            quality_display = "Box B"
+        else:
+            quality_display = "Box A"
 
-        info_sources = set(map(int, player.info_from_whom.split(',')))
+        if player.signals == 'r':
+            player_signal_color = "red"
+        else:  # 'b'
+            player_signal_color = "blue"
 
-        for participant in all_players:
-            if participant.signals == 'r':
-                player_signal_color = "red"
-            else:  # b
-                player_signal_color = "blue"
+        player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
 
-            player_signal_style = f"height: 1.2em; width: 1.2em; background-color: {player_signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;"
-            all_info = participant.info_from_whom
+        other_signals_info = []
+        for p in player.group.get_players():
+            if p.id_in_group != player.id_in_group:
+                if p.signals == 'r':
+                    signal_color = "red"
+                else:  # 'b'
+                    signal_color = "blue"
 
-            if participant.qualities == 'l':
-                quality_representation = "Box B"
-            else:
-                quality_representation = "Box A"
+                other_signals_info.append({
+                    'player_id': p.id_in_group,
+                    'signal_style': f"height: 1.2em; width: 1.2em; background-color: {signal_color}; border-radius: 50%; display: inline-block; vertical-align: middle; margin: 0 5px;",
+                })
 
-            box_info = quality_representation if participant.id_in_group in info_sources else 'Unknown'
-
-            participants_info.append({
-                'id_in_group': participant.id_in_group,
-                'quality_representation': quality_representation,
-                'player_signal_style': player_signal_style,
-                'is_self': participant.id_in_group == player.id_in_group,
-                'box_info': box_info,
-                'all_info': all_info
-            })
-
-        participants_info = sorted(participants_info, key=lambda x: not x['is_self'])
-
-        return {
-            'participants_info': participants_info
-        }
+        return dict(
+            quality=quality_display,
+            player_signal_style=player_signal_style,
+            other_signals_info=other_signals_info,
+        )
 
 
 class ResultsWaitPage3(WaitPage):
@@ -279,4 +243,4 @@ class ResultsWaitPage5(WaitPage):
             player.participant.vars[__name__] = [int(player.payoff), int(selected_round)]
 
 
-page_sequence = [StartRoundWaitPage, ResultsWaitPage1, Info_and_decision, ResultsWaitPage2, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]
+page_sequence = [StartRoundWaitPage, ResultsWaitPage1, Info_and_decision, network_and_voting, ResultsWaitPage3, ResultsWaitPage4, ResultsWaitPage5]

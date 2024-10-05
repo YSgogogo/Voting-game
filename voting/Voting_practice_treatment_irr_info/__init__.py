@@ -222,10 +222,6 @@ class Info_and_decision(Page):
 class ResultsWaitPage2(WaitPage):
     wait_for_all_groups = True
 
-
-class ResultsWaitPage2(WaitPage):
-    wait_for_all_groups = True
-
     def after_all_players_arrive(self):
         groups = self.subsession.get_groups()
 

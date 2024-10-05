@@ -75,7 +75,8 @@
         margin-bottom: 20px;
     }
     .left-section {
-        flex: 1.1;
+        font-size: 20px;
+        flex: 2;
         padding-right: 50px;
     }
     .right-section {
@@ -119,7 +120,7 @@ function checkSelection() {
         }
     }
 
-    if (selectionMade && timerFinished) {
+    if (timerFinished) {
         submitButton.style.backgroundColor = '#007BFF';
         submitButton.style.cursor = 'pointer';
         submitButton.disabled = false;
@@ -159,12 +160,8 @@ function checkSelection() {
         <br>
         <div class="form-container">
             <form method="post">
-                <label for="decision">Please choose whom you want to send your information (i.e. your Box) to:</label><br>
-                <br>
-                {% for option in player.get_decision_options %}
-                    <input type="radio" id="decision_{{ forloop.counter }}" name="decision" value="{{ option }}" class="radio-button" onclick="checkSelection()">
-                    <label for="decision_{{ forloop.counter }}" class="getballs">{{ option }}</label><br>
-                {% endfor %}
+                <br><br><br>
+                <br><br><br>
                 <br><br><br>
                 <input type="submit" id="submitButton" value="Next" class="next-page-button" disabled>
             </form>
