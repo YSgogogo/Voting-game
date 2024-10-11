@@ -18,9 +18,9 @@
 
 <h2> Structure of the experiment </h2>
 <ul>
-  <li> You will face 15 rounds in today's experiment. </li>
+  <li> You will face 5 rounds (practice) + 15 rounds (actual session) for today’s experiment. </li>
   <li> <b>Each round is independent of other rounds</b>. </li>
-  <li> <b>Each round is equally likely to be selected for your earnings</b>. </li>
+  <li> <b>One round in actual session will be randomly and equally likely to be selected for your earnings</b>. </li>
   <li> <b>You might be matched with different participants as group members in each round</b>. </li>
   <li> Thus, it is important for you to take each round seriously. </li>
 </ul>
@@ -62,36 +62,34 @@
       c) &nbsp do not send to anyone
 <br>
 <br>
-    <span style="font-size: smaller; font-style: italic;">N.B. 1. If there is more than one group member (except you) who got the same ball, the computer will randomly send your private information to one of them; 2. if no group member (except you) got the red ball, option a) will not be available; if no group member (except you) got the blue ball, option b) will not be available.</span>
+    N.B. 1. If there is more than one group member (except you) who got the same ball, the computer will randomly send your private information to one of them; 2. if no group member (except you) got <span class='ball red-ball'></span>, option a) will not be available; 3. if no group member (except you) got <span class='ball blue-ball'></span>, option b) will not be available.
 <br>
 <br>
-    <li>For example, if you got a red ball from <strong><em>Box A</em></strong>, and among your group members: two got blue balls and two got red balls, you will be shown the following:</li>
+    <li>For example, if you got a red ball from <strong><em>Box B</em></strong>, and among your group members: three got blue balls and one got a red ball, you will be shown the following:</li>
 
 
 <div style="text-align: center;">
-   <img src="{% static 'global/1.png' %}" alt="Urns" width="115%">
+   <img src="{% static 'global/1.png' %}" alt="Urns" width="100%">
 </div>
 <br>
 <br>
 </ul>
 
-<h4>Stage 2: Voting</h4>
+<h4>Stage 2: Choice</h4>
 
 <ul>
     <li>Once all group members have finished Stage 1, you will be shown the following:</li>
     1) &nbsp the left table will have more box information if other group members choose to send their private box information to you.
 <br>
-    2) &nbsp the network diagram in the middle includes the flow of information.
-<br>
-    3) &nbsp you need to vote for the ''unknown” state that was chosen at the beginning: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>.
+    2) &nbsp you then need to choose a state that you believe is the “unknown state” in this round: <b><span style="color: red;">RED</span></b> or <b><span style="color: blue;">BLUE</span></b>.
 <br>
 <br>
 <div style="text-align: center;">
-   <img src="{% static 'global/2.png' %}" alt="Urns" width="115%">
+   <img src="{% static 'global/2.png' %}" alt="Urns" width="100%">
 </div>
 <br>
 <br>
-    <li>Your earnings: the computer will randomly determine a group member, if he/she votes correctly, each of you in the group will earn <strong style="font-size: 24px;">£15！</strong> If he/she votes incorrectly, each of you in the group will only earn <strong style="font-size: 24px;">£2！</strong></li>
+    <li>Your earnings: the computer will randomly determine a group member, if this group member’s decision matches the unknown state, <strong><em>each of you</em></strong> in the group will earn <strong style="font-size: 24px;">£15！</strong> If this group member’s decision does not match the unknown state, <strong><em>each of you</em></strong> in the group will only earn <strong style="font-size: 24px;">£2！</strong></li>
 </ul>
 
 
