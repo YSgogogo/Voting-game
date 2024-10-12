@@ -75,10 +75,12 @@
         margin-bottom: 20px;
     }
     .left-section {
+        font-size: 22px;
         flex: 1.1;
         padding-right: 50px;
     }
     .right-section {
+        font-size: 18.5px;
         flex: 1;
         padding-left: 30px;
     }
@@ -156,7 +158,8 @@ function checkSelection() {
         </table>
     </div>
     <div class="right-section">
-        <br>
+         <br>
+         <br>
         <div class="form-container">
             <form method="post">
                 <label for="decision">Please choose whom you want to send your information (i.e. your Box) to:</label><br>
@@ -165,7 +168,7 @@ function checkSelection() {
                     <input type="radio" id="decision_{{ forloop.counter }}" name="decision" value="{{ option }}" class="radio-button" onclick="checkSelection()">
                     <label for="decision_{{ forloop.counter }}" class="getballs">{{ option }}</label><br>
                 {% endfor %}
-                <br><br><br>
+                <br><br>
                 <input type="submit" id="submitButton" value="Next" class="next-page-button" disabled>
             </form>
         </div>
