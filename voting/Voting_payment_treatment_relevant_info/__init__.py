@@ -39,6 +39,34 @@ class Player(BasePlayer):
     How_choose_state = models.StringField()
     Email_address = models.StringField()
 
+    R_H = models.IntegerField(
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Lottery A'],
+            [1, 'Lottery B'],
+        ]
+    )
+    R_L = models.IntegerField(
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Lottery A'],
+            [1, 'Lottery B'],
+        ]
+    )
+    B_H = models.IntegerField(
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Lottery A'],
+            [1, 'Lottery B'],
+        ]
+    )
+    B_L = models.IntegerField(
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Lottery A'],
+            [1, 'Lottery B'],
+        ]
+    )
 
 class Instruction(Page):
     pass
@@ -58,6 +86,10 @@ class Survey(Page):
 
         participant.payoff += player.money_to_pay
 
+class Incentive(Page):
+    form_model = 'player'
+    form_fields = ['R_H', 'R_L', 'B_H', 'B_L']
+
 class Email(Page):
     form_model = 'player'
     form_fields = ['Email_address']
@@ -69,4 +101,4 @@ class Payment(Page):
     pass
 
 
-page_sequence = [Instruction, Survey, Email, ResultsWaitPage, Payment]
+page_sequence = [Instruction, Survey, Incentive, Email, ResultsWaitPage, Payment]

@@ -18,22 +18,43 @@
 <div style="text-align: justify;" class="card bg-light mb-3">
     <div class="card-body">
                 <br>
-
-<h2> Gender </h2>
 <ul>
-    <li> Please select the gender that you identify with: </li>
-    {{form.Gender}}
+<li> Here are the final four questions. In each question, you will be presented with two lottery options. Each lottery has different probabilities of yielding various payoffs. Please indicate which lottery you want to choose: </li>
+</ul>
+
+        <br>
+<ul>
+    <li> Lottery A: 34.26% receiving £13.72, 48.54% receiving £10.04, and 17.20% receiving £10.12 </li>
+    <li> Lottery B: 34.26% receiving £12.85, 48.54% receiving £9.50, and 17.20% receiving £10.22 </li>
+
+    {{form.R_H}}
 </ul>
 <br>
-<h2> How did you make the decisions for today's experiment? </h2>
+
 <ul>
-    <li> Please briefly explain how you chose whom to send your information to: </li>
-    <textarea name="{{form.How_choose_info.name}}" rows="5" cols="40">{{form.How_choose_info.data or ''}}</textarea>
+    <li> Lottery A: 27.08% receiving £10.14, 49.92% receiving £9.15, and 23.00% receiving £7.03 </li>
+    <li> Lottery B: 27.08% receiving £10.14, 49.92% receiving £8.95, and 23.00% receiving £8.43 </li>
+
+    {{form.R_L}}
 </ul>
+
+<br>
+
 <ul>
-    <li> Please briefly explain how you chose the unknown state: </li>
-    <textarea name="{{form.How_choose_state.name}}" rows="5" cols="40">{{form.How_choose_state.data or ''}}</textarea>
+    <li> Lottery A: 50.19% receiving £7.21, and 49.81% receiving £9.19 </li>
+    <li> Lottery B: 50.19% receiving £7.94, and 49.92% receiving £9.02 </li>
+
+    {{form.B_H}}
 </ul>
+<br>
+
+<ul>
+    <li> Lottery A: 35.39% receiving £11.25, and 64.61% receiving £13.76 </li>
+    <li> Lottery B: 35.39% receiving £9.75, and 64.61% receiving £13.76 </li>
+
+    {{form.B_L}}
+</ul>
+<br>
 
 
 <br>
