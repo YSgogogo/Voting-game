@@ -263,6 +263,11 @@ class StartRoundWaitPage(WaitPage):
         sv['used_records'] = used_idx
 
 
+class Welcome(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
 class Main_Instructions(Page):
     @staticmethod
     def is_displayed(player):
@@ -391,6 +396,7 @@ class FinalResults(Page):
 # ------------------------------------------------------------------
 page_sequence = [
     StartRoundWaitPage,
+    Welcome,
     Main_Instructions,
     Comprehension_Test,
     ResultsWaitPage1,
