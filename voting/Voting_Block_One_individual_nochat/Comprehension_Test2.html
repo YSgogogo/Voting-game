@@ -21,33 +21,80 @@
 <br>
         <br>
         <br>
-        {% load static %}
+{% load static %}
+
 
 <button class="btn btn-outline-primary"
         data-bs-toggle="modal"
-        data-bs-target="#picModal">
-    Click Here to Review the General Setting
+        data-bs-target="#picModalGeneral">
+    Click to Review the General Setting
 </button>
 
-<div class="modal fade" id="picModal" tabindex="-1" aria-hidden="true">
+
+<div class="modal fade" id="picModalGeneral" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Instructions</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
       <img src="{% static 'IndividualDecision/general.png' %}"
-           class="img-fluid w-100" alt="Instructions">
+           class="img-fluid w-100" alt="General Setting">
     </div>
   </div>
 </div>
+
+<!-- ───────────────────────────────────────────── -->
+<br>
+<br>
+
+<button class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalExample">
+    Click to Review Examples
+</button>
+
+
+<div class="modal fade" id="picModalExample" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Examples</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/example.png' %}"
+           class="img-fluid w-100" alt="Example">
+    </div>
+  </div>
+</div>
+
+
+
 <br>
         <br>
         <br>
 
-    {{ formfields }}
+
+<form method="post">
+    {{ formfield 'quiz6' }}
+    {{ formfield 'quiz7' }}
+
+    {{ formfield 'quiz8' }}
+
+      <div style="text-align:center;"><img src="{% static 'IndividualDecision/test1.png' %}" alt="Urns" width="50%"></div>
+
 <br>
+
+    {{ formfield 'quiz9' }}
+      <div style="text-align:center;"><img src="{% static 'IndividualDecision/test2.png' %}" alt="Urns" width="50%"></div>
+
+</form>
+
+
+
+<br>
+
+
     </div>
 </div>
 

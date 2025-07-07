@@ -119,6 +119,8 @@ class Player(BasePlayer):
     failed_too_many1 = models.BooleanField(initial=False)
     num_failed_attempts2 = models.IntegerField(initial=0)
     failed_too_many2 = models.BooleanField(initial=False)
+    num_failed_attempts3 = models.IntegerField(initial=0)
+    failed_too_many3 = models.BooleanField(initial=False)
     quiz1 = models.IntegerField(
         label="If you observe a red signal, which state is more likely? ",
         widget=widgets.RadioSelect,
@@ -164,7 +166,7 @@ class Player(BasePlayer):
     ]
     )
     quiz6 = models.IntegerField(
-        label="At the beginning of the each round, the probability that state is RED or Blue is 50%.",
+        label="I may have different group members in different rounds.",
         widget = widgets.RadioSelect,
         choices = [
             [0, 'True'],
@@ -173,21 +175,53 @@ class Player(BasePlayer):
     )
 
     quiz7 = models.IntegerField(
-        label="If I think BLUE is more likely, which state I should predict?  ",
-        widget = widgets.RadioSelect,
-        choices = [
-            [0, 'RED'],
-            [1, 'BLUE'],
-    ]
-    )
-
-    quiz8 = models.IntegerField(
-        label="Strong source is less likely to be received than weak source.",
+        label="In a round, you and your group members have a same true state.  ",
         widget = widgets.RadioSelect,
         choices = [
             [0, 'True'],
             [1, 'False'],
     ]
+    )
+
+    quiz8 = models.IntegerField(
+        label="In the following example, who has the same signal as you?",
+        widget = widgets.RadioSelect,
+        choices = [
+            [0, 'Group member ID:2'],
+            [1, 'Group member ID:1'],
+            [2, 'No one has the same signal as me'],
+    ]
+    )
+
+
+    quiz9 = models.IntegerField(
+        label="In the following example, what is group member ID:2's signal source?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Strong source'],
+            [1, 'Weak source'],
+            [2, 'I do not know'],
+        ]
+    )
+
+    quiz10 = models.IntegerField(
+        label="In the following example, suppose you guess correctly, Group member ID:2 guess correctly, and Group member ID:1 guess incorrectly, what is you payment in this block?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, '£ 0'],
+            [1, '£ 6'],
+            [2, '£ 12'],
+        ]
+    )
+
+    quiz11 = models.IntegerField(
+        label="In the following example, suppose you guess incorrectly, Group member ID:1 guess correctly, and Group member ID:2 guess correctly, what is you payment in this block?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, '£ 0'],
+            [1, '£ 6'],
+            [2, '£ 12'],
+        ]
     )
 
 class StartRoundWaitPage(WaitPage):
@@ -344,10 +378,6 @@ class General_setting_of_the_experiment(Page):
         return player.round_number == 1
 
 
-class Examples(Page):
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == 1
 
 
 class Comprehension_Test1(Page):
@@ -369,13 +399,19 @@ class Comprehension_Test1(Page):
         return player.round_number == 1
 
 
+class Examples(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
+
 class Comprehension_Test2(Page):
     form_model = 'player'
-    form_fields = ['quiz6', 'quiz7', 'quiz8']
+    form_fields = ['quiz6', 'quiz7', 'quiz8', 'quiz9']
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions2 = {"quiz6": 0, "quiz7": 0, "quiz8": 0}
+        solutions2 = {"quiz6": 0, "quiz7": 0, "quiz8": 1, 'quiz9': 2}
         errors2 = {name: 'Wrong' for name in solutions2 if values[name] != solutions2[name]}
         if errors2:
             player.num_failed_attempts2 += 1
@@ -386,6 +422,32 @@ class Comprehension_Test2(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
+
+
+class Block_One_instructions(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
+
+
+class Comprehension_Test3(Page):
+    form_model = 'player'
+    form_fields = ['quiz10', 'quiz11']
+
+    @staticmethod
+    def error_message(player: Player, values):
+        solutions3 = {"quiz10": 0, "quiz11": 0}
+        errors3 = {name: 'Wrong' for name in solutions3 if values[name] != solutions3[name]}
+        if errors3:
+            player.num_failed_attempts3 += 1
+            if player.num_failed_attempts3 >= 100:
+                player.failed_too_many3 = True
+            else:
+                return errors3
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 
 
 class ResultsWaitPage1(WaitPage):
@@ -496,6 +558,8 @@ page_sequence = [
     Comprehension_Test1,
     Examples,
     Comprehension_Test2,
+    Block_One_instructions,
+    Comprehension_Test3,
     ResultsWaitPage1,
     network_and_voting,
     ResultsWaitPage3,

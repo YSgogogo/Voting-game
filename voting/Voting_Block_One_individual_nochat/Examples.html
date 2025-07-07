@@ -22,7 +22,6 @@
     hr { border:0; border-top:2px solid #375a7f; width:95%; }
     h3 { margin-top:1.2em; margin-bottom:0.4em; }
 
-    /* 自定义箭头列表 */
     ul.arrowlist { list-style:none; padding-left:1.2em; margin-top:0.3em; }
     ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
 </style>
@@ -37,11 +36,13 @@ Each round begins with a random draw of the true state. Then, every group member
 
 {% load static %}
 
-<button class="btn btn-outline-primary"
+<button type="button"
+        class="btn btn-outline-primary"
         data-bs-toggle="modal"
         data-bs-target="#picModal">
     Click to View the General Setting
 </button>
+
 
 <div class="modal fade" id="picModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">

@@ -1,0 +1,107 @@
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+<br>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.45; }
+    h2 { text-align:center; color:#375a7f; margin-top:0; margin-bottom:0.3em; }
+    hr { border:0; border-top:2px solid #375a7f; width:95%; }
+    h3 { margin-top:1.2em; margin-bottom:0.4em; }
+
+    ul.arrowlist { list-style:none; padding-left:1.2em; margin-top:0.3em; }
+    ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
+</style>
+
+<h2>Block 1</h2>
+<hr>
+
+
+{% load static %}
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalGeneral">
+     Click to Review the General Setting
+</button>
+
+
+<div class="modal fade" id="picModalGeneral" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/general.png' %}"
+           class="img-fluid w-100" alt="General Setting">
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalExample">
+     Click to Review Examples
+</button>
+
+
+<div class="modal fade" id="picModalExample" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Examples</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/example.png' %}"
+           class="img-fluid w-100" alt="Example">
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+
+<p>
+In this Block, we ask you to make your guess about the true state in each round. There are 10 rounds in total. You will see the following decision page in a round:
+</p>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/block1.png' %}" alt="Urns" width="60%"></div>
+
+<br>
+
+<b><span style="font-size: 1.35em;">Payment in Block 1</span></b>
+
+<p>
+    At the end of the experiment, the computer will randomly select one round from this block for your payment.
+    In the selected round, <b><em>if you guess correctly</em></b>, you will receive £6; otherwise, you will receive £0.
+</p>
+
+<p>
+    Example: if round 2 is selected, and you guess correctly in this round.
+    Consequently,
+</p>
+
+<p class="text-center">your payment in Block&nbsp;1&nbsp;=&nbsp;£6</p>
+
+
+{{ endblock }}
