@@ -1,0 +1,179 @@
+{% block title %}
+<div style="text-align: center;">
+    <h1>Round {{ player.round_number }}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+.urn-row{
+    display:flex;
+    justify-content:center;
+    gap:60px;
+    margin-bottom:25px;
+
+    align-items:flex-start;
+}
+
+
+.urn-box:first-child::before{
+    content:"Signal:";
+    position:absolute;
+    top:180px;
+    right:calc(100% + 60px);
+    font-size:20px;
+    font-weight:400;
+}
+
+
+.urn-box:first-child .quality-label::before{
+    content:"Signal source:";
+    position:absolute;
+    right:calc(100% + 80px);
+    top:0;
+    font-size:20px;
+    font-weight:400;
+    white-space:nowrap;
+    word-break:keep-all;
+}
+
+
+.urn-box{position:relative;width:150px;text-align:center;font-size:18px;}
+.urn-img{width:100%;max-width:120px;}
+
+
+.quality-label{
+    position:absolute;
+    top:-4px;
+    left:50%;transform:translateX(-50%);
+    font-size:20px;font-weight:400;
+    top:-30px;
+}
+
+
+.signal-unknown{position:relative;width:150px;text-align:center;font-size:18px;}
+
+
+.signal-tag{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:185px;
+}
+
+
+.next-page-button{background:grey;color:#fff;border:none;padding:10px 20px;cursor:not-allowed;border-radius:8px;}
+.radio-button{transform:scale(1.4);margin-right:8px;}
+
+.urn-caption{
+    position:absolute;
+    top:220px;
+    left:50%;transform:translateX(-50%);
+    font-size:16px;line-height:1.2;}
+</style>
+
+<input type="hidden" id="timeSpent" name="timeSpent"/>
+<script>
+let t=0,timer=-1,ready=false;
+window.onload=()=>{timer=setInterval(()=>{document.getElementById('timeSpent').value=++t;if(t>=5){ready=true;check();}},1000);};
+function checked(name){return !!document.querySelector(`input[name="${name}"]:checked`);}
+function check(){
+    const ok=ready&&checked('vote');
+    const btn=document.getElementById('nextBtn');
+    btn.disabled=!ok;
+    btn.style.cursor=ok?'pointer':'not-allowed';
+    btn.style.backgroundColor=ok?'#007BFF':'grey';
+}
+</script>
+
+
+<div style="text-align: center;">
+    <h3>Please choose a state that you believe is the true state in this round</h3>
+</div>
+<br><br>
+<ul>
+  <li>This is the information you have received in this round.</li>
+</ul>
+<br><br><br>
+
+
+<div class="urn-row">
+{% for row in participants_info %}
+    <div class="urn-box">
+
+
+        {% if row.player_signal_style %}
+            <span class="signal-tag signal-dot" style="{{ row.player_signal_style }}"></span>
+        {% else %}
+            <span class="signal-tag signal-unknown">unknown</span>
+        {% endif %}
+
+
+        {% if row.box_info == 'Unknown' %}
+            <div class="quality-label">unknown</div>
+        {% elif row.box_info == 'Box A' %}
+        <div class="quality-label"><b><i>strong&nbsp;source</i></b></div>
+        {% else %}
+            <div class="quality-label"><b><i>weak&nbsp;source</i></b></div>
+        {% endif %}
+
+
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
+
+
+        <div class="urn-caption">
+            {% if row.box_info == 'Unknown' and not row.player_signal_style %}
+                Group&nbsp;member&nbsp;(ID:&nbsp;{{ row.id_in_group }})
+            {% elif row.is_self %}
+                You&nbsp;(ID:&nbsp;{{ row.id_in_group }})
+            {% else %}
+                Group&nbsp;member&nbsp;(ID:&nbsp;{{ row.id_in_group }})
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<br><br>
+<br><br>
+<br><br>
+<p>What do you think is the true state?</p>
+<br>
+
+
+<form method="post">
+  <div id="voteContainer" style="text-align:left;font-size:20px;">
+      <div class="vote-option">
+          <input type="radio" class="radio-button" name="vote"
+                 id="voteR" value="R" onchange="check()">
+          <label for="voteR"><span style="color:red;font-weight:bold;">RED</span></label>
+      </div>
+
+      <div class="vote-option">
+          <input type="radio" class="radio-button" name="vote"
+                 id="voteB" value="B" onchange="check()">
+          <label for="voteB"><span style="color:blue;font-weight:bold;">BLUE</span></label>
+      </div>
+  </div>
+
+  <br>
+  <input type="submit" id="nextBtn" value="Next"
+         class="next-page-button" disabled>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const box = document.getElementById('voteContainer');
+
+    if (Math.random() < 0.5) {
+        box.insertBefore(box.children[1], box.children[0]);
+    }
+});
+</script>
+
+
+<br><br>
+<hr style="border:2px solid grey;margin-top:25px;">
+<ul><li><i>This is where all group members got their balls. Please refer to the instructions for details.</i></li></ul>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/signalurn.png' %}" alt="Urns" width="90%"></div>
+{% endblock %}
