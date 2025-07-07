@@ -1,0 +1,87 @@
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+<br>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.45; }
+    h2 { text-align:center; color:#375a7f; margin-top:0; margin-bottom:0.3em; }
+    hr { border:0; border-top:2px solid #375a7f; width:95%; }
+    h3 { margin-top:1.2em; margin-bottom:0.4em; }
+
+    /* 自定义箭头列表 */
+    ul.arrowlist { list-style:none; padding-left:1.2em; margin-top:0.3em; }
+    ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
+</style>
+
+<h2>Examples</h2>
+<hr>
+
+<p>
+   At the beginning of every round, you will be randomly assigned to a group (including you) which consists of randomly selected members in this lab. Every group has three members.
+Each round begins with a random draw of the true state. Then, every group member may receive a signal from a source based on this true state.
+</p>
+
+{% load static %}
+
+<button class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModal">
+    Click to View the General Setting
+</button>
+
+<div class="modal fade" id="picModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <img src="{% static 'IndividualDecision/general.png' %}"
+           class="img-fluid w-100" alt="Instructions">
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+
+<p>
+For example, in a round you are placed in a new group. You receive a red signal from a weak source; group member 2 receives a blue signal from an unknown source (could be either strong source or weak source); and group member 3 receives a red signal from an unknown source (could be either strong source or weak source). You will see the following:
+</p>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/example1.png' %}" alt="Urns" width="50%"></div>
+
+<p>
+Another example, you receive a red signal from a strong source; group member 3 receives a blue signal from a strong source; and you have no information about group member 1’s signal and signal source. You will see the following:
+</p>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/example2.png' %}" alt="Urns" width="50%"></div>
+
+<p>
+One more example, you receive a blue signal from a weak source, and you have no information about the signals or signal sources for group members 2 and 3. You will see the following:
+</p>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/example3.png' %}" alt="Urns" width="50%"></div>
+
+
+
+<br>
+
+
+{{ endblock }}

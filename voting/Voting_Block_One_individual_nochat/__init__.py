@@ -115,8 +115,10 @@ class Player(BasePlayer):
     b_count         = models.IntegerField()
     current_pattern = models.StringField()
 
-    num_failed_attempts = models.IntegerField(initial=0)
-    failed_too_many = models.BooleanField(initial=False)
+    num_failed_attempts1 = models.IntegerField(initial=0)
+    failed_too_many1 = models.BooleanField(initial=False)
+    num_failed_attempts2 = models.IntegerField(initial=0)
+    failed_too_many2 = models.BooleanField(initial=False)
     quiz1 = models.IntegerField(
         label="If you observe a red signal, which state is more likely? ",
         widget=widgets.RadioSelect,
@@ -161,7 +163,32 @@ class Player(BasePlayer):
             [1, 'False'],
     ]
     )
+    quiz6 = models.IntegerField(
+        label="At the beginning of the each round, the probability that state is RED or Blue is 50%.",
+        widget = widgets.RadioSelect,
+        choices = [
+            [0, 'True'],
+            [1, 'False'],
+    ]
+    )
 
+    quiz7 = models.IntegerField(
+        label="If I think BLUE is more likely, which state I should predict?  ",
+        widget = widgets.RadioSelect,
+        choices = [
+            [0, 'RED'],
+            [1, 'BLUE'],
+    ]
+    )
+
+    quiz8 = models.IntegerField(
+        label="Strong source is less likely to be received than weak source.",
+        widget = widgets.RadioSelect,
+        choices = [
+            [0, 'True'],
+            [1, 'False'],
+    ]
+    )
 
 class StartRoundWaitPage(WaitPage):
     wait_for_all_groups = True
@@ -317,26 +344,48 @@ class General_setting_of_the_experiment(Page):
         return player.round_number == 1
 
 
+class Examples(Page):
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
 
-class Comprehension_Test(Page):
+
+class Comprehension_Test1(Page):
     form_model = 'player'
     form_fields = ['quiz1', 'quiz2', 'quiz3', 'quiz4', 'quiz5']
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions = {"quiz1": 0, "quiz2": 0, "quiz3": 0,  "quiz4": 1, "quiz5": 0}
-        errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
-        if errors:
-            player.num_failed_attempts += 1
-            if player.num_failed_attempts >= 100:
-                player.failed_too_many = True
+        solutions1 = {"quiz1": 0, "quiz2": 0, "quiz3": 0,  "quiz4": 1, "quiz5": 0}
+        errors1 = {name: 'Wrong' for name in solutions1 if values[name] != solutions1[name]}
+        if errors1:
+            player.num_failed_attempts1 += 1
+            if player.num_failed_attempts1 >= 100:
+                player.failed_too_many1 = True
             else:
-                return errors
+                return errors1
     @staticmethod
     def is_displayed(player: Player):
         return player.round_number == 1
 
 
+class Comprehension_Test2(Page):
+    form_model = 'player'
+    form_fields = ['quiz6', 'quiz7', 'quiz8']
+
+    @staticmethod
+    def error_message(player: Player, values):
+        solutions2 = {"quiz6": 0, "quiz7": 0, "quiz8": 0}
+        errors2 = {name: 'Wrong' for name in solutions2 if values[name] != solutions2[name]}
+        if errors2:
+            player.num_failed_attempts2 += 1
+            if player.num_failed_attempts2 >= 100:
+                player.failed_too_many2 = True
+            else:
+                return errors2
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
 
 class ResultsWaitPage1(WaitPage):
@@ -444,7 +493,9 @@ page_sequence = [
     Welcome,
     Overview,
     General_setting_of_the_experiment,
-    Comprehension_Test,
+    Comprehension_Test1,
+    Examples,
+    Comprehension_Test2,
     ResultsWaitPage1,
     network_and_voting,
     ResultsWaitPage3,

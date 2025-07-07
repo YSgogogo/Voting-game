@@ -1,0 +1,97 @@
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+ <div style="text-align: center;">
+     <h1>Comprehension Test</h1>
+ </div>
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+        </style>
+
+<div style="text-align: justify;" class="card bg-light mb-3">
+    <div class="card-body">
+<br>
+ To proceed, you will need to answer the following questions correctly.
+<br>
+        <br>
+        <br>
+        {% load static %}
+
+<button class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModal">
+    Click Here to Review the General Setting
+</button>
+
+<div class="modal fade" id="picModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <img src="{% static 'IndividualDecision/general.png' %}"
+           class="img-fluid w-100" alt="Instructions">
+    </div>
+  </div>
+</div>
+<br>
+        <br>
+        <br>
+
+    {{ formfields }}
+<br>
+    </div>
+</div>
+
+<div style="flush:center; text-align: center;">
+    {{ next_button }}
+</div>
+
+
+
+{{ endblock }}
+
+
+
+{{ block app_styles }}
+    <style>
+        table {
+            border: 1px solid black;
+        }
+        td {
+           border: 1px solid black;
+           background-color: bg-light mb-3;
+           color: black;
+           font-weight: solid;
+           font-size: 19px;
+           padding: 10px 10px 10px 10px;
+           text-align: center;
+        }
+        tr.hide_all > td, td.hide_all{
+           border-style:hidden;
+        }
+        tr.hide_right > td, td.hide_right{
+           border-right-style:hidden;
+        }
+        tr.hide_left > td, td.hide_left{
+           border-left-style:hidden;
+        }
+        tr.hide_top > td, td.hide_top{
+           border-top-style:hidden;
+        }
+        tr.hide_bottom > td, td.hide_bottom{
+           border-bottom-style:hidden;
+        }
+        tr.width_bottom > td, td.width_bottom{
+           border-bottom-width:4px;
+        }
+    </style>
+{{ endblock }}
