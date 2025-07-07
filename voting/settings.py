@@ -14,8 +14,13 @@ SESSION_CONFIGS = [
         display_name="Voting_receive",
         app_sequence=['A_Voting_one', 'A_Voting_two', 'A_Voting_three_receiver', 'A_Voting_four_receiver','A_Voting_payment_receiver'],
         num_demo_participants=3,
+    ),
+    dict(
+        name='Voting',
+        display_name="Voting",
+        app_sequence=['Voting_Block_One_individual_nochat', 'Voting_Block_Three_partial_chat'],
+        num_demo_participants=3,
     )
-
 ]
 
 SESSION_CONFIG_DEFAULTS = dict(

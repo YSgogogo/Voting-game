@@ -1,0 +1,133 @@
+{{ extends 'global/Page.html' }}
+   {{ block title }}
+
+    {{ endblock }}
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+<br>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.45; }
+    h2 { text-align:center; color:#375a7f; margin-top:0; margin-bottom:0.3em; }
+    hr { border:0; border-top:2px solid #375a7f; width:95%; }
+    h3 { margin-top:1.2em; margin-bottom:0.4em; }
+
+    /* 自定义箭头列表 */
+    ul.arrowlist { list-style:none; padding-left:1.2em; margin-top:0.3em; }
+    ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
+</style>
+
+<h2>General setting of the experiment</h2>
+<hr>
+
+<p>
+    The experiment consists of 4 separate blocks, each containing multiple independent rounds.
+</p>
+
+<h3>State</h3>
+
+<p>
+    <strong>Each round</strong> in this experiment begins with a random draw of a state
+    from the two possible states: <span style="color:red; font-weight:bold;">RED</span>
+    and <span style="color:blue; font-weight:bold;">BLUE</span>. The chance that state
+    <span style="color:red; font-weight:bold;">RED</span> will be chosen is
+    <strong>50&#37;</strong> and the chance that state
+    <span style="color:blue; font-weight:bold;">BLUE</span> will be chosen is also
+    <strong>50&#37;</strong>. This true state is unknown to you and others.
+</p>
+
+Below is a visual illustration of the process described above.
+
+<br>
+<br>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/step1.png' %}" alt="Urns" width="50%"></div>
+
+<br>
+<p>
+    The main task in this experiment is to guess the true state
+    (<span style="color:red; font-weight:bold;">RED</span> or
+    <span style="color:blue; font-weight:bold;">BLUE</span>) in each round using the
+    available information, which is provided in the form of signals that can come from
+    different sources.
+</p>
+
+<h3>Signal Source and Signal</h3>
+
+<p>
+   <span style="font-size: 1.35em;"> If the state is <span style="color:red; font-weight:bold;">RED</span></span>, the computer
+    will first randomly determine the <strong>signal source</strong>—either a
+    <em><b>strong source</b></em> or a <em><b>weak source</b></em>. The chance that a signal is from
+    a <em><b>strong source</b></em> is <strong>30&#37;</strong> and the chance that a signal is
+    from a <em><b>weak source</b></em> is <strong>70&#37;</strong>.
+</p>
+
+Below is a visual illustration of the process described above.
+
+<br>
+<br>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/step2.png' %}" alt="Urns" width="50%"></div>
+
+<ul class="arrowlist">
+    <li>If the signal source is a <em><b>strong source</b></em>, then it contains
+        <strong>8 <span style="color:red;">red</span> signals</strong> and
+        <strong>1 <span style="color:blue;">blue</span> signal</strong>.
+    </li>
+    <li>If the signal source is a <em><b>weak source</b></em>, then it contains
+        <strong>5 <span style="color:red;">red</span> signals</strong> and
+        <strong>4 <span style="color:blue;">blue</span> signals</strong>.
+    </li>
+</ul>
+
+<p>The computer will then randomly pick one signal from the selected signal source. Below is a visual illustration of the process described above.</p>
+
+
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/step3red.png' %}" alt="Urns" width="50%"></div>
+
+<br>
+<br>
+<p>
+    <span style="font-size: 1.35em;">If the state is <span style="color:blue; font-weight:bold;">BLUE</span></span>, the computer
+    will first randomly determine the <strong>signal source</strong>—either a
+    <em><b>strong source</b></em> or a <em><b>weak source</b></em>. The chance that a signal is from a
+    <em><b>strong source</b></em> is <strong>30&#37;</strong> and the chance that a signal is
+    from a <em><b>weak source</b></em> is <strong>70&#37;</strong>.
+</p>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/step2.png' %}" alt="Urns" width="50%"></div>
+
+
+<ul class="arrowlist">
+    <li>If the signal source is a <em><b>strong source</b></em>, then it contains
+        <strong>8 <span style="color:blue;">blue</span> signals</strong> and
+        <strong>1 <span style="color:red;">red</span> signal</strong>.
+    </li>
+    <li>If the signal source is a <em><b>weak source</b></em>, then it contains
+        <strong>5 <span style="color:blue;">blue</span> signals</strong> and
+        <strong>4 <span style="color:red;">red</span> signals</strong>.
+    </li>
+</ul>
+
+
+<p>The computer will then randomly pick one signal from the selected signal source. Below is a visual illustration of the process described above.</p>
+
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/step3blue.png' %}" alt="Urns" width="50%"></div>
+
+
+
+<br>
+
+
+{{ endblock }}
