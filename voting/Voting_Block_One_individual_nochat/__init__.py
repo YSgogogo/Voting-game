@@ -10,7 +10,7 @@ Three-player voting experiment individual+nochat.
 class C(BaseConstants):
     NAME_IN_URL       = 'Voting_Block_One_individual_nochat'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS        = 10
+    NUM_ROUNDS        = 20
     AMOUNT_CORRECT    = 6
     CHOICES           = [('R', 'RED Box'), ('B', 'BLUE Box')]
     STATES            = ['R', 'B']
@@ -20,62 +20,92 @@ class C(BaseConstants):
 # ------------------------------------------------------------------
 #  build pre-generated signal table
 # ------------------------------------------------------------------
-
-def build_signal_table(
-    full_groups: int = 1000,
-    one_filled_groups: int = 500,
-    two_filled_groups: int = 500
-):
-
+def build_signal_table(M: int = 1000):
+    """generate 1000 data"""
     table = []
-
-    def make_player(state):
-        qual = 'h' if random.random() < 0.30 else 'l'
-        if state == 'R':              # 好状态
-            sig = 'r' if (
-                (qual == 'h' and random.random() < 8/9) or
-                (qual == 'l' and random.random() < 5/9)
-            ) else 'b'
-        else:                         # 坏状态
-            sig = 'r' if (
-                (qual == 'h' and random.random() < 1/9) or
-                (qual == 'l' and random.random() < 4/9)
-            ) else 'b'
-        return {'qualities': qual, 'signals': sig}
-
-    # ① full
-    for _ in range(full_groups):
+    for _ in range(M):
         state = random.choice(C.STATES)
         group = {'state': state, 'players': {}}
-        for pid in (1, 2, 3):
-            group['players'][pid] = make_player(state)
-        table.append(group)
 
-    # ② one
-    for _ in range(one_filled_groups):
-        state = random.choice(C.STATES)
-        group = {'state': state, 'players': {}}
-        filled_pid = random.choice((1, 2, 3))
         for pid in (1, 2, 3):
-            group['players'][pid] = (
-                make_player(state) if pid == filled_pid
-                else {'qualities': None, 'signals': None}
-            )
-        table.append(group)
+            qual = 'h' if random.random() < 0.30 else 'l'
 
-    # ③ two
-    for _ in range(two_filled_groups):
-        state = random.choice(C.STATES)
-        group = {'state': state, 'players': {}}
-        filled_pids = random.sample((1, 2, 3), k=2)
-        for pid in (1, 2, 3):
-            group['players'][pid] = (
-                make_player(state) if pid in filled_pids
-                else {'qualities': None, 'signals': None}
-            )
-        table.append(group)
+            # 条件化信号概率
+            if state == 'R':
+                sig = 'r' if (qual == 'h' and random.random() < 8/9) or \
+                             (qual == 'l' and random.random() < 5/9) else 'b'
+            else:
+                sig = 'r' if (qual == 'h' and random.random() < 1/9) or \
+                             (qual == 'l' and random.random() < 4/9) else 'b'
 
+            group['players'][pid] = {'qualities': qual, 'signals': sig}
+
+        table.append(group)
     return table
+
+
+# ================================================================
+# Triplet patterns (6  × 2 = 12 )
+# ================================================================
+TRIPLE_ROWS: list[tuple[tuple[str, str, str], tuple[str, str, str]]] = [
+    (('rh', 'bh', 'rl'), ('bh', 'rh', 'bl')),
+    (('rh', 'bh', 'rh'), ('bh', 'rh', 'bh')),
+    (('rh', 'bl', 'rh'), ('bh', 'rl', 'bh')),
+    (('rh', 'bl', 'rl'), ('bh', 'rl', 'bl')),
+    (('rl', 'bh', 'rl'), ('bl', 'rh', 'bl')),
+    (('rl', 'bl', 'rl'), ('bl', 'rl', 'bl')),
+
+    (('rh', 'b', 'r'), ('bh', 'r', 'b')),
+    (('rl', 'b', 'r'), ('bl', 'r', 'b')),
+    (('rh', 'bh', 'r'), ('bh', 'rh', 'b')),
+    (('rh', 'bl', 'r'), ('bh', 'rl', 'b')),
+    (('rl', 'bh', 'r'), ('bl', 'rh', 'b')),
+    (('rl', 'bl', 'r'), ('bl', 'rl', 'b')),
+    (('rh', 'b', 'rl'), ('bh', 'r', 'bl')),
+    (('rh', 'b', 'rh'), ('bh', 'r', 'bh')),
+    (('rl', 'b', 'rl'), ('bl', 'r', 'bl')),
+
+    (('rl', '', ''), ('bl', '', '')),
+    (('rh', '', ''), ('bh', '', '')),
+    (('r', '', ''), ('b', '', '')),
+
+    (('rh', 'b', ''), ('bh', 'r', '')),
+    (('rh', 'bl', ''), ('bh', 'rl', '')),
+    (('r', 'bh', ''), ('b', 'rh', '')),
+    (('r', 'bl', ''), ('b', 'rl', '')),
+
+]
+ALL_TRIPLES: list[tuple[str, str, str]] = [t for pair in TRIPLE_ROWS for t in pair]
+
+
+def expand_triplet(trip: tuple[str, str, str]) -> list[str]:
+    patterns = []
+    for tag in trip:
+        others = sorted([t if t else '.' for t in trip if t != tag])
+        tag_display = tag if tag else '.'
+        patterns.append(f"{tag_display}+{''.join(others)}")
+    return patterns
+
+def data_matches_pattern(data_slots, required_pattern):
+    """
+    Correct interpretation:
+    - required_pattern may contain up to 3 strings (e.g., ('rh', '', ''))
+    - Only non-empty tags in required_pattern need to be checked.
+    - If at least as many required tags as non-empty tags are found in data_slots, it's a match.
+    """
+    required_tags = [tag for tag in required_pattern if tag != '']
+    data_tags = [slot[1] for slot in data_slots]
+
+    # For each required tag, ensure at least one matching data_tag
+    for req_tag in required_tags:
+        matched = False
+        for data_tag in data_tags:
+            if req_tag == data_tag or (len(req_tag) == 1 and data_tag.startswith(req_tag)):
+                matched = True
+                break  # move to the next required tag
+        if not matched:
+            return False
+    return True
 
 
 
@@ -225,139 +255,167 @@ class Player(BasePlayer):
         ]
     )
 
+def data_matches_pattern(data_slots, required_pattern):
+    required_tags = [tag for tag in required_pattern if tag != '']
+    data_tags = [slot[1] for slot in data_slots]
+
+    for req_tag in required_tags:
+        matched = False
+        for data_tag in data_tags:
+            if req_tag == data_tag or (len(req_tag)==1 and data_tag.startswith(req_tag)):
+                matched = True
+                data_tags.remove(data_tag)
+                break
+        if not matched:
+            return False
+    return True
+
+
+# ------------------------------------------------------------------
+# WaitPage – pattern assignment
+# ------------------------------------------------------------------
 class StartRoundWaitPage(WaitPage):
     wait_for_all_groups = True
 
+    @staticmethod
+    def _pattern_match(slot_tag: str, pattern: str, others_tags: list[str]) -> bool:
+
+        if '+' not in pattern:
+            return slot_tag == pattern
+        left, right = pattern.split('+')
+        if slot_tag != left:
+            return False
+        required_tags = [right[i:i + 2] for i in range(0, len(right), 2)]
+        temp_others = others_tags.copy()
+
+        for req_tag in required_tags:
+            if req_tag == '.':
+                # Wildcard: match any, remove the first
+                if temp_others:
+                    temp_others.pop(0)
+                else:
+                    return False
+            else:
+                if req_tag in temp_others:
+                    temp_others.remove(req_tag)
+                else:
+                    return False
+        return True
+
+    def _find_pattern(
+        self,
+        tag: str,
+        others_tags: list[str],
+        round_patterns: list[str],
+    ) -> str:
+        for pat in round_patterns:
+            if self._pattern_match(tag, pat, others_tags):
+                return pat
+        return f"{tag}+{''.join(sorted(others_tags))}"
+
     def after_all_players_arrive(self):
-
         self.subsession.group_randomly()
-
         sv = self.session.vars
+
         if 'signal_table' not in sv:
             sv['signal_table'] = build_signal_table(1000)
             sv['used_records'] = set()
 
-        table    = sv['signal_table']
+        if 'triple_order' not in sv:
+            selected_triples = []
+            block1 = TRIPLE_ROWS[:6]  # 1-6
+            block2 = TRIPLE_ROWS[6:15]  # 7-15
+            block3 = TRIPLE_ROWS[15:18]  # 16-18
+            block4 = TRIPLE_ROWS[18:22]  # 19-22
+
+            def pick_from_block(block, n):
+                chosen = []
+                unique_triples = [trip for pair in block for trip in pair]
+                random.shuffle(unique_triples)
+                for trip in unique_triples:
+                    if len(chosen) < n and trip not in chosen:
+                        chosen.append(trip)
+                while len(chosen) < n:
+                    chosen.append(random.choice(unique_triples))
+                random.shuffle(chosen)
+                return chosen
+
+            selected_triples += pick_from_block(block1, 8)
+            selected_triples += pick_from_block(block2, 8)
+            selected_triples += pick_from_block(block3, 2)
+            selected_triples += pick_from_block(block4, 2)
+
+            sv['triple_order'] = selected_triples
+
+        trip_this_round = sv['triple_order'][self.subsession.round_number - 1]
+        round_patterns = expand_triplet(trip_this_round)
+        sv['pair_patterns'] = round_patterns
+
+        table = sv['signal_table']
         used_idx = sv['used_records']
 
-        # 2) required signals for rounds
-        rounds_req = {
-            'solo': ['rh', 'rl', 'bh', 'bl', 'rh_rl', 'bh_bl'],
-            'pair': ['rh+bh', 'bh+rh', 'rl+bl', 'bl+rl'],
-        }
-
-        # matching
-        def pattern_match(slot_tag: str, pattern: str) -> bool:
-            if '+' in pattern:
-                return slot_tag in pattern.split('+')
-            if '_' in pattern:
-                return slot_tag in pattern.split('_')
-            return slot_tag == pattern
-
-        # 3) matching
         for g in self.subsession.get_groups():
-
-            # 3.1 find needed pattern
-            needs = {}
-            for p in g.get_players():
-                seen = p.participant.vars.get('patterns_seen_one', [])
-                solo_seen = [x for x in seen if '+' not in x]
-                pair_seen = [x for x in seen if '+' in x]
-                need_solo = [x for x in rounds_req['solo'] if x not in solo_seen]
-                need_pair = [x for x in rounds_req['pair'] if x not in pair_seen]
-                needs[p.id_in_subsession] = need_solo + need_pair
-
-            # 3.2 find optimal one
-            best_match      = None  # (idx, perm, state)
-            best_pair_count = -1
-
+            best_match = None
             for idx, rec in enumerate(table):
                 if idx in used_idx:
                     continue
-
-                slots = [(sid, info['signals'] + info['qualities'])
-                         for sid, info in rec['players'].items()]
-                pids  = [p.id_in_subsession for p in g.get_players()]
-
-                for perm in permutations(slots, 3):
-                    tag_map  = {pid: slot_tag for pid, (_, slot_tag) in zip(pids, perm)}
-                    all_tags = [t for _, t in perm]
-
-                    valid = True
-                    pair_cnt = 0
-                    for pid, tag in tag_map.items():
-                        need_list = needs[pid]
-
-
-                        if not any(pattern_match(tag, pat) for pat in need_list):
-                            valid = False
-                            break
-
-
-                        if any('+' in pat and pat.split('+')[0] == tag
-                               and pat.split('+')[1] in all_tags for pat in need_list):
-                            pair_cnt += 1
-
-                    if valid and pair_cnt > best_pair_count:
-                        best_match      = (idx, perm, rec['state'])
-                        best_pair_count = pair_cnt
-                        if best_pair_count == 3:
-                            break
-                if best_pair_count == 3:
+                slots = [(sid, info['signals'] + info['qualities']) for sid, info in rec['players'].items()]
+                if data_matches_pattern(slots, trip_this_round):
+                    best_match = (idx, slots, rec['state'])
                     break
 
-            # 3.3 if no optimal, random
             if not best_match:
                 for idx, rec in enumerate(table):
                     if idx not in used_idx:
-                        slots = [(sid, info['signals'] + info['qualities'])
-                                 for sid, info in rec['players'].items()]
-                        best_match = (idx, tuple(slots), rec['state'])
+                        slots = [(sid, info['signals'] + info['qualities']) for sid, info in rec['players'].items()]
+                        best_match = (idx, slots, rec['state'])
                         break
 
-            # 3.4 assign info to players
             idx, perm, state = best_match
             used_idx.add(idx)
-            rec        = table[idx]
-            g.state    = state
-            players    = g.get_players()
-            all_tags   = [info['signals'] + info['qualities']
-                          for info in rec['players'].values()]
-
-
-            for p, (sid, tag) in zip(players, perm):
-                info        = rec['players'][sid]
-                p.state     = state
-                p.signals   = info['signals']
+            g.state = state
+            players = g.get_players()
+            for p, (sid, _) in zip(players, perm):
+                info = rec['players'][sid]
+                p.state = state
+                p.signals = info['signals']
                 p.qualities = info['qualities']
 
+            assigned_patterns = set()
+            default_pat = round_patterns[0]  # fallback
 
             for p in players:
-                tag       = p.signals + p.qualities
-                need_list = needs[p.id_in_subsession]
-
-                pair_opts = [pat for pat in need_list
-                             if '+' in pat
-                             and pat.split('+')[0] == tag
-                             and pat.split('+')[1] in all_tags]
-
-                if pair_opts:
-                    chosen = pair_opts[0]
-                else:
-                    solo_opts = [pat for pat in need_list
-                                 if '+' not in pat and pattern_match(tag, pat)]
-                    chosen = solo_opts[0] if solo_opts else need_list[0]
-
-                p.current_pattern = chosen
-                p.participant.vars.setdefault('patterns_seen_one', []).append(chosen)
-
+                my_tag = p.signals + p.qualities
+                others_tags = [q.signals + q.qualities for q in players if q != p]
+                found = False
+                for pat in round_patterns:
+                    if pat in assigned_patterns:
+                        continue  # ensure uniqueness
+                    if self._pattern_match(my_tag, pat, others_tags):
+                        p.current_pattern = pat
+                        assigned_patterns.add(pat)
+                        p.participant.vars.setdefault('patterns_seen_three', []).append(pat)
+                        found = True
+                        break
+                if not found:
+                    # fallback: assign any unused pattern
+                    for pat in round_patterns:
+                        if pat not in assigned_patterns:
+                            p.current_pattern = pat
+                            assigned_patterns.add(pat)
+                            p.participant.vars.setdefault('patterns_seen_three', []).append(pat)
+                            found = True
+                            break
+                if not found:
+                    # final fallback if all patterns taken
+                    p.current_pattern = default_pat
+                    p.participant.vars.setdefault('patterns_seen_three', []).append(default_pat)
 
             g._count_signals()
             for p in players:
                 p.r_count = g.r_count
                 p.b_count = g.b_count
 
-        # 4) used_records
         sv['used_records'] = used_idx
 
 
@@ -456,67 +514,62 @@ class ResultsWaitPage1(WaitPage):
 
 
 class network_and_voting(Page):
-    form_model  = 'player'
+    form_model = 'player'
     form_fields = ['timeSpent', 'vote']
 
     @staticmethod
     def vars_for_template(player):
 
-        pattern   = player.current_pattern
+        pattern = player.current_pattern
+        pattern_parts = pattern.split('+')
+
         g_players = player.group.get_players()
-        tag_map   = {p.id_in_group: p.signals + p.qualities for p in g_players}
+        tag_map = {p.id_in_group: p.signals + p.qualities for p in g_players}
 
-        # ── 1) if pair-pattern，show partner id ─────────────
-        partner_id_visible = None
-        if '+' in pattern:
-            own_tag, partner_tag = pattern.split('+')
-            partner_pool = [p.id_in_group for p in g_players
-                            if p != player and tag_map[p.id_in_group] == partner_tag]
+        # 获得当前玩家的tag和其他玩家的tags
+        my_tag = player.signals + player.qualities
+        others_tags = [tag_map[p.id_in_group] for p in g_players if p != player]
 
-            key = f'partner_chosen_r{player.round_number}'
-            if partner_pool:
-
-                partner_id_visible = player.participant.vars.get(key)
-                if partner_id_visible not in partner_pool:
-                    partner_id_visible = random.choice(partner_pool)
-                    player.participant.vars[key] = partner_id_visible
-
+        # 当前玩家能观察到所有tags，处理''为unknown
+        visible_tags = [my_tag] + others_tags
 
         rows = []
-        for gp in g_players:
-            # 默认完全未知
+        for gp, tag in zip(g_players, visible_tags):
             row = dict(
-                id_in_group         = gp.id_in_group,
-                is_self             = (gp == player),
-                player_signal_style = '',
-                box_info            = 'Unknown',
+                id_in_group=gp.id_in_group,
+                is_self=(gp == player),
+                player_signal_style='',
+                box_info='Unknown',
             )
 
+            # 处理tag为空的情况：完全不可见
+            if tag == '':
+                row['player_signal_style'] = ''
+                row['box_info'] = 'Unknown'
+            else:
+                # 如果tag不为空，则检查signal和quality
+                signal = tag[0] if len(tag) >= 1 else ''
+                quality = tag[1] if len(tag) == 2 else ''
 
-            reveal_signal  = False
-            reveal_quality = False
+                if signal in ['r', 'b']:
+                    col = 'red' if signal == 'r' else 'blue'
+                    row['player_signal_style'] = (
+                        f'height:1.4em;width:1.4em;background-color:{col};'
+                        'border-radius:50%;display:inline-block;'
+                        'vertical-align:middle;margin:0 0px;'
+                    )
 
-            if gp == player:
-                reveal_signal = True
-                reveal_quality = ('_' not in pattern)
-            elif partner_id_visible and gp.id_in_group == partner_id_visible:
-                reveal_signal = True
-                reveal_quality = True
-
-
-            if reveal_signal:
-                col = 'red' if gp.signals == 'r' else 'blue'
-                row['player_signal_style'] = (
-                    f'height:1.4em;width:1.4em;background-color:{col};'
-                    'border-radius:50%;display:inline-block;'
-                    'vertical-align:middle;margin:0 0px;')
-            if reveal_quality:
-                row['box_info'] = 'Box A' if gp.qualities == 'h' else 'Box B'
+                # 显示质量信息（若存在）
+                if quality in ['h', 'l']:
+                    row['box_info'] = 'Box A' if quality == 'h' else 'Box B'
+                else:
+                    row['box_info'] = 'Unknown'
 
             rows.append(row)
 
-        # 自己排第一
+        # 确保自己排第一
         rows.sort(key=lambda d: not d['is_self'])
+
         return dict(participants_info=rows)
 
 

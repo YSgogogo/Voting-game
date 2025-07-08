@@ -43,6 +43,31 @@ def build_signal_table(M: int = 1000):
     return table
 
 
+# ================================================================
+# Triplet patterns (6  × 2 = 12 )
+# ================================================================
+TRIPLE_ROWS: list[tuple[tuple[str, str, str], tuple[str, str, str]]] = [
+    (('rh', 'bh', 'rl'), ('bh', 'rh', 'bl')),
+    (('rh', 'bh', 'rh'), ('bh', 'rh', 'bh')),
+    (('rh', 'bl', 'rh'), ('bh', 'rl', 'bh')),
+    (('rh', 'bl', 'rl'), ('bh', 'rl', 'bl')),
+    (('rl', 'bh', 'rl'), ('bl', 'rh', 'bl')),
+    (('rl', 'bl', 'rl'), ('bl', 'rl', 'bl')),
+]
+ALL_TRIPLES: list[tuple[str, str, str]] = [t for pair in TRIPLE_ROWS for t in pair]
+
+
+def expand_triplet(trip: tuple[str, str, str]) -> list[str]:
+    """
+    ('rh','bh','rl') → ['rh+bhrl', 'bh+rhrl', 'rl+bhrh']
+    """
+    patterns = []
+    for tag in trip:
+        others = sorted([t for t in trip if t != tag])
+        patterns.append(f"{tag}+{''.join(others)}")
+    return patterns
+
+
 class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
@@ -121,115 +146,92 @@ class Player(BasePlayer):
         return opts
 
 
+# ------------------------------------------------------------------
+# WaitPage – pattern assignment
+# ------------------------------------------------------------------
 class StartRoundWaitPage(WaitPage):
-
     wait_for_all_groups = True
 
-    # -----------------------------------------------------------------
-    # 1. Helper: pattern_match
-    # -----------------------------------------------------------------
     @staticmethod
     def _pattern_match(slot_tag: str, pattern: str, others_tags: list[str]) -> bool:
-
         if '+' not in pattern:
             return slot_tag == pattern
-
         left, right = pattern.split('+')
         if slot_tag != left:
             return False
-
         required_tags = [right[i:i + 2] for i in range(0, len(right), 2)]
         return sorted(required_tags) == sorted(others_tags)
 
-    # -----------------------------------------------------------------
-    # 2. Helper:  find first satisfied pattern for a player
-    # -----------------------------------------------------------------
     def _find_pattern(
         self,
         tag: str,
         others_tags: list[str],
         round_patterns: list[str],
     ) -> str:
-
         for pat in round_patterns:
             if self._pattern_match(tag, pat, others_tags):
                 return pat
-
         return f"{tag}+{''.join(sorted(others_tags))}"
 
-    # -----------------------------------------------------------------
-    # 3. Main: after_all_players_arrive
-    # -----------------------------------------------------------------
     def after_all_players_arrive(self):
-
-
+        # ① random groups each round
         self.subsession.group_randomly()
 
-
+        # ② retrieve signal table
         sv = self.session.vars
         if 'signal_table' not in sv:
             sv['signal_table'] = build_signal_table(1000)
             sv['used_records'] = set()
-        table: list          = sv['signal_table']
-        used_idx: set[int]   = sv['used_records']
+        table = sv['signal_table']
+        used_idx = sv['used_records']
 
+        # ───────────────────────────────────────────────────────────
+        # ③ generate 10-round triplet schedule once,
+        #    with first 6 rounds covering 6 rows, next 4 from remaining
+        # ───────────────────────────────────────────────────────────
+        if 'triple_order' not in sv:
+            # first 6 rounds: pick one from each row, then shuffle
+            row_picks = [random.choice(pair) for pair in TRIPLE_ROWS]
+            random.shuffle(row_picks)
+            # next 4 rounds: pick from remaining triples, then shuffle
+            remaining = [t for t in ALL_TRIPLES if t not in row_picks]
+            extra_picks = random.sample(remaining, C.NUM_ROUNDS - len(row_picks))
+            random.shuffle(extra_picks)
+            # combine: rounds 1–6 cover each row once, rounds 7–10 are extras
+            sv['triple_order'] = row_picks + extra_picks
 
-        pattern_rows: list[str] = [
-            'rh+rlbl', 'bh+blrl',
-            'rl+rhbl', 'bl+bhrl',
-            'rh+rhbl', 'bh+bhrl',
-            'rl+rlbl', 'bl+blrl',
-            'rh+rlbh', 'bh+blrh',
-            'rl+rhbh', 'bl+bhrh',
-            'rh+rhbh', 'bh+bhrh',
-            'rl+rlbh', 'bl+blrh',
-            'bl+rhrh', 'rl+bhbh',
-            'bl+rlrh', 'rl+blbh',
-            'bl+rlrl', 'rl+blbl',
-            'bh+rhrh', 'rh+bhbh',
-            'bh+rlrh', 'rh+blbh',
-            'bh+rlrl', 'rh+blbl',
-        ]
-        round_patterns = pattern_rows[:]
-        random.shuffle(round_patterns)
+        # select this round's triplet and expand
+        trip_this_round = sv['triple_order'][self.subsession.round_number - 1]
+        round_patterns = expand_triplet(trip_this_round)
         sv['pair_patterns'] = round_patterns
 
-        # -----------------------------------------------------------------
-        # ④ record
-        # -----------------------------------------------------------------
+        # ④ assignment logic (unchanged, but uses the single round_patterns)
         for g in self.subsession.get_groups():
-
+            # 4.1 needs per player
             needs: dict[int, list[str]] = {}
             for p in g.get_players():
                 seen = p.participant.vars.get('patterns_seen_three', [])
-                need_list = [x for x in round_patterns if x not in seen]
-                if not need_list:
-                    need_list = round_patterns[:]
-                needs[p.id_in_subsession] = need_list
+                not_seen = [pat for pat in round_patterns if pat not in seen]
+                needs[p.id_in_subsession] = not_seen or round_patterns[:]
 
-            best_match: tuple[int, tuple, str] | None = None
+            # 4.2 tier search
+            best_match = None
             for tier in [3, 2, 1, 0]:
                 for idx, rec in enumerate(table):
                     if idx in used_idx:
                         continue
-
-
                     slots = [(sid, info['signals'] + info['qualities'])
                              for sid, info in rec['players'].items()]
                     pids = [p.id_in_subsession for p in g.get_players()]
-
                     for perm in permutations(slots, 3):
-                        tag_map = {pid: slot_tag
-                                   for pid, (_, slot_tag) in zip(pids, perm)}
-
-
+                        tag_map = {pid: slot_tag for pid, (_, slot_tag)
+                                   in zip(pids, perm)}
                         match_count = 0
                         for pid, my_tag in tag_map.items():
-                            others_tags = [tag for pid2, tag in tag_map.items() if pid2 != pid]
-                            need_list = needs[pid]
-                            if any(self._pattern_match(my_tag, pat, others_tags) for pat in need_list):
+                            others_tags = [t for qid, t in tag_map.items() if qid != pid]
+                            if any(self._pattern_match(my_tag, pat, others_tags)
+                                   for pat in needs[pid]):
                                 match_count += 1
-
                         if match_count >= tier:
                             best_match = (idx, perm, rec['state'])
                             break
@@ -238,7 +240,7 @@ class StartRoundWaitPage(WaitPage):
                 if best_match:
                     break
 
-
+            # 4.3 fallback
             if not best_match:
                 for idx, rec in enumerate(table):
                     if idx not in used_idx:
@@ -247,11 +249,10 @@ class StartRoundWaitPage(WaitPage):
                         best_match = (idx, tuple(slots), rec['state'])
                         break
 
-
-            idx, perm, state = best_match  # type: ignore[misc]
+            # 4.4 apply
+            idx, perm, state = best_match  # type: ignore
             used_idx.add(idx)
             rec = table[idx]
-
             g.state = state
             players = g.get_players()
             for p, (sid, _) in zip(players, perm):
@@ -260,24 +261,23 @@ class StartRoundWaitPage(WaitPage):
                 p.signals   = info['signals']
                 p.qualities = info['qualities']
 
-
+            # 4.5 record patterns_seen_three
             for p in players:
-                my_tag      = p.signals + p.qualities
-                others_tags = [pl.signals + pl.qualities
-                               for pl in players
-                               if pl.id_in_subsession != p.id_in_subsession]
+                my_tag = p.signals + p.qualities
+                others_tags = [q.signals + q.qualities for q in players if q != p]
                 matched = self._find_pattern(my_tag, others_tags, round_patterns)
                 p.current_pattern = matched
                 p.participant.vars.setdefault('patterns_seen_three', []).append(matched)
 
-
+            # 4.6 counts for display
             g._count_signals()
             for p in players:
                 p.r_count = g.r_count
                 p.b_count = g.b_count
 
-
+        # ⑤ persist used records
         sv['used_records'] = used_idx
+
 
 
 class Block_three_instructions(Page):
