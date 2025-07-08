@@ -146,13 +146,85 @@ function check(){
 
 <br>
 <br>
+
+<br><br>
 <hr style="border:2px solid grey;margin-top:25px;">
-<ul><li><i>This is where all group members got their signals. Please refer to the instructions for details.</i></li></ul>
-<div style="text-align:center;"><img src="{% static 'IndividualDecision/signalurn.png' %}" alt="Urns" width="90%"></div>
+{% load static %}
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalGeneral">
+     Click to Review the General Setting
+</button>
+
+
+<div class="modal fade" id="picModalGeneral" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/general.png' %}"
+           class="img-fluid w-100" alt="General Setting">
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────── -->
+<br>
+<br>
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalExample">
+     Click to Review the General Setting
+</button>
 
 
 
+<div class="modal fade" id="picModalExample" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Examples</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/example.png' %}"
+           class="img-fluid w-100" alt="Example">
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────── -->
+<br>
+<br>
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalblock">
+    Click to Review Block 3
+</button>
+
+<div class="modal fade" id="picModalblock" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Block 3</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/block3.png' %}"
+           class="img-fluid w-100" alt="pay">
+    </div>
+  </div>
+</div>
 {% endblock %}
+
+
+
 
 
 {% block app_styles %}

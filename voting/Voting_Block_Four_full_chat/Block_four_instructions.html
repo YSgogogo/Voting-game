@@ -26,7 +26,7 @@
     ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
 </style>
 
-<h2>Block 4</h2>
+<h2>Block 3</h2>
 <hr>
 
 
@@ -83,25 +83,49 @@
 <br>
 
 <p>
-In this Block, we ask you to make your guess about the true state in each round. There are 10 rounds in total. You will see the following decision page in a round:
-</p>
-<div style="text-align:center;"><img src="{% static 'IndividualDecision/block1.png' %}" alt="Urns" width="60%"></div>
+At the beginning of each round in Block 4, you will see your own signal source and signal, as
+well as the signals of the other group members, but not their signal sources (whether
+weak source or strong source). Every group member has a chance to share their own
+signal source to only one of other two group members. There are 10 rounds in total. You will
+be first shown the following:</p>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/block4_1.png' %}" alt="Urns" width="40%"></div>
+
+<br>
+<p>
+After all group members have made their choices, every group member needs to guess the true state based on their available information. The screenshot shows your decision page in a round:</p>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/block4_2.png' %}" alt="Urns" width="40%"></div>
+
 
 <br>
 
-<b><span style="font-size: 1.35em;">Payment in Block 1</span></b>
+<b><span style="font-size: 1.35em;">Payment in Block 4</span></b>
+
 
 <p>
-    At the end of the experiment, the computer will randomly select one round from this block for your payment.
-    In the selected round, <b><em>if you guess correctly</em></b>, you will receive £6; otherwise, you will receive £0.
-</p>
+    At the end of the experiment, the computer will randomly select one round from this block for your payment. In the selected round, every correct guess from a group member will mean
+    <strong>£2</strong> is added to the payment for <strong>each group member</strong>,
+    every incorrect guess from a group member will mean
+    <strong>£0</strong> is added to the payment for <strong>each group member</strong>
+  </p>
 
-<p>
-    Example: if round 2 is selected, and you guess correctly in this round.
+  <p>
+    <strong>Example:</strong><br>
+    if round&nbsp;8 is selected, the true state in this round is
+    <span style="color: blue; font-weight: bold;">BLUE</span>.
+    one group member correctly guessed state
+      <span style="color: blue; font-weight: bold;">BLUE</span>
+
+    and two group members incorrectly guessed state
+    <span style="color: red; font-weight: bold;">RED</span>,
     Consequently,
-</p>
+  </p>
 
-<p class="text-center">your payment in Block&nbsp;1&nbsp;=&nbsp;£6</p>
 
+</div>
+
+
+
+
+<p class="text-center">your payment in Block&nbsp;4&nbsp;=&nbsp;£2x1+£0x0=2</p>
 
 {{ endblock }}

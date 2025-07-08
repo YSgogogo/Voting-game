@@ -100,21 +100,22 @@ class Player(BasePlayer):
     num_failed_attempts = models.IntegerField(initial=0)
     failed_too_many = models.BooleanField(initial=False)
     quiz1 = models.IntegerField(
-        label="If you observe a red signal, which state is more likely? ",
+        label="In the following example, suppose you guess incorrectly, Group member ID:1 guesses correctly, and Group member ID:2 guesses correctly, what is you payment in this block?",
         widget=widgets.RadioSelect,
         choices=[
-            [0, 'RED'],
-            [1, 'BLUE'],
-            [2, 'Equally likely'],
+            [0, '£ 0'],
+            [1, '£ 4'],
+            [2, '£ 6'],
         ]
     )
+
     quiz2 = models.IntegerField(
-        label="Which of the following signal source is more informative?",
+        label="In the following example, suppose you share your information with all group members, what they can observe?",
         widget=widgets.RadioSelect,
         choices=[
-            [0, 'Strong source'],
-            [1, 'Weak source'],
-            [2, 'No difference'],
+            [0, 'only my signal'],
+            [1, 'only my signal source'],
+            [2, 'both of my signal and signal source'],
         ]
     )
     send_decision   = models.StringField()
@@ -295,7 +296,7 @@ class Comprehension_Test(Page):
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions = {"quiz1": 1, "quiz2": 0}
+        solutions = {"quiz1": 1, "quiz2": 2}
         errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
         if errors:
             player.num_failed_attempts += 1
