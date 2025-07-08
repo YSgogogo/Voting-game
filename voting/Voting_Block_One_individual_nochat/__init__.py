@@ -71,15 +71,10 @@ ALL_TRIPLES: list[tuple[str, str, str]] = [t for pair in TRIPLE_ROWS for t in pa
 
 def expand_triplet(trip: tuple[str, str, str]) -> list[str]:
     patterns = []
-    # 按下标迭代， i=0,1,2 分别对应三位玩家
     for i, tag in enumerate(trip):
-        # 分离出另外两个 slot（即便它们一样，也各保留一次）
         others = [trip[j] for j in range(3) if j != i]
-        # 按字母顺序排序两个标签
         others.sort()
-        # 把空字符串替换成 '0'
         others_disp = [(o if o else '0') for o in others]
-        # 最终拼成 "tag+other1other2"
         patterns.append(f"{tag}+{''.join(others_disp)}")
     return patterns
 
@@ -95,13 +90,6 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     state   = models.StringField()
-    r_count = models.IntegerField()
-    b_count = models.IntegerField()
-
-    # 组内 r / b 信号计数（用于显示）
-    def _count_signals(self):
-        self.r_count = sum(1 for p in self.get_players() if p.signals == 'r')
-        self.b_count = C.PLAYERS_PER_GROUP - self.r_count
 
     def set_payoffs(self):
         for p in self.get_players():
@@ -118,8 +106,6 @@ class Player(BasePlayer):
     qualities        = models.StringField(initial='')
     payoff_record   = models.IntegerField(initial=0)
     selected_round  = models.IntegerField()
-    r_count         = models.IntegerField()
-    b_count         = models.IntegerField()
     current_pattern = models.StringField()
 
     num_failed_attempts1 = models.IntegerField(initial=0)
@@ -234,13 +220,12 @@ class StartRoundWaitPage(WaitPage):
 
     @staticmethod
     def _pattern_match(slot_tag, pattern, others_tags):
-        # 检查 slot_tag 是否符合部分信息 pattern
         if '+' not in pattern:
             left, right = pattern, ''
         else:
             left, right = pattern.split('+', 1)
 
-        # 自身信息匹配
+
         if left == '':
             own_ok = True
         elif len(left) == 1:
@@ -250,7 +235,6 @@ class StartRoundWaitPage(WaitPage):
         if not own_ok:
             return False
 
-        # 其他两位玩家信息匹配
         if right:
             required = [right[i:i+2] for i in range(0, len(right), 2)]
             return sorted(required) == sorted(others_tags)
@@ -306,47 +290,21 @@ class StartRoundWaitPage(WaitPage):
             tags_template = list(trip_this_round)  # e.g. ['rh','b','']
             best_match = None
 
-            # 5.2 分层匹配：优先让更多玩家符合
-            for tier in [3, 2, 1, 0]:
-                if best_match:
-                    break
-                # 随机化遍历尚未使用的记录
-                unused = [i for i in range(len(table)) if i not in used_idx]
-                for idx in random.sample(unused, len(unused)):
-                    rec = table[idx]
-                    # 对模板做全排列
-                    for perm in permutations(tags_template):
-                        # 构造 pid -> tag
-                        pids = [p.id_in_subsession for p in g.get_players()]
-                        tag_map = dict(zip(pids, perm))
-                        # 计算满足 pattern 的玩家数
-                        match_count = 0
-                        for pid, my_tag in tag_map.items():
-                            others = [t for qid, t in tag_map.items() if qid != pid]
-                            if any(self._pattern_match(my_tag, pat, others)
-                                   for pat in needs[pid]):
-                                match_count += 1
-                        if match_count >= tier:
-                            best_match = (idx, perm, rec['state'])
-                            break
-                    if best_match:
-                        break
-
-            # 5.3 后备：若无任何匹配，直接取第一个未用记录
-            if not best_match:
-                unused = [i for i in range(len(table)) if i not in used_idx]
-                idx = unused[0]
-                best_match = (idx, tuple(tags_template), table[idx]['state'])
-
-            # 5.4 拆 best_match 并分配 state + pattern
-            idx, perm, state = best_match
+            # —— 5.2/5.3 简化：直接随机抽一条未用记录 ——
+            unused = [i for i in range(len(table)) if i not in used_idx]
+            idx = random.choice(unused)
+            rec = table[idx]
             used_idx.add(idx)
+
+            # 分配 state
+            state = rec['state']
             g.state = state
             for p in g.get_players():
                 p.state = state
 
-            patterns = expand_triplet(tuple(perm))
-            for p, tag, pat in zip(g.get_players(), perm, patterns):
+            # 按原始顺序 tags_template 分配 pattern、signal 和 quality
+            patterns = expand_triplet(tuple(tags_template))
+            for p, tag, pat in zip(g.get_players(), tags_template, patterns):
                 p.current_pattern = pat
                 if tag == '':
                     p.signals, p.qualities = '', ''
@@ -356,14 +314,8 @@ class StartRoundWaitPage(WaitPage):
                     p.signals, p.qualities = tag[0], tag[1]
                 p.participant.vars.setdefault('patterns_seen_three', []).append(pat)
 
-            # 5.5 更新信号计数并写入玩家
-            g._count_signals()
-            for p in g.get_players():
-                p.r_count = g.r_count
-                p.b_count = g.b_count
-
-        # 6. 保存已用记录索引
-        sv['used_records'] = used_idx
+            # 存回 session.vars
+            sv['used_records'] = used_idx
 
 
 class Welcome(Page):

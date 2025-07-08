@@ -210,78 +210,34 @@ class StartRoundWaitPage(WaitPage):
         round_patterns = expand_triplet(trip_this_round)
         sv['pair_patterns'] = round_patterns
 
-        # ④ assignment logic (unchanged, but uses the single round_patterns)
+        # ④ simplified assignment: random unused record
+        # ④ simplified assignment: random unused record + record current_pattern
         for g in self.subsession.get_groups():
-            # 4.1 needs per player
-            needs: dict[int, list[str]] = {}
-            for p in g.get_players():
-                seen = p.participant.vars.get('patterns_seen_three', [])
-                not_seen = [pat for pat in round_patterns if pat not in seen]
-                needs[p.id_in_subsession] = not_seen or round_patterns[:]
-
-            # 4.2 tier search
-            best_match = None
-            for tier in [3, 2, 1, 0]:
-                for idx, rec in enumerate(table):
-                    if idx in used_idx:
-                        continue
-                    slots = [(sid, info['signals'] + info['qualities'])
-                             for sid, info in rec['players'].items()]
-                    pids = [p.id_in_subsession for p in g.get_players()]
-                    for perm in permutations(slots, 3):
-                        tag_map = {pid: slot_tag for pid, (_, slot_tag)
-                                   in zip(pids, perm)}
-                        match_count = 0
-                        for pid, my_tag in tag_map.items():
-                            others_tags = [t for qid, t in tag_map.items() if qid != pid]
-                            if any(self._pattern_match(my_tag, pat, others_tags)
-                                   for pat in needs[pid]):
-                                match_count += 1
-                        if match_count >= tier:
-                            best_match = (idx, perm, rec['state'])
-                            break
-                    if best_match:
-                        break
-                if best_match:
-                    break
-
-            # 4.3 fallback
-            if not best_match:
-                for idx, rec in enumerate(table):
-                    if idx not in used_idx:
-                        slots = [(sid, info['signals'] + info['qualities'])
-                                 for sid, info in rec['players'].items()]
-                        best_match = (idx, tuple(slots), rec['state'])
-                        break
-
-            # 4.4 apply
-            idx, perm, state = best_match  # type: ignore
+            idx = random.choice([i for i in range(len(table)) if i not in used_idx])
             used_idx.add(idx)
             rec = table[idx]
-            g.state = state
+
+            g.state = rec['state']
             players = g.get_players()
-            for p, (sid, _) in zip(players, perm):
-                info = rec['players'][sid]
-                p.state     = state
-                p.signals   = info['signals']
+            for p in players:
+                info = rec['players'][p.id_in_subsession]
+                p.state = rec['state']
+                p.signals = info['signals']
                 p.qualities = info['qualities']
 
-            # 4.5 record patterns_seen_three
+            # record current_pattern
             for p in players:
                 my_tag = p.signals + p.qualities
                 others_tags = [q.signals + q.qualities for q in players if q != p]
-                matched = self._find_pattern(my_tag, others_tags, round_patterns)
-                p.current_pattern = matched
-                p.participant.vars.setdefault('patterns_seen_three', []).append(matched)
+                p.current_pattern = self._find_pattern(my_tag, others_tags, round_patterns)
 
-            # 4.6 counts for display
             g._count_signals()
             for p in players:
                 p.r_count = g.r_count
                 p.b_count = g.b_count
 
-        # ⑤ persist used records
         sv['used_records'] = used_idx
+
 
 
 class Block_four_instructions(Page):
