@@ -424,7 +424,7 @@ class Comprehension_Test2(Page):
         return player.round_number == 1
 
 
-class Block_One_instructions(Page):
+class Block_one_instructions(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == 1
@@ -558,7 +558,7 @@ page_sequence = [
     Comprehension_Test1,
     Examples,
     Comprehension_Test2,
-    Block_One_instructions,
+    Block_one_instructions,
     Comprehension_Test3,
     ResultsWaitPage1,
     network_and_voting,
