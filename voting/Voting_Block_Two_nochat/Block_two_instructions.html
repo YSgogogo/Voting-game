@@ -1,7 +1,4 @@
-{{ extends 'global/Page.html' }}
-   {{ block title }}
 
-    {{ endblock }}
 
 {{ block content }}
         <style>
@@ -83,32 +80,35 @@
 <br>
 
 <p>
-In this Block, we ask you to make your guess about the true state in each round. There are 10 rounds in total. You will see the following decision page in a round:
+In this Block, we ask you to make your guess about the true state in each round. There are 20 rounds in total. You will see the following decision page in a round:
 </p>
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/block1.png' %}" alt="Urns" width="60%"></div>
 
 <br>
+<br>
 
-<b><span style="font-size: 1.35em;">Payment in Block 2</span></b>
+<b><span style="font-size: 1.35em;">Payment</span></b>
 
 
+<br>
+<br>
 
 <p>
-    At the end of the experiment, the computer will randomly select one round from this block for your payment. In the selected round, every correct guess from a group member will mean
+    Every correct guess from a group member will mean
     <strong>£2</strong> is added to the payment for <strong>each group member</strong>,
     every incorrect guess from a group member will mean
-    <strong>£0</strong> is added to the payment for <strong>each group member</strong>
+    <strong>£0</strong> is added to the payment for <strong>each group member</strong>.
   </p>
 
   <p>
     <strong>Example:</strong><br>
-    if round&nbsp;6 is selected, the true state in this round is
+    The true state is
     <span style="color: red; font-weight: bold;">RED</span>.
     Two group members correctly guessed state
     <span style="color: red; font-weight: bold;">RED</span>,
     and one group member incorrectly guessed state
     <span style="color: blue; font-weight: bold;">BLUE</span>.
-    Consequently,
+    Consequently, your payment would be £2x2+£0x1=£4
   </p>
 
 
@@ -116,8 +116,6 @@ In this Block, we ask you to make your guess about the true state in each round.
 
 
 
-
-<p class="text-center">your payment in Block&nbsp;1&nbsp;=&nbsp;£2x2+£0x1=4</p>
 
 
 {{ endblock }}

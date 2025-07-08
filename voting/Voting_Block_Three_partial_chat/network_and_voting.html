@@ -1,5 +1,3 @@
-{% load static %}
-{% extends "global/Page.html" %}
 
 {% block title %}
 <div style="text-align: center;">
@@ -52,7 +50,7 @@
 /* ------ 公共按钮 ------ */
 .next-page-button{
     background:grey;color:#fff;border:none;padding:10px 20px;
-    cursor:not-allowed;border-radius:8px;
+    cursor:not-allowed;border-radius:8px;float: right;
 }
 .radio-button{transform:scale(1.4);margin-right:8px;}
 
@@ -87,7 +85,7 @@ function check(){
     <br>
     <br>
 <ul>
- <li> This is the information you have received in this round. </li>
+ <li style="font-size: 20px;"> This is the information you have received in this round. </li>
 </ul>
     <br>
     <br>
@@ -142,9 +140,8 @@ function check(){
 
 
 <br>
-<br>
 
-<p>What do you think is the true state?</p>
+<p style="font-size: 20px;">What do you think is the true state?</p>
 
 
 

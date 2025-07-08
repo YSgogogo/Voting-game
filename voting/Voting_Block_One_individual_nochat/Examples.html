@@ -1,7 +1,4 @@
-{{ extends 'global/Page.html' }}
-   {{ block title }}
 
-    {{ endblock }}
 
 {{ block content }}
         <style>
@@ -58,27 +55,56 @@ Each round begins with a random draw of the true state. Then, every group member
   </div>
 </div>
 
-
 <br>
 <br>
 
-<p>
-For example, in a round you are placed in a new group. You receive a red signal from a weak source; group member 2 receives a blue signal from an unknown source (could be either strong source or weak source); and group member 3 receives a red signal from an unknown source (could be either strong source or weak source). You will see the following:
-</p>
+We provide you with several examples below.
+<br>
+<br>
+<br>
+
 
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/example1.png' %}" alt="Urns" width="50%"></div>
 
-<p>
-Another example, you receive a red signal from a strong source; group member 3 receives a blue signal from a strong source; and you have no information about group member 1’s signal and signal source. You will see the following:
+<p style="
+    border: 1px solid #000;
+    padding: 8px;
+    font-style: italic;
+">
+  Your signal and signal source are unknown, group member ID:1 receives a blue signal from a strong source, and group member ID:3 receives a red signal from an unknown source.
 </p>
+
+
+
+<br>
+<br>
+<br>
 
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/example2.png' %}" alt="Urns" width="50%"></div>
 
-<p>
-One more example, you receive a blue signal from a weak source, and you have no information about the signals or signal sources for group members 2 and 3. You will see the following:
+<p style="
+    border: 1px solid #000;
+    padding: 8px;
+    font-style: italic;
+">
+  You receive a blue signal from a strong source, group member ID:1 receives a blue signal from a weak source, and group member ID:3's signal and signal source are unknown.
 </p>
 
+<br>
+<br>
+<br>
+
+
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/example3.png' %}" alt="Urns" width="50%"></div>
+
+<p style="
+    border: 1px solid #000;
+    padding: 8px;
+    font-style: italic;
+">
+  You receive a blue signal from an unknown source, group member ID:2 receives a blue signal from a weak source, and group member ID:3 receives a red signal from an unknown source.
+</p>
+
 
 
 

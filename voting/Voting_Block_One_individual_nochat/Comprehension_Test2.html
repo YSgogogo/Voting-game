@@ -1,4 +1,4 @@
-{{ extends 'global/Page.html' }}
+
    {{ block title }}
  <div style="text-align: center;">
      <h1>Comprehension Test</h1>
@@ -76,13 +76,18 @@
 
 
 <form method="post">
-    {{ formfield 'quiz6' }}
     {{ formfield 'quiz7' }}
+
+    <div style="text-align:center;"><img src="{% static 'IndividualDecision/test3.png' %}" alt="Urns" width="50%"></div>
+
+<br>
+<br>
 
     {{ formfield 'quiz8' }}
 
-      <div style="text-align:center;"><img src="{% static 'IndividualDecision/test1.png' %}" alt="Urns" width="50%"></div>
+    <div style="text-align:center;"><img src="{% static 'IndividualDecision/test1.png' %}" alt="Urns" width="50%"></div>
 
+<br>
 <br>
 
     {{ formfield 'quiz9' }}

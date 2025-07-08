@@ -6,67 +6,20 @@
 
 {% block content %}
 <style>
-.urn-row{
-    display:flex;
-    justify-content:center;
-    gap:60px;
-    margin-bottom:25px;
-    align-items:flex-start;
-}
-
-.urn-box:first-child::before{
-    content:"Signal:";
-    position:absolute;
-    top:180px;
-    right:calc(100% + 60px);
-    font-size:20px;
-    font-weight:400;
-}
-
-.urn-box:first-child .quality-label::before{
-    content:"Signal source:";
-    position:absolute;
-    right:calc(100% + 80px);
-    top:0;
-    font-size:20px;
-    font-weight:400;
-    white-space:nowrap;
-    word-break:keep-all;
-}
-
-
+.urn-row{display:flex;justify-content:center;gap:60px;margin-bottom:25px;}
 .urn-box{position:relative;width:150px;text-align:center;font-size:18px;}
 .urn-img{width:100%;max-width:120px;}
+.urn-box:first-child::before{content:"Signal:";position:absolute;top:180px;right:calc(100% + 60px);font-size:20px;font-weight:400;}
+.urn-box:first-child .label::before{content:"Signal source:";position:absolute;right:calc(100% + 58px);top:0;font-size:20px;font-weight:400;white-space:nowrap;word-break:keep-all;}
+.label{position:absolute;top:-50px;left:0;right:0;font-size:20px;font-weight:500;}
+.question-row{display:flex;justify-content:space-between;gap:40px;margin-top:35px;}
+.question{flex:1;}
+.urn-caption{font-size:16px;line-height:1.2;}
 
 
-.quality-label{
-    position:absolute;
-    top:-4px;
-    left:50%;transform:translateX(-50%);
-    font-size:20px;font-weight:400;
-    top:-30px;
-}
-
-
-.signal-unknown{position:relative;width:150px;text-align:center;font-size:18px;}
-
-
-.signal-tag{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    top:185px;
-}
-
-
-.next-page-button{background:grey;color:#fff;border:none;padding:10px 20px;cursor:not-allowed;border-radius:8px;}
+.next-page-button{background:grey;color:#fff;border:none;padding:10px 20px;cursor:not-allowed;border-radius:8px;float: right;}
 .radio-button{transform:scale(1.4);margin-right:8px;}
 
-.urn-caption{
-    position:absolute;
-    top:220px;
-    left:50%;transform:translateX(-50%);
-    font-size:16px;line-height:1.2;}
 </style>
 
 <input type="hidden" id="timeSpent" name="timeSpent"/>
@@ -89,50 +42,65 @@ function check(){
 </div>
 <br><br>
 <ul>
-  <li>This is the information you have received in this round.</li>
+<li style="font-size: 20px;">
+  This is the information you have received in this round.
+</li>
+
 </ul>
-<br><br><br>
+<br><br><br><br>
 
 <div class="urn-row">
-{% for row in participants_info %}
+    {# —— 自己 —— #}
     <div class="urn-box">
 
-        {% if row.player_signal_style %}
-            <span class="signal-tag signal-dot" style="{{ row.player_signal_style }}"></span>
-        {% else %}
-            <span class="signal-tag signal-unknown">unknown</span>
-        {% endif %}
 
-
-
-        {% if row.box_info == 'Unknown' %}
-            <div class="quality-label">unknown</div>
-        {% elif row.box_info == 'Box A' %}
-        <div class="quality-label"><b><i>strong&nbsp;source</i></b></div>
-        {% else %}
-            <div class="quality-label"><b><i>weak&nbsp;source</i></b></div>
-        {% endif %}
+            {% if my_quality != 'unknown' %}
+              <span class="label"><b><i>{{ my_quality }}</i></b></span>
+            {% else %}
+              <span class="label label-static" style="font-size:20px;">unknown</span>
+            {% endif %}
 
         <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
 
-        <div class="urn-caption">
-            {% if row.box_info == 'Unknown' and not row.player_signal_style %}
-                Group&nbsp;member&nbsp;(ID:&nbsp;{{ row.id_in_group }})
-            {% elif row.is_self %}
-                You&nbsp;(ID:&nbsp;{{ row.id_in_group }})
+            {% if my_signal_style != 'unknown' %}
+              <br><span style="{{ my_signal_style }}"></span>
             {% else %}
-                Group&nbsp;member&nbsp;(ID:&nbsp;{{ row.id_in_group }})
+              <br><span style="font-size:20px;">unknown</span>
             {% endif %}
-        </div>
+        <br><br>
+        <div class="urn-caption">You&nbsp;(ID:&nbsp;{{ my_id }})</div>
     </div>
-{% endfor %}
+
+    {# —— 其他人 —— #}
+    {% for o in other_urns %}
+    <div class="urn-box">
+
+            {% if o.quality_label != 'unknown' %}
+              <span class="label"><b><i>{{ o.quality_label }}</i></b></span>
+            {% else %}
+              <span class="label label-static" style="font-size:20px;">unknown</span>
+            {% endif %}
+
+
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
+
+            {% if o.signal_style != 'unknown' %}
+              <br><span style="{{ o.signal_style }}"></span>
+            {% else %}
+              <br><span style="font-size:20px;">unknown</span>
+            {% endif %}
+
+        <br><br>
+        <div class="urn-caption">Group&nbsp;member&nbsp;(ID:&nbsp;{{ o.id }})</div>
+    </div>
+    {% endfor %}
 </div>
 
-<br><br>
-<br><br>
-<br><br>
-<p>What do you think is the true state?</p>
+
 <br>
+<br>
+<p style="font-size: 20px;">What do you think is the true state?</p>
+
 
 <form method="post">
   <div id="voteContainer" style="text-align:left;font-size:20px;">

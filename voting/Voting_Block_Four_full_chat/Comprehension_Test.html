@@ -1,4 +1,4 @@
-{{ extends 'global/Page.html' }}
+
    {{ block title }}
  <div style="text-align: center;">
      <h1>Comprehension Test</h1>
@@ -20,14 +20,13 @@
  To proceed, you will need to answer the following questions correctly.
 <br>
         <br>
-        <br>
 {% load static %}
 
-
-<button class="btn btn-outline-primary"
+<button type="button"
+        class="btn btn-outline-primary"
         data-bs-toggle="modal"
         data-bs-target="#picModalGeneral">
-    Click to Review the General Setting
+     Click to Review the General Setting
 </button>
 
 
@@ -48,11 +47,13 @@
 <br>
 <br>
 
-<button class="btn btn-outline-primary"
+<button type="button"
+        class="btn btn-outline-primary"
         data-bs-toggle="modal"
         data-bs-target="#picModalExample">
-    Click to Review Examples
+     Click to Review the General Setting
 </button>
+
 
 
 <div class="modal fade" id="picModalExample" tabindex="-1" aria-hidden="true">
@@ -72,21 +73,21 @@
 <br>
 <br>
 
-<button class="btn btn-outline-primary"
+<button type="button"
+        class="btn btn-outline-primary"
         data-bs-toggle="modal"
         data-bs-target="#picModalblock">
-    Click to Review Block 3
+    Click to Review Block 4
 </button>
-
 
 <div class="modal fade" id="picModalblock" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Block 3</h5>
+        <h5 class="modal-title">Block 4</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <img src="{% static 'IndividualDecision/block3.png' %}"
+      <img src="{% static 'IndividualDecision/block4.png' %}"
            class="img-fluid w-100" alt="pay">
     </div>
   </div>
@@ -100,8 +101,6 @@
 <form method="post">
 
     {{ formfield 'quiz1' }}
-
-      <div style="text-align:center;"><img src="{% static 'IndividualDecision/blockonetest1.png' %}" alt="Urns" width="50%"></div>
 
 <br>
 

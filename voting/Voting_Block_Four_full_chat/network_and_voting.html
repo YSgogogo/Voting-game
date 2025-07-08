@@ -1,5 +1,3 @@
-{% load static %}
-{% extends "global/Page.html" %}
 
 {% block title %}
 <div style="text-align: center;">
@@ -46,7 +44,7 @@
 
 .next-page-button{
     background:grey;color:#fff;border:none;padding:10px 20px;
-    cursor:not-allowed;border-radius:8px;
+    cursor:not-allowed;border-radius:8px;float: right;
 }
 .radio-button{transform:scale(1.4);margin-right:8px;}
 
@@ -81,7 +79,7 @@ function check(){
     <br>
     <br>
 <ul>
- <li> This is the information you have received in this round. </li>
+ <li style="font-size: 20px;"> This is the information you have received in this round. </li>
 </ul>
     <br>
     <br>
@@ -135,9 +133,8 @@ function check(){
 
 
 <br>
-<br>
 
-<p>What do you think is the true state?</p>
+<p style="font-size: 20px;">What do you think is the true state?</p>
 
 
 
@@ -236,17 +233,17 @@ document.addEventListener('DOMContentLoaded', () => {
         class="btn btn-outline-primary"
         data-bs-toggle="modal"
         data-bs-target="#picModalblock">
-    Click to Review Block 3
+    Click to Review Block 4
 </button>
 
 <div class="modal fade" id="picModalblock" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Block 3</h5>
+        <h5 class="modal-title">Block 4</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <img src="{% static 'IndividualDecision/block3.png' %}"
+      <img src="{% static 'IndividualDecision/block4.png' %}"
            class="img-fluid w-100" alt="pay">
     </div>
   </div>

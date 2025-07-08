@@ -1,0 +1,98 @@
+{% extends "global/Page.html" %}
+{% load static %}
+
+{% block title %}
+<div style="text-align: center;">
+    <h1>Round {{ player.round_number }}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+.next-page-button{background:grey;color:#fff;border:none;padding:10px 20px;cursor:not-allowed;border-radius:8px;}
+.radio-button{transform:scale(1.4);margin-right:8px;}
+.urn-row{display:flex;justify-content:center;gap:60px;margin-bottom:25px;}
+.urn-box{position:relative;width:150px;text-align:center;font-size:18px;}
+.urn-img{width:100%;max-width:120px;}
+.urn-box:first-child::before{content:"Signal:";position:absolute;top:180px;right:calc(100% + 60px);font-size:20px;font-weight:400;}
+.urn-box:first-child .label::before{content:"Signal source:";position:absolute;right:calc(100% + 58px);top:0;font-size:20px;font-weight:400;white-space:nowrap;word-break:keep-all;}
+.label{position:absolute;top:-50px;left:0;right:0;font-size:20px;font-weight:500;}
+.question-row{display:flex;justify-content:space-between;gap:40px;margin-top:35px;}
+.question{flex:1;}
+.urn-caption{font-size:16px;line-height:1.2;}
+</style>
+
+<input type="hidden" id="timeSpent1" name="timeSpent1"/>
+
+<script>
+let t=0, timer=-1, ready=false;
+window.onload = () => {
+    timer = setInterval(() => {
+        document.getElementById('timeSpent1').value = ++t;
+        if (t >= 5) { ready = true; check(); }
+    }, 1000);
+};
+function checked(name){ return !!document.querySelector(`input[name="${name}"]:checked`); }
+function check(){
+    const ok = ready && checked('send_decision');
+    const btn = document.getElementById('nextBtn');
+    btn.disabled = !ok;
+    btn.style.cursor = ok ? 'pointer' : 'not-allowed';
+    btn.style.backgroundColor = ok ? '#007BFF' : 'grey';
+}
+</script>
+
+<ul>
+    <li>This is the information you have received in this round.</li>
+</ul>
+
+<br><br><br>
+
+<div class="urn-row">
+    {# —— 自己 —— #}
+    <div class="urn-box">
+
+
+            {% if my_quality != 'unknown' %}
+              <span class="label"><b><i>{{ my_quality }}</i></b></span>
+            {% else %}
+              <span class="label label-static" style="font-size:20px;">unknown</span>
+            {% endif %}
+
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
+
+            {% if my_signal_style != 'unknown' %}
+              <br><span style="{{ my_signal_style }}"></span>
+            {% else %}
+              <br><span style="font-size:20px;">unknown</span>
+            {% endif %}
+        <br><br>
+        <div class="urn-caption">You&nbsp;(ID:&nbsp;{{ my_id }})</div>
+    </div>
+
+    {# —— 其他人 —— #}
+    {% for o in other_urns %}
+    <div class="urn-box">
+
+            {% if o.quality_label != 'unknown' %}
+              <span class="label"><b><i>{{ o.quality_label }}</i></b></span>
+            {% else %}
+              <span class="label label-static" style="font-size:20px;">unknown</span>
+            {% endif %}
+
+
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
+
+            {% if o.signal_style != 'unknown' %}
+              <br><span style="{{ o.signal_style }}"></span>
+            {% else %}
+              <br><span style="font-size:20px;">unknown</span>
+            {% endif %}
+
+        <br><br>
+        <div class="urn-caption">Group&nbsp;member&nbsp;(ID:&nbsp;{{ o.id }})</div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,7 +1,4 @@
-{{ extends 'global/Page.html' }}
-   {{ block title }}
 
-    {{ endblock }}
 
 {{ block content }}
         <style>
@@ -83,10 +80,8 @@
 <br>
 
 <p>
-At the beginning of each round in Block 3, you will see your own signal source and signal, as
-well as the signals of the other group members, but not their signal sources (whether
-weak source or strong source). Every group member has a chance to share their own
-signal source to only one of other two group members. There are 10 rounds in total. You will
+At the beginning of each round in Block 3, every group member has a chance to share their own
+signal source with at most one other group member. There are 10 rounds in total. You will
 be first shown the following:</p>
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/block3_1.png' %}" alt="Urns" width="40%"></div>
 
@@ -95,42 +90,40 @@ be first shown the following:</p>
     The above decision from a randomly selected group member will be implemented. This selected member’s decision may let one group member has information about her signal source. It is <b>important</b> to make your decision carefully, as this may influence the other group members’ final guess (hence your final payment) about the true state in that round.
 </p>
 <p>
-Next, every group member needs to guess the true state based on their available information. The screenshot shows your decision page in a round:
+Next, every group member needs to guess the true state. The screenshot shows your decision page in a round:
 </p>
 <div style="text-align:center;"><img src="{% static 'IndividualDecision/block3_2.png' %}" alt="Urns" width="40%"></div>
 
 
 <br>
 
-<b><span style="font-size: 1.35em;">Payment in Block 3</span></b>
+<b><span style="font-size: 1.35em;">Payment</span></b>
 
+
+<br>
+<br>
 
 <p>
-    At the end of the experiment, the computer will randomly select one round from this block for your payment. In the selected round, every correct guess from a group member will mean
+    Every correct guess from a group member will mean
     <strong>£2</strong> is added to the payment for <strong>each group member</strong>,
     every incorrect guess from a group member will mean
-    <strong>£0</strong> is added to the payment for <strong>each group member</strong>
+    <strong>£0</strong> is added to the payment for <strong>each group member</strong>.
   </p>
 
   <p>
     <strong>Example:</strong><br>
-    if round&nbsp;6 is selected, the true state in this round is
-    <span style="color: red; font-weight: bold;">RED</span>.
-    Three group members correctly guessed state
-    <span style="color: red; font-weight: bold;">RED</span>,
-    and zero group member incorrectly guessed state
+    The true state is
     <span style="color: blue; font-weight: bold;">BLUE</span>.
-    Consequently,
+    Three group members correctly guessed state
+    <span style="color: blue; font-weight: bold;">BLUE</span>,
+    and no group member incorrectly guessed state
+    <span style="color: red; font-weight: bold;">RED</span>.
+    Consequently, your payment would be £2x3+£0x0=£6
   </p>
-
 
 </div>
 
 
-
-
-<p class="text-center">your payment in Block&nbsp;3&nbsp;=&nbsp;£2x3+£0x0=6</p>
-
-<p>So, it is important to let more group members make correct guess to maxmize your payment. In other words, you must make your decisions very carefully in sharing your signal source.</p>
+<p>So, it is important to let more group members make correct guess to maximize your payment. In other words, you must make your decisions very carefully in sharing your signal source.</p>
 
 {{ endblock }}
