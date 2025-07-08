@@ -3,30 +3,14 @@ CHANNEL_ROUTING = 'routing.channel_routing'
 
 SESSION_CONFIGS = [
 
-    dict(
-        name='Voting_send',
-        display_name="Voting_send",
-        app_sequence=['A_Voting_one', 'A_Voting_two', 'A_Voting_three', 'A_Voting_four', 'A_Voting_payment'],
-        num_demo_participants=3,
-    ),
-    dict(
-        name='Voting_receive',
-        display_name="Voting_receive",
-        app_sequence=['A_Voting_one', 'A_Voting_two', 'A_Voting_three_receiver', 'A_Voting_four_receiver','A_Voting_payment_receiver'],
-        num_demo_participants=3,
-    ),
+
     dict(
         name='Voting',
         display_name="Voting",
         app_sequence=['Voting_Block_One_individual_nochat', 'Voting_Block_Two_nochat', 'Voting_Block_Three_partial_chat', 'Voting_Block_Four_full_chat', 'Voting_payment'],
         num_demo_participants=3,
     ),
-    dict(
-        name='try',
-        display_name="try",
-        app_sequence=['Voting_try'],
-        num_demo_participants=3,
-    )
+
 ]
 
 SESSION_CONFIG_DEFAULTS = dict(

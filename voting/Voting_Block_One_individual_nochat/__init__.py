@@ -188,8 +188,8 @@ class Player(BasePlayer):
         label="In the following example, what is group member ID:1's signal?",
         widget = widgets.RadioSelect,
         choices=[
-            [0, 'red signal'],
-            [1, 'blue signal'],
+            [0, 'Red signal'],
+            [1, 'Blue signal'],
             [2, 'I do not know'],
         ]
     )
