@@ -97,9 +97,10 @@ class Group(BaseGroup):
         self.b_count = C.PLAYERS_PER_GROUP - self.r_count
 
     def set_payoffs(self):
-
+        correct = sum(1 for p in self.get_players() if p.vote == self.state)
+        payoff = correct * C.AMOUNT_CORRECT
         for p in self.get_players():
-            p.payoff_record = C.AMOUNT_CORRECT if p.vote == self.state else 0
+            p.payoff_record = payoff
 
 
 class Player(BasePlayer):

@@ -69,6 +69,26 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     timeSpent1 = models.FloatField()
     timeSpent2 = models.FloatField()
+    num_failed_attempts = models.IntegerField(initial=0)
+    failed_too_many = models.BooleanField(initial=False)
+    quiz1 = models.IntegerField(
+        label="If you observe a red signal, which state is more likely? ",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'RED'],
+            [1, 'BLUE'],
+            [2, 'Equally likely'],
+        ]
+    )
+    quiz2 = models.IntegerField(
+        label="Which of the following signal source is more informative?",
+        widget=widgets.RadioSelect,
+        choices=[
+            [0, 'Strong source'],
+            [1, 'Weak source'],
+            [2, 'No difference'],
+        ]
+    )
     send_decision   = models.StringField()
     vote            = models.StringField(widget=widgets.RadioSelect,
                                          choices=C.CHOICES)
@@ -260,10 +280,30 @@ class StartRoundWaitPage(WaitPage):
         sv['used_records'] = used_idx
 
 
-class Main_Instructions(Page):
+class Block_three_instructions(Page):
     @staticmethod
     def is_displayed(player):
         return player.round_number == 1
+
+
+class Comprehension_Test(Page):
+    form_model = 'player'
+    form_fields = ['quiz1', 'quiz2']
+
+    @staticmethod
+    def error_message(player: Player, values):
+        solutions = {"quiz1": 1, "quiz2": 0}
+        errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
+        if errors:
+            player.num_failed_attempts += 1
+            if player.num_failed_attempts >= 100:
+                player.failed_too_many3 = True
+            else:
+                return errors
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 
 
 class ResultsWaitPage1(WaitPage):
@@ -413,7 +453,8 @@ class FinalResults(Page):
 # ------------------------------------------------------------------
 page_sequence = [
     StartRoundWaitPage,
-    Main_Instructions,
+    Block_three_instructions,
+    Comprehension_Test,
     ResultsWaitPage1,
     Info_and_decision,
     ResultsWaitPage2,
