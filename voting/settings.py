@@ -18,7 +18,7 @@ SESSION_CONFIGS = [
     dict(
         name='Voting',
         display_name="Voting",
-        app_sequence=['Voting_Block_Two_nochat', 'Voting_Block_Three_partial_chat', 'Voting_Block_Four_full_chat'],
+        app_sequence=['Voting_Block_Three_partial_chat', 'Voting_Block_Four_full_chat'],
         num_demo_participants=3,
     )
 ]
