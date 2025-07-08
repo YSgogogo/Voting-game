@@ -19,7 +19,7 @@ class C(BaseConstants):
     QUALITIES         = ['h', 'l']
 
 
-def build_signal_table(M: int = 1000):
+def build_signal_table_three(M: int = 1000):
     """generate 1000 data"""
     table = []
     for _ in range(M):
@@ -71,8 +71,8 @@ def expand_triplet(trip: tuple[str, str, str]) -> list[str]:
 class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
-            self.session.vars['signal_table'] = build_signal_table(1000)
-            self.session.vars['used_records'] = set()
+            self.session.vars['signal_table_three'] = build_signal_table_three(1000)
+            self.session.vars['used_records_three'] = set()
 
 
 class Group(BaseGroup):
@@ -181,17 +181,17 @@ class StartRoundWaitPage(WaitPage):
 
         # ② retrieve signal table
         sv = self.session.vars
-        if 'signal_table' not in sv:
-            sv['signal_table'] = build_signal_table(1000)
-            sv['used_records'] = set()
-        table = sv['signal_table']
-        used_idx = sv['used_records']
+        if 'signal_table_three' not in sv:
+            sv['signal_table_three'] = build_signal_table_three(1000)
+            sv['used_records_three'] = set()
+        table = sv['signal_table_three']
+        used_idx = sv['used_records_three']
 
         # ───────────────────────────────────────────────────────────
         # ③ generate 10-round triplet schedule once,
         #    with first 6 rounds covering 6 rows, next 4 from remaining
         # ───────────────────────────────────────────────────────────
-        if 'triple_order' not in sv:
+        if 'triple_order_three' not in sv:
             # first 6 rounds: pick one from each row, then shuffle
             row_picks = [random.choice(pair) for pair in TRIPLE_ROWS]
             random.shuffle(row_picks)
@@ -200,40 +200,56 @@ class StartRoundWaitPage(WaitPage):
             extra_picks = random.sample(remaining, C.NUM_ROUNDS - len(row_picks))
             random.shuffle(extra_picks)
             # combine: rounds 1–6 cover each row once, rounds 7–10 are extras
-            sv['triple_order'] = row_picks + extra_picks
+            sv['triple_order_three'] = row_picks + extra_picks
 
         # select this round's triplet and expand
-        trip_this_round = sv['triple_order'][self.subsession.round_number - 1]
+        trip_this_round = sv['triple_order_three'][self.subsession.round_number - 1]
         round_patterns = expand_triplet(trip_this_round)
-        sv['pair_patterns'] = round_patterns
+        sv['pair_patterns_three'] = round_patterns
 
         # ④ simplified assignment: random unused record
-        # ④ simplified assignment: random unused record + record current_pattern
+        # ④ assignment: pick record matching this round's triplet
         for g in self.subsession.get_groups():
-            idx = random.choice([i for i in range(len(table)) if i not in used_idx])
+            # 定义函数提取rec的三人标签
+            def rec_tags(rec):
+                return sorted(info['signals'] + info['qualities']
+                              for info in rec['players'].values())
+
+            target_trip = sorted(trip_this_round)
+            # 筛选出未用且符合预定triplet的记录
+            eligible = [i for i, rec in enumerate(table)
+                        if i not in used_idx and rec_tags(rec) == target_trip]
+            if eligible:
+                idx = random.choice(eligible)
+            else:
+                # 如果没有符合的，就回退到任意未用记录
+                idx = random.choice([i for i in range(len(table)) if i not in used_idx])
+
             used_idx.add(idx)
             rec = table[idx]
 
-            g.state = rec['state']
+            slots = list(rec['players'].items())  # [(sid, info), ...]
+            random.shuffle(slots)
             players = g.get_players()
-            for p in players:
-                info = rec['players'][p.id_in_subsession]
+            g.state = rec['state']
+            for p, (sid, info) in zip(players, slots):
                 p.state = rec['state']
                 p.signals = info['signals']
                 p.qualities = info['qualities']
 
-            # record current_pattern
+            # 记录current_pattern
             for p in players:
                 my_tag = p.signals + p.qualities
                 others_tags = [q.signals + q.qualities for q in players if q != p]
                 p.current_pattern = self._find_pattern(my_tag, others_tags, round_patterns)
 
+            # 更新信号计数
             g._count_signals()
             for p in players:
                 p.r_count = g.r_count
                 p.b_count = g.b_count
 
-        sv['used_records'] = used_idx
+        sv['used_records_three'] = used_idx
 
 
 

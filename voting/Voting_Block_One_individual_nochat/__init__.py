@@ -20,7 +20,7 @@ class C(BaseConstants):
 # ------------------------------------------------------------------
 #  build pre-generated signal table
 # ------------------------------------------------------------------
-def build_signal_table(M: int = 1000):
+def build_signal_table_one(M: int = 1000):
     """generate M data points"""
     table = []
     for _ in range(M):
@@ -84,8 +84,8 @@ def expand_triplet(trip: tuple[str, str, str]) -> list[str]:
 class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
-            self.session.vars['signal_table'] = build_signal_table(1000)
-            self.session.vars['used_records'] = set()
+            self.session.vars['signal_table_one'] = build_signal_table_one(1000)
+            self.session.vars['used_records_one'] = set()
 
 
 class Group(BaseGroup):
@@ -246,14 +246,14 @@ class StartRoundWaitPage(WaitPage):
 
         sv = self.session.vars
         # 2. 初始化信号表 & 已用索引
-        if 'signal_table' not in sv:
-            sv['signal_table'] = build_signal_table(1000)
-            sv['used_records'] = set()
-        table = sv['signal_table']
-        used_idx = sv['used_records']
+        if 'signal_table_one' not in sv:
+            sv['signal_table_one'] = build_signal_table_one(1000)
+            sv['used_records_one'] = set()
+        table = sv['signal_table_one']
+        used_idx = sv['used_records_one']
 
-        # 3. 生成 triple_order（首次执行）
-        if 'triple_order' not in sv:
+        # 3. 生成 triple_order_one（首次执行）
+        if 'triple_order_one' not in sv:
             section_slices = [
                 (0, 6, 8), (6, 15, 8), (15, 18, 2), (18, 22, 2)
             ]
@@ -271,12 +271,12 @@ class StartRoundWaitPage(WaitPage):
                     extras = random.sample(remaining, quota - num_pairs)
                     picks.extend(row_picks + extras)
             random.shuffle(picks)
-            sv['triple_order'] = picks
+            sv['triple_order_one'] = picks
 
         # 4. 本轮部分信息模板
-        trip_this_round = sv['triple_order'][self.subsession.round_number - 1]
+        trip_this_round = sv['triple_order_one'][self.subsession.round_number - 1]
         round_patterns = expand_triplet(trip_this_round)
-        sv['pair_patterns'] = round_patterns
+        sv['pair_patterns_one'] = round_patterns
 
         # 5. 对每个 group 进行匹配
         for g in self.subsession.get_groups():
@@ -315,7 +315,7 @@ class StartRoundWaitPage(WaitPage):
                 p.participant.vars.setdefault('patterns_seen_three', []).append(pat)
 
             # 存回 session.vars
-            sv['used_records'] = used_idx
+            sv['used_records_one'] = used_idx
 
 
 class Welcome(Page):
