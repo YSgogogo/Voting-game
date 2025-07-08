@@ -205,7 +205,7 @@ class Player(BasePlayer):
     )
 
     quiz10 = models.IntegerField(
-        label="In the following example, suppose you guess correctly, Group member ID:2 guess correctly, and Group member ID:1 guess incorrectly, what is you payment in this block?",
+        label="In the following example, suppose you guess correctly, Group member ID:1 guesses correctly, and Group member ID:2 guesses incorrectly, what is you payment in this block?",
         widget=widgets.RadioSelect,
         choices=[
             [0, '£ 0'],
@@ -215,7 +215,7 @@ class Player(BasePlayer):
     )
 
     quiz11 = models.IntegerField(
-        label="In the following example, suppose you guess incorrectly, Group member ID:1 guess correctly, and Group member ID:2 guess correctly, what is you payment in this block?",
+        label="In the following example, suppose you guess incorrectly, Group member ID:1 guesses correctly, and Group member ID:3 guesses correctly, what is you payment in this block?",
         widget=widgets.RadioSelect,
         choices=[
             [0, '£ 0'],
@@ -436,7 +436,7 @@ class Comprehension_Test3(Page):
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions3 = {"quiz10": 0, "quiz11": 0}
+        solutions3 = {"quiz10": 1, "quiz11": 0}
         errors3 = {name: 'Wrong' for name in solutions3 if values[name] != solutions3[name]}
         if errors3:
             player.num_failed_attempts3 += 1
