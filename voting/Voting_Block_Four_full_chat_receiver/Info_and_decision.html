@@ -1,26 +1,24 @@
 
+
 {% block title %}
+
 <div style="text-align: center;">
     <h1>Round {{ player.round_number }}</h1>
 </div>
-
 {% endblock %}
 
 {% block content %}
 
 <style>
+.next-page-button{
+    background:grey;color:#fff;border:none;padding:10px 20px;
+    cursor:not-allowed;border-radius:8px;float: right;
+}
+.radio-button{transform:scale(1.4);margin-right:8px;}
 
 .urn-row{display:flex;justify-content:center;gap:60px;margin-bottom:25px;}
 .urn-box{position:relative;width:150px;text-align:center;font-size:18px;}
 .urn-img{width:100%;max-width:120px;}
-
-.label{
-    position:absolute;top:-50px;left:0;right:0;
-    font-size:20px;
-    font-weight:500;
-
-}
-
 
 .urn-box:first-child::before{
     content:"Signal:";
@@ -42,12 +40,15 @@
     word-break:keep-all;
 }
 
-.next-page-button{
-    background:grey;color:#fff;border:none;padding:10px 20px;
-    cursor:not-allowed;border-radius:8px;float: right;
-}
-.radio-button{transform:scale(1.4);margin-right:8px;}
+.label{
+    position:absolute;top:-50px;left:0;right:0;
+    font-size:20px;
+    font-weight:500;
 
+}
+
+.question-row{display:flex;justify-content:space-between;gap:40px;margin-top:35px;}
+.question{flex:1;}
 
 .urn-caption{
     font-size:16px;
@@ -55,120 +56,87 @@
 }
 </style>
 
-<input type="hidden" id="timeSpent2" name="timeSpent2"/>
+<input type="hidden" id="timeSpent1" name="timeSpent1"/>
 
 <script>
 let t=0,timer=-1,ready=false;
-window.onload=()=>{timer=setInterval(()=>{document.getElementById('timeSpent2').value=++t;if(t>=5){ready=true;check();}},1000);};
+window.onload=()=>{timer=setInterval(()=>{document.getElementById('timeSpent1').value=++t;if(t>=5){ready=true;check();}},1000);};
 
 function checked(name){return !!document.querySelector(`input[name="${name}"]:checked`);}
 function check(){
-    const ok=ready&&checked('vote');
+    const ok=ready&&checked('send_decision');
     const btn=document.getElementById('nextBtn');
     btn.disabled=!ok;
     btn.style.cursor=ok?'pointer':'not-allowed';
     btn.style.backgroundColor=ok?'#007BFF':'grey';
 }
 </script>
+<br>
 
-
-    <div style="text-align: center;">
-        <h3>Please choose a state that you believe is the true state in this round </h3>
-    </div>
-    <br>
-    <br>
-    <br>
 <ul>
  <li style="font-size: 20px;"> This is the information you have received in this round. </li>
 </ul>
-    <br>
-    <br>
-    <br>
-    <br>
-
+<br>
+<br>
+<br>
+<br>
 <div class="urn-row">
 
-{% for row in participants_info %}
     <div class="urn-box">
+        <span class="label"><b><i>{{ my_quality }}</i></b></span>
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
+        <br>
+        <span style="{{ my_signal }}"></span>
+        <br>
+        <br>
+        <div class="urn-caption">You&nbsp;(ID:&nbsp;{{ my_id }})</div>
+    </div>
 
-
-
-        {% if row.box_info == 'Unknown' %}
-            <span class="label">Unknown</span>
+    {% for o in other_urns %}
+    <div class="urn-box">
+        {% if o.quality_label in "S W" %}
+            <span>{{ o.quality_label }}</span>
         {% else %}
-            {% if row.box_info == 'strong' %}
-                <span class="label"><b><i>strong source</i></b></span>
-            {% else %}
-                <span class="label"><b><i>weak source</i></b></span>
-            {% endif %}
+            <span class="label">unknown</span>
         {% endif %}
 
+        <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="signal">
 
-
-            <img src="{% static 'IndividualDecision/signal.png' %}" class="urn-img" alt="urn">
-
-
-
-
-        <span style="{{ row.player_signal_style }}"></span>
+        <br>
+        <span style="{{ o.signal }}"></span>
 
         <br>
         <br>
-        {# 文字说明 #}
         <div class="urn-caption">
-            {% if row.is_self %}
-                You&nbsp;(ID:&nbsp;{{ row.id_in_group }})
-            {% else %}
-                Group&nbsp;member&nbsp;(ID:&nbsp;{{ row.id_in_group }})
-            {% endif %}
+            Group&nbsp;member&nbsp;(ID:&nbsp;{{ o.id }})
         </div>
-
     </div>
-{% endfor %}
+    {% endfor %}
 
 </div>
 
+        <br>
 
-<br>
-
-<p style="font-size: 20px;">What do you think is the true state?</p>
-
-
-
-
-{# ---------- 投票表单 ---------- #}
 <form method="post">
-  <div id="voteContainer" style="text-align:left;font-size:20px;">
-      <div class="vote-option">
-          <input type="radio" class="radio-button" name="vote"
-                 id="voteR" value="R" onchange="check()">
-          <label for="voteR"><span style="color:red;font-weight:bold;">RED</span></label>
-      </div>
 
-      <div class="vote-option">
-          <input type="radio" class="radio-button" name="vote"
-                 id="voteB" value="B" onchange="check()">
-          <label for="voteB"><span style="color:blue;font-weight:bold;">BLUE</span></label>
-      </div>
-  </div>
+    <div class="question-row">
 
-  <br>
-  <input type="submit" id="nextBtn" value="Next"
-         class="next-page-button" disabled>
+        <div class="question">
+            <b style="font-size: 20px;">Whom will you <u>SHARE</u> your signal source with?</b><br><br>
+            {% for opt in player.send_decision_choices %}
+                <input type="radio" class="radio-button"
+                       name="send_decision" value="{{ opt }}" onclick="check()">
+                <label class="choice-label">{{ opt }}</label><br>
+            {% endfor %}
+        </div>
+
+
+    </div>
+    <br>
+
+    <br>
+    <input type="submit" id="nextBtn" value="Next" class="next-page-button" disabled>
 </form>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const box = document.getElementById('voteContainer');
-    if (Math.random() < 0.5) {
-        box.insertBefore(box.children[1], box.children[0]);
-    }
-});
-</script>
-
-
-
-
 
 <br>
 <br>
@@ -249,3 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+{% block app_styles %}
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+    document.querySelectorAll(".choice-label").forEach(el=>{
+        el.innerHTML=el.innerHTML
+            .replace(/R/g,"<span style='display:inline-block;width:1em;height:1em;background:red;border-radius:50%;vertical-align:middle;margin:0 3px;'></span>")
+            .replace(/B/g,"<span style='display:inline-block;width:1em;height:1em;background:blue;border-radius:50%;vertical-align:middle;margin:0 3px;'></span>");
+    });
+});
+</script>
+{% endblock %}

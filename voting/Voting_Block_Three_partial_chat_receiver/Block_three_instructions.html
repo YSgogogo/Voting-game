@@ -1,0 +1,129 @@
+
+
+{{ block content }}
+        <style>
+            .ribbon {
+               position: relative;
+               top: -16px;
+               right: -706px;
+            }
+            .blue {
+                color: blue;
+            }
+        </style>
+
+<br>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.45; }
+    h2 { text-align:center; color:#375a7f; margin-top:0; margin-bottom:0.3em; }
+    hr { border:0; border-top:2px solid #375a7f; width:95%; }
+    h3 { margin-top:1.2em; margin-bottom:0.4em; }
+
+    ul.arrowlist { list-style:none; padding-left:1.2em; margin-top:0.3em; }
+    ul.arrowlist li::before { content:"►"; margin-right:0.4em; }
+</style>
+
+<h2>Block 3</h2>
+<hr>
+
+
+{% load static %}
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalGeneral">
+     Click to Review the General Setting
+</button>
+
+
+<div class="modal fade" id="picModalGeneral" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/general.png' %}"
+           class="img-fluid w-100" alt="General Setting">
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+
+<button type="button"
+        class="btn btn-outline-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#picModalExample">
+     Click to Review Examples
+</button>
+
+
+<div class="modal fade" id="picModalExample" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Examples</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <img src="{% static 'IndividualDecision/example.png' %}"
+           class="img-fluid w-100" alt="Example">
+    </div>
+  </div>
+</div>
+
+
+<br>
+<br>
+
+<p>
+At the beginning of each round in Block 3, every group member has a chance to share their own
+signal source with at most one other group member. There are 10 rounds in total. You will
+be first shown the following:</p>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/block3_1.png' %}" alt="Urns" width="70%"></div>
+
+<br>
+<p>
+    The above decision from a randomly selected group member will be implemented. This selected member’s decision may let one group member has information about her signal source. It is <b>important</b> to make your decision carefully, as this may influence the other group members’ final guess (hence your final payment) about the true state in that round.
+</p>
+<p>
+Next, every group member needs to guess the true state. The screenshot shows your decision page in a round:
+</p>
+<div style="text-align:center;"><img src="{% static 'IndividualDecision/block3_2.png' %}" alt="Urns" width="70%"></div>
+
+
+<br>
+
+<b><span style="font-size: 1.35em;">Payment</span></b>
+
+
+<br>
+<br>
+
+<p>
+    Every correct guess from a group member will mean
+    <strong>£2</strong> is added to the payment for <strong>each group member</strong>,
+    every incorrect guess from a group member will mean
+    <strong>£0</strong> is added to the payment for <strong>each group member</strong>.
+  </p>
+
+  <p>
+    <strong>Example:</strong><br>
+    The true state is
+    <span style="color: blue; font-weight: bold;">BLUE</span>.
+    Three group members correctly guessed state
+    <span style="color: blue; font-weight: bold;">BLUE</span>,
+    and no group member incorrectly guessed state
+    <span style="color: red; font-weight: bold;">RED</span>.
+    Consequently, your payment would be £2x3+£0x0=£6
+  </p>
+
+</div>
+
+
+<p>So, it is important to let more group members make correct guess to maximize your payment. In other words, you must make your decisions very carefully in sharing your signal source.</p>
+
+{{ endblock }}
