@@ -107,7 +107,7 @@ class Player(BasePlayer):
     )
 
     quiz2 = models.IntegerField(
-        label="In the following example, suppose you share your signal source with Group member ID:3, what he/she can observe?",
+        label="In the following example, suppose Group member ID:3 decides to receive a signal source from you, what he/she can observe?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'a strong source from Group member ID:2'],
@@ -116,7 +116,7 @@ class Player(BasePlayer):
         ]
     )
 
-    send_decision   = models.StringField()
+    reveal_decision = models.StringField()
     vote            = models.StringField(widget=widgets.RadioSelect,
                                          choices=C.CHOICES)
     state     = models.StringField()
@@ -134,16 +134,16 @@ class Player(BasePlayer):
     current_pattern = models.StringField()
 
 
-    def send_decision_choices(player):
+    def reveal_decision_choices(player):
         others = [p.signals for p in player.group.get_players() if p != player]
         if others[0] == others[1]:
             col  = 'R' if others[0] == 'r' else 'B'
-            opts = [f'share with a group member who got {col}',
-                    'do not share with anyone']
+            opts = [f'receive from a group member who got {col}',
+                    'do not receive from anyone']
         else:
-            opts = ['share with a group member who got R',
-                    'share with a group member who got B',
-                    'do not share with anyone']
+            opts = ['receive from a group member who got R',
+                    'receive from a group member who got B',
+                    'do not receive from anyone']
         random.shuffle(opts)
         return opts
 
@@ -285,7 +285,7 @@ class ResultsWaitPage1(WaitPage):
 
 class Info_and_decision(Page):
     form_model  = 'player'
-    form_fields = ['timeSpent1', 'send_decision']
+    form_fields = ['timeSpent1', 'reveal_decision']
 
     @staticmethod
     def vars_for_template(player):
@@ -323,23 +323,20 @@ class ResultsWaitPage2(WaitPage):
         for g in self.subsession.get_groups():
             ps = g.get_players()
 
-
             for p in ps:
                 p.info_from_whom = str(p.id_in_group)
                 p.role_in_lottery = 'none'
 
             chosen = random.choice(ps)
-            role   = random.choice(['sender'])
+            role   = random.choice(['receiver'])
             chosen.role_in_lottery = role
 
-
-            if role == 'sender' and 'do not share' not in chosen.send_decision:
-                tgt  = 'r' if 'got R' in chosen.send_decision else 'b'
+            if role == 'receiver' and 'do not receive' not in chosen.reveal_decision:
+                tgt  = 'r' if 'got R' in chosen.reveal_decision else 'b'
                 cand = [x for x in ps if x != chosen and x.signals == tgt]
                 if cand:
-                    rec = random.choice(cand)
-                    rec.info_from_whom += f',{chosen.id_in_group}'
-
+                    snd = random.choice(cand)
+                    chosen.info_from_whom += f',{snd.id_in_group}'
 
             for p in ps:
                 codes = []
@@ -348,6 +345,9 @@ class ResultsWaitPage2(WaitPage):
                     sig = 'R' if src.signals == 'r' else 'B'
                     codes.append(f'{sig}{src.qualities}')
                 p.info_codes = ','.join(codes)
+
+
+
 
 
 class network_and_voting(Page):

@@ -110,15 +110,16 @@ class Player(BasePlayer):
     )
 
     quiz2 = models.IntegerField(
-        label="In the following example, suppose you share your signal source with all groups members, what they can observe?",
+        label="Suppose you decide to receive signal sources from all groups members, what you can observe?",
         widget=widgets.RadioSelect,
         choices=[
-            [0, 'a strong source from Group member ID:2'],
-            [1, 'a weak source from Group member ID:2'],
-            [2, 'nothing from Group member ID:2'],
+            [0, 'only one group member`s signal source'],
+            [1, 'all other two group members` signal sources'],
+            [2, 'nothing from my group members'],
         ]
     )
-    send_decision   = models.StringField()
+
+    reveal_decision = models.StringField()
     vote            = models.StringField(widget=widgets.RadioSelect,
                                          choices=C.CHOICES)
     state     = models.StringField()
@@ -135,18 +136,18 @@ class Player(BasePlayer):
     b_count        = models.IntegerField()
     current_pattern = models.StringField()
 
-    def send_decision_choices(player):
+    def reveal_decision_choices(player):
         others = [p.signals for p in player.group.get_players() if p != player]
         if others[0] == others[1]:
             col  = 'R' if others[0] == 'r' else 'B'
-            opts = [f'share with one of group members who got {col}',
-                    'share with all group members',
-                    'do not share with anyone']
+            opts = [f'receive from a group member who got {col}',
+                    'receive from all group members',
+                    'do not receive from anyone']
         else:
-            opts = ['share with a group member who got R',
-                    'share with a group member who got B',
-                    'share with all group members',
-                    'do not share with anyone']
+            opts = ['receive from a group member who got R',
+                    'receive from a group member who got B',
+                    'receive from all group members',
+                    'do not receive from anyone']
         random.shuffle(opts)
         return opts
 
@@ -290,7 +291,7 @@ class ResultsWaitPage1(WaitPage):
 
 class Info_and_decision(Page):
     form_model  = 'player'
-    form_fields = ['timeSpent1', 'send_decision']
+    form_fields = ['timeSpent1', 'reveal_decision']
 
     @staticmethod
     def vars_for_template(player):
@@ -328,26 +329,26 @@ class ResultsWaitPage2(WaitPage):
         for g in self.subsession.get_groups():
             ps = g.get_players()
 
+            # 每人初始只“知道自己”
             for p in ps:
                 p.info_from_whom = str(p.id_in_group)
-                p.role_in_lottery = 'sender'
+                p.role_in_lottery = 'receiver'  # 每个人都是 receiver
 
-            for sender in ps:
-                if 'do not share' in sender.send_decision:
-                    continue
+            # 每个人按自己的 reveal_decision 执行接收逻辑
+            for p in ps:
+                if 'do not receive' not in p.reveal_decision:
+                    if 'receive from all group members' in p.reveal_decision:
+                        for snd in ps:
+                            if snd != p:
+                                p.info_from_whom += f',{snd.id_in_group}'
+                    else:
+                        tgt = 'r' if 'got R' in p.reveal_decision else 'b'
+                        cand = [x for x in ps if x != p and x.signals == tgt]
+                        if cand:
+                            snd = random.choice(cand)
+                            p.info_from_whom += f',{snd.id_in_group}'
 
-                if 'share with all group members' in sender.send_decision:
-                    for rec in ps:
-                        if rec != sender:
-                            rec.info_from_whom += f',{sender.id_in_group}'
-
-                else:
-                    tgt = 'r' if 'got R' in sender.send_decision else 'b'
-                    cand = [x for x in ps if x != sender and x.signals == tgt]
-                    if cand:
-                        rec = random.choice(cand)
-                        rec.info_from_whom += f',{sender.id_in_group}'
-
+            # 翻译成 Rh, Wb 形式显示
             for p in ps:
                 codes = []
                 for src_id in map(int, p.info_from_whom.split(',')):

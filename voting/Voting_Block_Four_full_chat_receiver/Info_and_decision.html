@@ -64,7 +64,7 @@ window.onload=()=>{timer=setInterval(()=>{document.getElementById('timeSpent1').
 
 function checked(name){return !!document.querySelector(`input[name="${name}"]:checked`);}
 function check(){
-    const ok=ready&&checked('send_decision');
+    const ok=ready&&checked('reveal_decision');
     const btn=document.getElementById('nextBtn');
     btn.disabled=!ok;
     btn.style.cursor=ok?'pointer':'not-allowed';
@@ -122,10 +122,10 @@ function check(){
     <div class="question-row">
 
         <div class="question">
-            <b style="font-size: 20px;">Whom will you <u>SHARE</u> your signal source with?</b><br><br>
-            {% for opt in player.send_decision_choices %}
+            <b>From whom will you <u>RECEIVE</u> their signal source?</b><br><br>
+            {% for opt in player.reveal_decision_choices %}
                 <input type="radio" class="radio-button"
-                       name="send_decision" value="{{ opt }}" onclick="check()">
+                       name="reveal_decision" value="{{ opt }}" onclick="check()">
                 <label class="choice-label">{{ opt }}</label><br>
             {% endfor %}
         </div>
