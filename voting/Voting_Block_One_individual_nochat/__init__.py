@@ -49,6 +49,8 @@ TRIPLE_ROWS: list[tuple[tuple[str, str, str], tuple[str, str, str]]] = [
     (('rh', 'bl', 'rl'), ('bh', 'rl', 'bl')),
     (('rl', 'bh', 'rl'), ('bl', 'rh', 'bl')),
     (('rl', 'bl', 'rl'), ('bl', 'rl', 'bl')),
+    (('r', 'bh', 'r'), ('b', 'rh', 'b')),
+    (('r', 'bl', 'r'), ('b', 'rl', 'b')),
     (('rh', 'b', 'r'),   ('bh', 'r', 'b')),
     (('rl', 'b', 'r'),   ('bl', 'r', 'b')),
     (('rh', 'bh', 'r'),  ('bh', 'rh', 'b')),
@@ -61,10 +63,11 @@ TRIPLE_ROWS: list[tuple[tuple[str, str, str], tuple[str, str, str]]] = [
     (('rl', '', ''),     ('bl', '', '')),
     (('rh', '', ''),     ('bh', '', '')),
     (('r',   '', ''),    ('b',  '', '')),
+    (('r', 'bl', ''), ('b', 'rl', '')),
     (('rh', 'b', ''),    ('bh', 'r', '')),
     (('rh', 'bl', ''),   ('bh', 'rl', '')),
-    (('r',  'bh', ''),   ('b',  'rh', '')),
-    (('r',  'bl', ''),   ('b',  'rl', '')),
+    (('rh',  'bh', ''),   ('bh',  'rh', '')),
+    (('rl', 'bl', ''), ('bl', 'rl', '')),
 ]
 ALL_TRIPLES: list[tuple[str, str, str]] = [t for pair in TRIPLE_ROWS for t in pair]
 
@@ -255,7 +258,7 @@ class StartRoundWaitPage(WaitPage):
         # 3. 生成 triple_order_one（首次执行）
         if 'triple_order_one' not in sv:
             section_slices = [
-                (0, 6, 8), (6, 15, 8), (15, 18, 2), (18, 22, 2)
+                (0, 6, 8), (6, 17, 8), (17, 20, 2), (20, 25, 2)
             ]
             picks: list[tuple[str,str,str]] = []
             for start, end, quota in section_slices:
