@@ -113,8 +113,8 @@ class Player(BasePlayer):
         label="Suppose you decide to receive signal sources from all groups members, what you can observe?",
         widget=widgets.RadioSelect,
         choices=[
-            [0, 'only one group member`s signal source'],
-            [1, 'all other two group members` signal sources'],
+            [0, 'only one group member\'s signal source'],
+            [1, 'all other two group members\' signal sources'],
             [2, 'nothing from my group members'],
         ]
     )

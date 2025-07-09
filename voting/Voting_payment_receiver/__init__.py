@@ -91,11 +91,11 @@ class Survey(Page):
         player.round_to_pay_block_two = rnd2
 
         # ---------- block 3 ----------
-        pay3, rnd3 = part.vars['Voting_Block_Three_partial_chat']
+        pay3, rnd3 = part.vars['Voting_Block_Three_partial_chat_receiver']
         player.money_to_pay_block_three = pay3
         player.round_to_pay_block_three = rnd3
 
-        pay4, rnd4 = part.vars['Voting_Block_Four_full_chat']
+        pay4, rnd4 = part.vars['Voting_Block_Four_full_chat_receiver']
         player.money_to_pay_block_four = pay4
         player.round_to_pay_block_four = rnd4
 
