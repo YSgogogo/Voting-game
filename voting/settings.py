@@ -8,7 +8,7 @@ SESSION_CONFIGS = [
         name='Voting',
         display_name="Voting",
         app_sequence=['Voting_Block_One_individual_nochat', 'Voting_Block_Two_nochat', 'Voting_Block_Three_partial_chat', 'Voting_Block_Four_full_chat', 'Voting_payment'],
-        num_demo_participants=6,
+        num_demo_participants=3,
     ),
 
 ]
