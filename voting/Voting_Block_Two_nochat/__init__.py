@@ -66,8 +66,7 @@ TRIPLE_ROWS: list[tuple[tuple[str, str, str], tuple[str, str, str]]] = [
     (('r', 'bl', ''), ('b', 'rl', '')),
     (('rh', 'b', ''),    ('bh', 'r', '')),
     (('rh', 'bl', ''),   ('bh', 'rl', '')),
-    (('rh',  'bh', ''),   ('bh',  'rh', '')),
-    (('rl', 'bl', ''), ('bl', 'rl', '')),
+    (('rh',  'bh', ''),  ('bl', 'rl', '')),
 ]
 ALL_TRIPLES: list[tuple[str, str, str]] = [t for pair in TRIPLE_ROWS for t in pair]
 
@@ -188,7 +187,7 @@ class StartRoundWaitPage(WaitPage):
         # 3. 生成 triple_order_two（首次执行）
         if 'triple_order_two' not in sv:
             section_slices = [
-                (0, 6, 8), (6, 17, 8), (17, 20, 2), (20, 25, 2)
+                (0, 6, 8), (6, 17, 8), (17, 20, 2), (20, 24, 2)
             ]
             picks: list[tuple[str,str,str]] = []
             for start, end, quota in section_slices:
