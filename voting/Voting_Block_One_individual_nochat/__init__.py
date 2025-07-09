@@ -357,6 +357,13 @@ class Comprehension_Test1(Page):
         return player.round_number == 1
 
 
+class ResultsWaitPagea(WaitPage):
+    wait_for_all_groups = True
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
 class Examples(Page):
     @staticmethod
     def is_displayed(player):
@@ -381,6 +388,13 @@ class Comprehension_Test2(Page):
     def is_displayed(player: Player):
         return player.round_number == 1
 
+
+class ResultsWaitPageb(WaitPage):
+    wait_for_all_groups = True
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
 
 class Block_one_instructions(Page):
     @staticmethod
@@ -519,8 +533,10 @@ page_sequence = [
     Overview,
     General_setting_of_the_experiment,
     Comprehension_Test1,
+    ResultsWaitPagea,
     Examples,
     Comprehension_Test2,
+    ResultsWaitPageb,
     Block_one_instructions,
     Comprehension_Test3,
     ResultsWaitPage1,

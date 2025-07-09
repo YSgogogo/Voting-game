@@ -269,7 +269,7 @@ class Comprehension_Test(Page):
 
     @staticmethod
     def error_message(player: Player, values):
-        solutions = {"quiz1": 1, "quiz2": 2}
+        solutions = {"quiz1": 1, "quiz2": 1}
         errors = {name: 'Wrong' for name in solutions if values[name] != solutions[name]}
         if errors:
             player.num_failed_attempts += 1
