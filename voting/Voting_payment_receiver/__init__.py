@@ -10,7 +10,7 @@ reflect the payment in the end
 
 class C(BaseConstants):
     NAME_IN_URL = 'Voting_payment_receiver'
-    PLAYERS_PER_GROUP = 1
+    PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
 
 

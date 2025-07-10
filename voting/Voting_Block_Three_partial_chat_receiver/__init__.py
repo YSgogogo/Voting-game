@@ -107,7 +107,7 @@ class Player(BasePlayer):
     )
 
     quiz2 = models.IntegerField(
-        label="In the following example, suppose Group member ID:3 decides to receive a signal source from you, what he/she can observe?",
+        label="In the following example, suppose Group member ID:3 decides to receive a signal source from you, what will he/she observe?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'a strong source from Group member ID:2'],

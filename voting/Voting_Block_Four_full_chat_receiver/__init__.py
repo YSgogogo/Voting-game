@@ -110,7 +110,7 @@ class Player(BasePlayer):
     )
 
     quiz2 = models.IntegerField(
-        label="Suppose you decide to receive signal sources from all groups members, what you can observe?",
+        label="Suppose you decide to receive signal sources from all groups members, what will you observe?",
         widget=widgets.RadioSelect,
         choices=[
             [0, 'only one group member\'s signal source'],
