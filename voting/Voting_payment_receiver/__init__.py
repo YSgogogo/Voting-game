@@ -10,7 +10,7 @@ reflect the payment in the end
 
 class C(BaseConstants):
     NAME_IN_URL = 'Voting_payment_receiver'
-    PLAYERS_PER_GROUP = 3
+    PLAYERS_PER_GROUP = 1
     NUM_ROUNDS = 1
 
 
@@ -108,11 +108,10 @@ class Email(Page):
     form_model = 'player'
     form_fields = ['Email_address']
 
-class ResultsWaitPage(WaitPage):
-    wait_for_all_groups = True
+
 
 class Payment(Page):
     pass
 
 
-page_sequence = [Instruction, Survey, Email, ResultsWaitPage, Payment]
+page_sequence = [Instruction, Survey, Email, Payment]
